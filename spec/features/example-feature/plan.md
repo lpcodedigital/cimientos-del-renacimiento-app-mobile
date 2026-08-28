@@ -1,0 +1,1 @@
+# Creado por Kimi K3, detalla los archivos a tocar y la arquitectura técnica.

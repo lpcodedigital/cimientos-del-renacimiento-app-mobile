@@ -1,0 +1,42 @@
+{
+  "project_name": "Cimientos del Renacimiento - Gabinete Móvil",
+  "current_roadmap_phase": "Fase 1: Shell Base, Navegación y Login Híbrido",
+  "active_feature": "auth-biometric",
+  "context_pointers": {
+    "spec_file": "spec/features/auth-biometric/spec.md",
+    "plan_file": "spec/features/auth-biometric/plan.md",
+    "task_file": "spec/features/auth-biometric/task.md"
+  },
+  "active_task": {
+    "id": "TASK-01",
+    "description": "Bootstrap Expo SDK 57 (blank-typescript), NativeWind v4, tipografía Lato y paleta institucional Guinda.",
+    "status": "IN_PROGRESS",
+    "assigned_role": "Trabajador",
+    "allowed_files_to_edit": [
+      "package.json",
+      "package-lock.json",
+      "yarn.lock",
+      "pnpm-lock.yaml",
+      "app.json",
+      "tsconfig.json",
+      "babel.config.js",
+      "metro.config.js",
+      "tailwind.config.js",
+      "global.css",
+      "nativewind-env.d.ts",
+      "App.tsx",
+      "index.ts",
+      "index.js",
+      "assets/fonts/Lato-Regular.ttf",
+      "assets/fonts/Lato-Bold.ttf",
+      "src/theme/tokens.ts"
+    ]
+  },
+  "harness_status": {
+    "last_run": null,
+    "linter_passed": false,
+    "typecheck_passed": false,
+    "blockers_or_errors": ""
+  },
+  "agent_notes": "Fase Spec & Plan cerrada por el Orquestador (2026-08-21). Spec/plan/task de auth-biometric aprobados. Contrato Spring Boot: POST /api/auth/login. Navegación: React Navigation native-stack en /src (cero Expo Router). El Trabajador arranca en TASK-01. Prohibido nativo a mano y npx expo start (Humano)."
+}

@@ -1,0 +1,96 @@
+# ==============================================================================
+# 1. SDD & OPENCODE (Design & Credentials)
+# ==============================================================================
+# Environment variables and secrets (CRITICAL for LLM API Keys)
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+cyber_secrets.*
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Ignorar archivos de configuración de IDEs
+.opencode/
+
+# OpenCode / Temporary generation artifacts
+.opencode_tmp/
+generated_code/
+
+# ==============================================================================
+# 2. REACT NATIVE & MOBILE (Android / iOS)
+# ==============================================================================
+#
+
+# Dependencias
+/node_modules/
+/.pnp/
+.pnp.js
+
+# Testing
+/coverage/
+
+# Producción y compilación
+/build/
+/dist/
+
+# Directorios nativos generados y caché de iOS
+/ios/Pods/
+/ios/build/
+*.pbxuser
+*.mode1v3
+*.mode2vv
+*.perspectivev3
+*.xcworkspace/
+!*.xcworkspace/contents.xcworkspacedata
+xcuserdata/
+*.xccheckout
+*.moved-aside
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Directorios nativos y caché de Android
+/android/.gradle/
+/android/build/
+/android/app/build/
+/android/local.properties
+.gradle/
+/android/.idea/
+
+# Entornos y configuración local
+.env
+.env.local
+.env.prod
+.env.dev
+.env.development.local
+.env.test.local
+.env.production.local
+.DS_Store
+*.pem
+
+# IDEs y Editores
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Logs y temporales
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+metro-bundler-restarter-*
+.metro-health-check*
+

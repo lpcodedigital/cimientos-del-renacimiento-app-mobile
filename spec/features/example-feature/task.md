@@ -1,0 +1,1 @@
+# Lista de verificación con casillas (- [ ]) para que DeepSeek V4 Flash las ejecute una a una.

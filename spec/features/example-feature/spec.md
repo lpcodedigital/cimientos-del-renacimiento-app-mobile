@@ -1,0 +1,1 @@
+# Define qué debe hacer la funcionalidad y los casos borde.
