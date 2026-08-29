@@ -1,0 +1,18 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+
+@import "nativewind/theme";
+
+@theme {
+  --color-guinda: #6b142e;
+  --color-dorado: #c4a35a;
+  --color-fondo: #f7f4f0;
+  --color-texto: #1a1a1a;
+  --color-texto-suave: #5c534c;
+  --color-error: #8b1e1e;
+  --color-superficie: #ffffff;
+
+  --font-lato: "Lato";
+  --font-lato-bold: "Lato-Bold";
+}

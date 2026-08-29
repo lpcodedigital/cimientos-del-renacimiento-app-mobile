@@ -37,8 +37,27 @@ Ejecuta únicamente la TASK-01 desglosada en task.md.
 Recuerda que solo tienes permitido modificar los archivos definidos en allowed_files.
 Una vez terminada la TASK-01 y verificada con el linter/TypeScript, actualiza el estado correspondiente en progress/current-task.json y avísame para realizar la prueba en el emulador."
 
+"Actúa como Agente Trabajador según @AGENTS.md. Lee el checklist en @spec/features/fase-1-identidad/task.md y ejecuta ÚNICAMENTE la tarea T1. Asegúrate de crear los archivos exactamente donde dice el plan y no toques ninguna otra tarea hasta que apruebe esta."
+
 ## ¿Qué va a pasar ahora?
 DeepSeek leerá task.md, verá que la TASK-01 requiere hacer el bootstrap de Expo, instalar las dependencias de NativeWind / TypeScript / React Navigation y definir los tokens del tema (/src/theme).
 Ejecutará los comandos de instalación o creará los archivos de configuración requeridos dentro de /src.
 Al finalizar, te dirá que la TASK-01 está lista.
 En ese momento tú podrás ejecutar en tu terminal local npx expo start para verificar que la base de la app arranca sin errores en tu simulador o teléfono, y le darás el pase para la TASK-02 (DTOs y cliente Axios con SecureStore).
+
+## INSTRUCCIONES PARA RESOLVER UN PROBLEMA EN LA TASK 01 LE CORESPONDE AL TRABAJADOR (MODE BUILD)
+Ocurrió un error al compilar en iOS/Android durante la validación de TASK-01. Metro lanza una excepción al intentar transformar archivos:
+
+`TypeError: Cannot read properties of undefined (reading 'transformFile')`
+`/node_modules/metro/src/Bundler.js (55:30)`
+
+Esto indica una mala configuración o exportación en `metro.config.js` o `babel.config.js` introducida al configurar NativeWind v4 / Expo SDK 57.
+
+Por favor:
+1. Revisa `metro.config.js` y `babel.config.js`. Asegúrate de que `getDefaultConfig(__dirname)` se esté importando y ejecutando correctamente, y que la integración con NativeWind (`withNativeWind`) esté exportando la configuración correctamente.
+2. Corrige el problema en los archivos de configuración permitidos en TASK-01.
+3. Confírmame para volver a reiniciar la caché de Metro (`npx expo start -c`) y probar la compilación.
+
+## Instrucciones para continuar con la siguiente tarea
+
+"TASK-01 probada y validada en emulador con éxito. Marca TASK-01 como completada en task.md y procede a ejecutar TASK-02."
