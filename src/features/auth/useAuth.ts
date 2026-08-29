@@ -9,10 +9,13 @@ export interface UseAuthResult {
   token: string | null;
   user: AuthBasicUserResponseDTO | null;
   expiresAt: string | null;
+  shouldOfferBiometricOptIn: boolean;
+  biometricEnrollHint: string | null;
   signIn: (email: string, password: string) => Promise<void>;
   unlockWithBiometrics: () => Promise<void>;
   declineBiometricOptIn: () => Promise<void>;
   enableBiometricAfterLogin: () => Promise<void>;
+  dismissBiometricOptIn: () => void;
   signOut: () => Promise<void>;
 }
 

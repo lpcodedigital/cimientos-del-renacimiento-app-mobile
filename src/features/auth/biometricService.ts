@@ -1,4 +1,5 @@
 import * as LocalAuthentication from "expo-local-authentication";
+import { Platform } from "react-native";
 
 export type BiometricAvailability = {
   hasHardware: boolean;
@@ -10,54 +11,30 @@ const NOT_AVAILABLE: BiometricAvailability = {
   isEnrolled: false,
 };
 
+function androidCanAuthenticate(
+  level: LocalAuthentication.SecurityLevel
+): boolean {
+  return (
+    level === LocalAuthentication.SecurityLevel.SECRET ||
+    level === LocalAuthentication.SecurityLevel.BIOMETRIC_WEAK ||
+    level === LocalAuthentication.SecurityLevel.BIOMETRIC_STRONG ||
+    level === LocalAuthentication.SecurityLevel.BIOMETRIC
+  );
+}
+
 export async function getBiometricAvailability(): Promise<BiometricAvailability> {
+  if (Platform.OS === "android") {
+    const level = await LocalAuthentication.getEnrolledLevelAsync();
+    const isEnrolled = androidCanAuthenticate(level);
+    return { hasHardware: isEnrolled, isEnrolled };
+  }
+
   const hasHardware = await LocalAuthentication.hasHardwareAsync();
   if (!hasHardware) {
     return NOT_AVAILABLE;
   }
   const isEnrolled = await LocalAuthentication.isEnrolledAsync();
   return { hasHardware, isEnrolled };
-}
-
-export async function canUseBiometrics(): Promise<boolean> {
-  const availability = await getBiometricAvailability();
-  return availability.hasHardware && availability.isEnrolled;
-}
-
-export interface Prompts {
-  unlockMessage: string;
-  unlockCancelLabel: string;
-  optInMessage: string;
-}
-
-const DEFAULT_PROMPTS: Prompts = {
-  unlockMessage: "Desbloquear Gabinete Móvil",
-  unlockCancelLabel: "Cancelar",
-  optInMessage: "Confirmar la activación de Face ID / huella",
-};
-
-export async function authenticateToUnlock(
-  override?: Partial<Prompts>
-): Promise<boolean> {
-  const prompts = { ...DEFAULT_PROMPTS, ...override };
-  const result = await LocalAuthentication.authenticateAsync({
-    promptMessage: prompts.unlockMessage,
-    cancelLabel: prompts.unlockCancelLabel,
-    disableDeviceFallback: false,
-    biometricsSecurityLevel: "strong",
-  });
-  return result.success;
-}
-
-export async function confirmBiometricOptIn(): Promise<boolean> {
-  const prompts = DEFAULT_PROMPTS;
-  const result = await LocalAuthentication.authenticateAsync({
-    promptMessage: prompts.optInMessage,
-    cancelLabel: prompts.unlockCancelLabel,
-    disableDeviceFallback: true,
-    biometricsSecurityLevel: "strong",
-  });
-  return result.success;
 }
 
 export type BiometricFallbackReason =
@@ -69,13 +46,29 @@ export type BiometricFallbackReason =
   | "authentication_failed"
   | "fallback";
 
-export async function authenticateWithResult(): Promise<BiometricFallbackReason> {
-  const result = await LocalAuthentication.authenticateAsync({
-    promptMessage: DEFAULT_PROMPTS.unlockMessage,
-    cancelLabel: DEFAULT_PROMPTS.unlockCancelLabel,
+function biometricOptions(): LocalAuthentication.LocalAuthenticationOptions {
+  if (Platform.OS === "ios") {
+    return {
+      promptMessage: "Desbloquear Gabinete Móvil con Face ID",
+      cancelLabel: "Cancelar",
+      fallbackLabel: "",
+      disableDeviceFallback: true,
+    };
+  }
+  return {
+    promptMessage: "Desbloquear Gabinete Móvil",
+    cancelLabel: "Cancelar",
     disableDeviceFallback: false,
-    biometricsSecurityLevel: "strong",
-  });
+  };
+}
+
+export async function authenticateWithResult(): Promise<BiometricFallbackReason> {
+  let result: LocalAuthentication.LocalAuthenticationResult;
+  try {
+    result = await LocalAuthentication.authenticateAsync(biometricOptions());
+  } catch {
+    return "fallback";
+  }
   if (result.success) {
     return "success";
   }
@@ -93,6 +86,9 @@ export async function authenticateWithResult(): Promise<BiometricFallbackReason>
     case "user_fallback":
       return "fallback";
     default:
+      if (result.error === ("missing_usage_description" as string)) {
+        return "not_available";
+      }
       return "fallback";
   }
 }

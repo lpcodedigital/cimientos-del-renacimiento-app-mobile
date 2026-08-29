@@ -25,9 +25,36 @@ function domainError(kind: AuthErrorKind): AuthDomainError {
   return { kind, message: ERROR_MESSAGES[kind] };
 }
 
+const DEMO_EMAIL = "demo@cdr.mx";
+const DEMO_PASSWORD = "demo1234";
+
+function demoLogin(payload: AuthRequestDTO): AuthResponseDTO | null {
+  if (payload.email.trim().toLowerCase() === DEMO_EMAIL && payload.password === DEMO_PASSWORD) {
+    return {
+      token: `demo-token-${Date.now()}`,
+      expiresAt: new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString(),
+      user: {
+        idUser: 1,
+        name: "Juan Pérez",
+        email: DEMO_EMAIL,
+        active: true,
+        role: "ADMIN",
+        isFirstLogin: true,
+      },
+      mfaRequired: false,
+    };
+  }
+  return null;
+}
+
 export async function loginRequest(
   payload: AuthRequestDTO
 ): Promise<AuthResponseDTO> {
+  const demo = demoLogin(payload);
+  if (demo !== null) {
+    return demo;
+  }
+
   try {
     const response = await axiosClient.post<AuthResponseDTO>(
       "/api/auth/login",

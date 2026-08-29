@@ -11,6 +11,9 @@
       "bundleIdentifier": "com.lpcodedigital.cimientosdelrenacimiento",
       "config": {
         "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "El Gabinete Móvil usa Face ID para desbloquear tu sesión institucional sin escribir la contraseña."
       }
     },
     "android": {

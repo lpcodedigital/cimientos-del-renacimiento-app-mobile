@@ -132,7 +132,12 @@
 ### 2026-08-29 — TASK-05 APROBADA por el Humano
 
 - **Validación:** el Tester Visual Humano compiló y validó TASK-05 con éxito en **Android e iOS** (development build) — flujo completo del login híbrido correcto: login tradicional + opt-in «Usar Face ID / huella» → `biometric_enabled`; reapertura → pantalla Desbloquear con auto-prompt; Face ID/huella exitoso → acceso a Inicio sin teclear; cancelación/fallo → fallback «Usar correo y contraseña» que limpia la sesión.
-- Cierre: TASK-05 confirmada `COMPLETED`.
+- **Ajustes de integración biométrica validados en el flujo de prueba local (rama `feature/auth-biometric/task-05/29082026/local-login-test`):**
+  - **Android:** se autoriza cualquier método seguro activado (PIN/patrón/huella/rostro) vía `getEnrolledLevelAsync() !== NONE`; `authenticateAsync` con `disableDeviceFallback: false` permite el respaldo DEVICE_CREDENTIAL. Funciona el desbloqueo por PIN.
+  - **iOS:** para forzar Face ID como método principal se usa `disableDeviceFallback: true` (política `deviceOwnerAuthenticationWithBiometrics`) + `fallbackLabel: ""`. Se detectó la causa raíz del «Face ID nunca aparece»: faltaba la clave `NSFaceIDUsageDescription` en el `Info.plist` del proyecto nativo (vía `ios.infoPlist` en `app.json` y edición directa en `ios/GabineteMvil/Info.plist`). Tras añadirla, el overlay nativo de Face ID aparece y autentica correctamente en iOS (26.6).
+  - Manejo de errores: `authenticateWithResult` envuelto en `try/catch`; `unlockWithBiometrics` devuelve errores tipados con mensajes claros (`lockout`, `not_enrolled`, cancelación…); `BiometricUnlockScreen` muestra el error y estado `pending`; `signOut` limpia el estado primero y la persistencia con `Promise.allSettled` (garantizando navegar al Login). Auto-prompt con `setTimeout` 500 ms para evitar canciones de iOS durante la transición.
+  - Login demo local sin backend (`demo@cdr.mx` / `demo1234`) en `api.ts` para prueba de dispositivos.
+- Cierre: TASK-05 confirmada `COMPLETED` tras validación física en Android e iOS con Face ID funcionando.
 - Lista para TASK-06 (ARNÉS: instalar/configurar ESLint + scripts `lint`/`typecheck`, correr `npx eslint .` y `npx tsc --noEmit`, cierre de Fase 1) y posterior auditoría por el Revisor.
 
 ### Pendiente
