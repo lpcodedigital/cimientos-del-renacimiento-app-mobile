@@ -8,7 +8,10 @@
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.lpcodedigital.cimientosdelrenacimiento"
+      "bundleIdentifier": "com.lpcodedigital.cimientosdelrenacimiento",
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -27,7 +30,19 @@
     "plugins": [
       "expo-font",
       "expo-splash-screen",
-      "expo-secure-store"
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "El Gabinete Móvil usa Face ID para desbloquear tu sesión institucional sin escribir la contraseña."
+        }
+      ],
+      [
+        "expo-secure-store",
+        {
+          "configureAndroidBackup": true,
+          "faceIDPermission": "El Gabinete Móvil usa Face ID para proteger el acceso a tu sesión institucional."
+        }
+      ]
     ]
   }
 }

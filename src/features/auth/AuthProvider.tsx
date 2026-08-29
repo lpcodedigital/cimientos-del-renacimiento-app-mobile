@@ -17,6 +17,11 @@ import {
   saveSession,
   setBiometricEnabled,
 } from "./tokenStore";
+import {
+  authenticateWithResult,
+  confirmBiometricOptIn,
+  getBiometricAvailability,
+} from "./biometricService";
 import { setAuthToken } from "@/lib/http/axiosClient";
 
 export type AuthStatus =
@@ -77,12 +82,20 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
         const biometricEnabled = await getBiometricEnabled();
 
+        let nextStatus: AuthStatus = "authenticated";
+        if (biometricEnabled) {
+          const availability = await getBiometricAvailability();
+          if (availability.hasHardware && availability.isEnrolled) {
+            nextStatus = "needs_biometric";
+          }
+        }
+
         if (active) {
           setToken(session.token);
           setUser(session.user);
           setExpiresAt(session.expiresAt);
           setAuthToken(session.token);
-          setStatus(biometricEnabled ? "needs_biometric" : "authenticated");
+          setStatus(nextStatus);
         }
       } catch {
         if (active) {
@@ -129,6 +142,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
       return;
     }
 
+    const result = await authenticateWithResult();
+    if (result !== "success") {
+      return;
+    }
+
     setToken(session.token);
     setUser(session.user);
     setExpiresAt(session.expiresAt);
@@ -141,7 +159,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, []);
 
   const enableBiometricAfterLogin = useCallback(async () => {
-    await setBiometricEnabled(true);
+    const confirmed = await confirmBiometricOptIn();
+    await setBiometricEnabled(confirmed);
   }, []);
 
   const signOut = useCallback(async () => {

@@ -157,20 +157,20 @@ Reglas absolutas del Trabajador:
 
 ## TASK-05 — Biometría y desbloqueo
 
-**Status:** TODO
+**Status:** COMPLETED ✅ (2026-08-29, listo para Tester Visual Humano)
 **assigned_role:** Trabajador
 
 **Objetivo:** `expo-local-authentication` + plugins + unlock + opt-in real.
 
 **Pasos**
 
-- [ ] `npx expo install expo-local-authentication`.
-- [ ] Plugins en `app.json` según `plan.md` §2.6 (`expo-local-authentication`, `expo-secure-store`, `usesNonExemptEncryption: false`). Mensajes Face ID institucionales.
-- [ ] Implementar `src/features/auth/biometricService.ts` (APIs de plan §4.3).
-- [ ] Completar `enableBiometricAfterLogin` / `unlockWithBiometrics` en `AuthProvider`.
-- [ ] `BiometricUnlockScreen`: auto-prompt una vez al montar + botón «Desbloquear» + «Usar correo y contraseña».
-- [ ] Bootstrap: JWT + flag + hardware+enrolled → `needs_biometric`. Sin hardware → no ofrecer opt-in.
-- [ ] No tocar `.swift` / `.kt` / `Info.plist`.
+- [x] `npx expo install expo-local-authentication`.
+- [x] Plugins en `app.json` según `plan.md` §2.6 (`expo-local-authentication`, `expo-secure-store`, `usesNonExemptEncryption: false`). Mensajes Face ID institucionales.
+- [x] Implementar `src/features/auth/biometricService.ts` (APIs de plan §4.3).
+- [x] Completar `enableBiometricAfterLogin` / `unlockWithBiometrics` en `AuthProvider`.
+- [x] `BiometricUnlockScreen`: auto-prompt una vez al montar + botón «Desbloquear» + «Usar correo y contraseña».
+- [x] Bootstrap: JWT + flag + hardware+enrolled → `needs_biometric`. Sin hardware → no ofrecer opt-in.
+- [x] No tocar `.swift` / `.kt` / `Info.plist`.
 
 **allowed_files**
 

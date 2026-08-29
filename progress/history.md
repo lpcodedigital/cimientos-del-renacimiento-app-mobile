@@ -113,13 +113,36 @@
 - Cierre: TASK-04 confirmada `COMPLETED`.
 - Lista para iniciar TASK-05 (biometría: `expo-local-authentication` + plugins + unlock + opt-in real). Nota: el bloque opt-in aún no aparece porque `canUseBiometrics()` es stub (`false`) hasta TASK-05.
 
+### 2026-08-29 — TASK-05 (Agente Trabajador)
+
+- Instalado `expo-local-authentication@~57.0.2` vía `npx expo install` (módulo nativo → nunca `npm i`).
+- `app.json`: plugins enriquecidos — `expo-local-authentication` con `faceIDPermission` institucional («…usa Face ID para desbloquear tu sesión institucional sin escribir la contraseña»), `expo-secure-store` con `configureAndroidBackup: true` + mismo `faceIDPermission`, y `ios.config.usesNonExemptEncryption: false` (cumplimiento Export Compliance de SecureStore). Cero `Info.plist` / `.swift` / `.kt` / `.pbxproj` a mano.
+- `src/features/auth/biometricService.ts`: implementación real sobre `expo-local-authentication` — `getBiometricAvailability()` (`hasHardwareAsync` + `isEnrolledAsync`), `canUseBiometrics()` (`hasHardware && isEnrolled`), `authenticateWithResult()` (mapea el resultado a razones de dominio: `success`, `not_enrolled`, `not_available`, `lockout`, `authentication_failed`, `user_cancel`/`system_cancel`/`user_fallback` → `fallback`; opciones `disableDeviceFallback: false`, `biometricsSecurityLevel: "strong"`, prompt «Desbloquear Gabinete Móvil»), y `confirmBiometricOptIn()` (prompt de confirmación del opt-in con `disableDeviceFallback: true`).
+- `src/features/auth/AuthProvider.tsx`:
+  - **Bootstrap** (spec §5.1): ahora valida JWT + `biometric_enabled` + **hardware+enrolled** antes de setear `needs_biometric`; si no hay biometría disponible → `authenticated` (sin ofrecer unlock).
+  - **`unlockWithBiometrics`**: ejecuta `authenticateWithResult()`; solo si `success` pasa a `authenticated`; cualquier fallo/cancelación permanece en `needs_biometric` (dejando visible el fallback a credenciales). Sesión vencida → limpia y `unauthenticated`.
+  - **`enableBiometricAfterLogin`**: ejecuta `confirmBiometricOptIn()` y persiste `biometric_enabled` según `success`/`false`, **sin revertir el login** (spec §5.2).
+- `src/screens/auth/BiometricUnlockScreen.tsx`: UI institucional rediseñada — auto-prompt biométrico **una sola vez al montar** (`useRef`), botón «Desbloquear» (dispara `unlockWithBiometrics`) y «Usar correo y contraseña» (→ `signOut`, limpia sesión y lleva a Login). Titulo Lato Bold guinda, `InstitutionalText`.
+- `src/screens/auth/LoginScreen.tsx`: se conserva el cableado real — tras `signIn` exitoso consulta `canUseBiometrics()` real y muestra el bloque opt-in «¿Usar Face ID / huella?» con «Usar Face ID / huella» (`enableBiometricAfterLogin`) / «Ahora no» (`declineBiometricOptIn`). Sin cambios funcionales necesarios (el stub de TASK-04 ya quedó conectado).
+- `src/features/auth/useAuth.ts`: sin cambios (interfaz estable).
+- **Arnés:** `npx tsc --noEmit` → pasa en verde. Cero `any` / `TouchableOpacity` / `FlatList` / Expo Router. ESLint sigue pendiente (TASK-06).
+- `spec/features/auth-biometric/task.md`: TASK-05 marcada `- [x]` / `Status: COMPLETED`.
+- `progress/current-task.json` → `active_task: TASK-06`, `status: TODO`, `harness_status.typecheck_passed: true`.
+
+### 2026-08-29 — TASK-05 APROBADA por el Humano
+
+- **Validación:** el Tester Visual Humano compiló y validó TASK-05 con éxito en **Android e iOS** (development build) — flujo completo del login híbrido correcto: login tradicional + opt-in «Usar Face ID / huella» → `biometric_enabled`; reapertura → pantalla Desbloquear con auto-prompt; Face ID/huella exitoso → acceso a Inicio sin teclear; cancelación/fallo → fallback «Usar correo y contraseña» que limpia la sesión.
+- Cierre: TASK-05 confirmada `COMPLETED`.
+- Lista para TASK-06 (ARNÉS: instalar/configurar ESLint + scripts `lint`/`typecheck`, correr `npx eslint .` y `npx tsc --noEmit`, cierre de Fase 1) y posterior auditoría por el Revisor.
+
 ### Pendiente
 
 - [x] TASK-01 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
 - [x] TASK-02 — Agente Trabajador ✅ (pendiente de validación visual/typing por el Humano)
 - [x] TASK-03 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
 - [x] TASK-04 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
-- [ ] TASK-05, TASK-06 — Agente Trabajador
+- [x] TASK-05 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
+- [ ] TASK-06 — Agente Trabajador / Revisor
 - [ ] Auditoría arnés — Agente Revisor
 - [ ] Validación visual + Face ID en dispositivo físico — Tester Visual Humano
 - [ ] UI de Login Híbrido completada (bloqueada hasta handoff del Trabajador + Revisor)

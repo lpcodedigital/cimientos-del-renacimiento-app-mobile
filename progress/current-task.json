@@ -8,28 +8,26 @@
     "task_file": "spec/features/auth-biometric/task.md"
   },
   "active_task": {
-    "id": "TASK-05",
-    "description": "Biometría y desbloqueo: expo-local-authentication + plugins + unlock + opt-in real.",
+    "id": "TASK-06",
+    "description": "Arnés de control: ESLint + TypeCheck verdes, cierre de Fase 1 para el Revisor y Tester Visual Humano.",
     "status": "TODO",
-    "assigned_role": "Trabajador",
+    "assigned_role": "Trabajador (primera pasada) → Revisor (auditoría)",
     "allowed_files_to_edit": [
       "package.json",
       "lockfile",
-      "app.json",
-      "src/features/auth/biometricService.ts",
-      "src/features/auth/AuthProvider.tsx",
-      "src/features/auth/useAuth.ts",
-      "src/screens/auth/BiometricUnlockScreen.tsx",
-      "src/screens/auth/LoginScreen.tsx"
+      "eslint.config.js / .eslintrc.js / .eslintrc.cjs / eslint.config.mjs (uno)",
+      "archivos de TASK-01…05 solo para correcciones de lint/tipos",
+      "progress/current-task.json",
+      "progress/history.md"
     ]
   },
   "harness_status": {
-    "last_run": "2026-08-29 (TASK-04 completada por Trabajador)",
+    "last_run": "2026-08-29 (TASK-05 completada por Trabajador)",
     "linter_passed": false,
     "typecheck_passed": true,
     "bundling_passed_android": null,
     "bundling_passed_ios": null,
     "blockers_or_errors": "ESLint aún no configurado (corresponde a TASK-06). tsc --noEmit pasa en verde."
   },
-  "agent_notes": "TASK-04 COMPLETADA (2026-08-29): Creados componentes UI src/components/ui/InstitutionalText.tsx (wrapper Text Lato regular/bold, archivos de fuentes ya presentes), Button.tsx (compound Button+ButtonText, solo Pressable, variantes primary bg-guinda/secondary bg-superficie borde guinda, disabled via opacity, accesibilityRole button) y TextField.tsx (label + input + errorLabel opcional en text-error, focus border-guinda, placeholderTextColor texto-suave). LoginScreen.tsx reescrito: validación local email (regex EMAIL_PATTERN) + password no vacía, botón disabled si inválido o pending, manejo de errores de dominio leyendo error.message de AuthDomainError (sin importar api.ts que no está en allowed_files), estados idle|submitting|offering_biometrics, bloque opt-in biométrico institucional visible solo si canUseBiometrics() true con botones 'Usar Face ID / huella' (callbacks enableBiometricAfterLogin) y 'Ahora no' (declineBiometricOptIn), ternarios/!! sin && falsy, KeyboardAvoidingView+ScrollView, copy institucional formal, strings dentro de Text, acceso vía useAuth. biometricService.ts stub creado con getBiometricAvailability()/canUseBiometrics() retornando false (firma tipada; la detección real de hardware/expo-local-authentication se completa en TASK-05). AuthProvider ya exponía enableBiometricAfterLogin/declineBiometricOptIn (sin cambios). npx tsc --noEmit pasa en verde. Cero any/TouchableOpacity/FlatList/Expo Router. SIGUIENTE: TASK-05 — instalar expo-local-authentication, plugins en app.json, implementar biometricService real, completar enableBiometricAfterLogin/unlockWithBiometrics en AuthProvider, BiometricUnlockScreen con auto-prompt + fallback a credenciales, y cablear opt-in real en LoginScreen."
+  "agent_notes": "TASK-05 COMPLETADA (2026-08-29): Instalado expo-local-authentication@~57.0.2 con npx expo install. app.json: plugins expo-local-authentication (faceIDPermission institucional) y expo-secure-store (configureAndroidBackup true + faceIDPermission), ios.config.usesNonExemptEncryption false. biometricService.ts implementado real sobre expo-local-authentication: getBiometricAvailability (hasHardwareAsync+isEnrolledAsync), canUseBiometrics, authenticateToUnlock/authenticateWithResult (mapea errores: not_enrolled/not_available/lockout/authentication_failed → razón específica; user_cancel/system_cancel/user_fallback → 'fallback'), confirmBiometricOptIn (opt-in con disableDeviceFallback true, biométrico strong). AuthProvider: bootstrap valida ahora JWT+flag+hardware+enrolled antes de needs_biometric (spec §5.1); unlockWithBiometrics ejecuta authenticateWithResult y solo pasa a authenticated si success (fallo permanece en needs_biometric para fallback de credenciales); enableBiometricAfterLogin ejecuta confirmBiometricOptIn y persiste biometric_enabled según success/false sin revertir el login (spec §5.2). BiometricUnlockScreen: auto-prompt una sola vez al montar (useRef) + botón Desbloquear (unlockWithBiometrics) + 'Usar correo y contraseña' (signOut limpia sesión y va a Login). LoginScreen conserva cableado real: tras signIn exitoso consulta canUseBiometrics real y muestra opt-in 'Usar Face ID / huella' (enableBiometricAfterLogin) / 'Ahora no' (declineBiometricOptIn). useAuth sin cambios (interfaz estable). Cero .swift/.kt/Info.plist editados. npx tsc --noEmit pasa en verde. SIGUIENTE: TASK-06 — instalar y configurar ESLint (eslint + @typescript-eslint + eslint-plugin-react(-hooks)), scripts lint/typecheck, correr arnés, cerrar Fase 1 para Revisor/Tester."
 }
