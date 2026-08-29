@@ -95,12 +95,31 @@
 - Cierre: TASK-03 marcada `- [x]` / `Status: COMPLETED` en `spec/features/auth-biometric/task.md`.
 - Lista para iniciar TASK-04 (LoginScreen institucional).
 
+### 2026-08-29 — TASK-04 (Agente Trabajador)
+
+- `src/components/ui/InstitutionalText.tsx`: wrapper de `Text` con `variant` `regular|bold` (Lato / Lato-Bold).
+- `src/components/ui/Button.tsx`: compound `Button` + `ButtonText`, **solo `Pressable`** (cero `TouchableOpacity`). Variantes `primary` (`bg-guinda`, texto `superficie`) y `secondary` (`bg-superficie`, borde guinda, texto `guinda`). `disabled` → `opacity-40`. `accessibilityRole="button"`.
+- `src/components/ui/TextField.tsx`: `label` + `TextInput` NativeWind (fondo `superficie`, borde `texto-suave`, `focus:border-guinda`) + `errorLabel` opcional en `text-error`.
+- `src/features/auth/biometricService.ts`: stub tipado `getBiometricAvailability()`/`canUseBiometrics()` que retorna `false` (firma lista; la detección real de hardware con `expo-local-authentication` es TASK-05).
+- `src/screens/auth/LoginScreen.tsx`: formulario institucional completo — validación local de email (`EMAIL_PATTERN`) y password no vacía; botón disabled si inválido o en vuelo (`idle|submitting|offering_biometrics`); errores de dominio institucionales (400/401/403, red, `mfaRequired`, `user.active===false`) leyendo `error.message` de `AuthDomainError` (sin importar `api.ts`, fuera de `allowed_files`); bloque opt-in biométrico «¿Usar Face ID / huella?» con «Usar Face ID / huella» (`enableBiometricAfterLogin`) y «Ahora no» (`declineBiometricOptIn`), visible solo si `canUseBiometrics()`; `KeyboardAvoidingView`+`ScrollView`; copy formal; strings dentro de `<Text>`; ternarios/`!!` sin falsy `&&`.
+- `AuthProvider` no requirió cambios (ya exponía `enableBiometricAfterLogin`/`declineBiometricOptIn`). Sin tocar `api.ts` (fuera de `allowed_files`).
+- **Arnés:** `npx tsc --noEmit` → pasa sin errores. Cero `any` / `TouchableOpacity` / `FlatList` / Expo Router. ESLint sigue pendiente (TASK-06).
+- `spec/features/auth-biometric/task.md`: TASK-04 marcada `- [x]` / `Status: COMPLETED`.
+- `progress/current-task.json` → `active_task: TASK-05`, `status: TODO`.
+
+### 2026-08-29 — TASK-04 APROBADA por el Humano
+
+- **Validación:** el Tester Visual Humano compiló y validó TASK-04 con éxito en **Android e iOS** (marca Lato + guinda, formulario email/password, validación, mensajes de error institucionales y botón «Ingresar» correctos).
+- Cierre: TASK-04 confirmada `COMPLETED`.
+- Lista para iniciar TASK-05 (biometría: `expo-local-authentication` + plugins + unlock + opt-in real). Nota: el bloque opt-in aún no aparece porque `canUseBiometrics()` es stub (`false`) hasta TASK-05.
+
 ### Pendiente
 
 - [x] TASK-01 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
 - [x] TASK-02 — Agente Trabajador ✅ (pendiente de validación visual/typing por el Humano)
 - [x] TASK-03 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
-- [ ] TASK-04…06 — Agente Trabajador
+- [x] TASK-04 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
+- [ ] TASK-05, TASK-06 — Agente Trabajador
 - [ ] Auditoría arnés — Agente Revisor
 - [ ] Validación visual + Face ID en dispositivo físico — Tester Visual Humano
 - [ ] UI de Login Híbrido completada (bloqueada hasta handoff del Trabajador + Revisor)

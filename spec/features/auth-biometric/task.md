@@ -128,19 +128,19 @@ Reglas absolutas del Trabajador:
 
 ## TASK-04 — LoginScreen institucional
 
-**Status:** TODO
+**Status:** COMPLETED ✅ (2026-08-29, listo para Tester Visual Humano)
 **assigned_role:** Trabajador
 
 **Objetivo:** Formulario email/password con marca, validación, errores de dominio (401, red, MFA, inactivo).
 
 **Pasos**
 
-- [ ] `src/components/ui/Button.tsx` (compound `Button` + `ButtonText`), `TextField.tsx`, `InstitutionalText.tsx`. Solo `Pressable`. NativeWind + tokens.
-- [ ] Implementar `LoginScreen` según spec §5.2 y §6 y plan §5.1.
-- [ ] Validación local email/password. Botón disabled si inválido o pending.
-- [ ] Conectar `signIn`. Mensajes institucionales para 400, 401, red, `mfaRequired`, `active === false`.
-- [ ] Opt-in biométrico: UI de «¿Usar Face ID / huella?» y «Ahora no» visible solo si el servicio reporta hardware+enrolled. La llamada real a `authenticateAsync` se completa en TASK-05; aquí puede quedar el callback cableado a un no-op tipado o a la función ya exportada si TASK-05 se adelanta solo el service — **preferir** dejar el botón llamando `enableBiometricAfterLogin` que TASK-05 implementará. Si el service aún no existe, extraer la firma en un stub en `biometricService.ts` (único extra permitido) y terminarlo en TASK-05.
-- [ ] Reset de stack al autenticar (lo provee RootNavigator).
+- [x] `src/components/ui/Button.tsx` (compound `Button` + `ButtonText`), `TextField.tsx`, `InstitutionalText.tsx`. Solo `Pressable`. NativeWind + tokens.
+- [x] Implementar `LoginScreen` según spec §5.2 y §6 y plan §5.1.
+- [x] Validación local email/password. Botón disabled si inválido o pending.
+- [x] Conectar `signIn`. Mensajes institucionales para 400, 401, red, `mfaRequired`, `active === false`.
+- [x] Opt-in biométrico: UI de «¿Usar Face ID / huella?» y «Ahora no» visible solo si el servicio reporta hardware+enrolled. La llamada real a `authenticateAsync` se completa en TASK-05; en TASK-04 el botón queda cableado a `enableBiometricAfterLogin` / `declineBiometricOptIn`; se creó `biometricService.ts` (firma stub `getBiometricAvailability`/`canUseBiometrics`) que TASK-05 implementará.
+- [x] Reset de stack al autenticar (lo provee RootNavigator).
 
 **allowed_files**
 
