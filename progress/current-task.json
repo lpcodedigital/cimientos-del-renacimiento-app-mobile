@@ -8,30 +8,26 @@
     "task_file": "spec/features/auth-biometric/task.md"
   },
   "active_task": {
-    "id": "TASK-03",
-    "description": "AuthProvider y Native Stack. Sesión + navegación Auth | App. Home placeholder.",
-    "status": "IN_PROGRESS",
+    "id": "TASK-04",
+    "description": "LoginScreen institucional. Formulario email/password con marca, validación, errores de dominio.",
+    "status": "TODO",
     "assigned_role": "Trabajador",
     "allowed_files_to_edit": [
-      "package.json",
-      "lockfile",
-      "App.tsx",
-      "src/features/auth/AuthProvider.tsx",
-      "src/features/auth/useAuth.ts",
-      "src/navigation/types.ts",
-      "src/navigation/RootNavigator.tsx",
-      "src/screens/app/HomePlaceholderScreen.tsx",
+      "src/components/ui/Button.tsx",
+      "src/components/ui/TextField.tsx",
+      "src/components/ui/InstitutionalText.tsx",
       "src/screens/auth/LoginScreen.tsx",
-      "src/screens/auth/BiometricUnlockScreen.tsx"
+      "src/features/auth/AuthProvider.tsx",
+      "src/features/auth/biometricService.ts"
     ]
   },
   "harness_status": {
-    "last_run": "2026-08-29 (TASK-02 completada por Trabajador)",
+    "last_run": "2026-08-29 (TASK-03 completada por Trabajador)",
     "linter_passed": false,
     "typecheck_passed": true,
     "bundling_passed_android": true,
     "bundling_passed_ios": true,
     "blockers_or_errors": "ESLint aún no configurado (corresponde a TASK-06). tsc --noEmit pasa en verde."
   },
-  "agent_notes": "TASK-02 COMPLETADA (2026-08-29): expo-secure-store@~57.0.2, axios@^1.20.0, @tanstack/react-query@^5.102.8 instalados. Creados src/features/auth/dto.ts (AuthRequestDTO/AuthBasicUserResponseDTO/AuthResponseDTO, cero any), src/features/auth/api.ts (loginRequest con errores de dominio tipados AuthDomainError: invalid_credentials/server_unreachable/mfa_required/account_inactive), src/features/auth/tokenStore.ts (claves jwt/expires_at/user_snapshot/biometric_enabled, WHEN_UNLOCKED_THIS_DEVICE_ONLY, no persiste password, parse fallido => limpia), src/lib/http/axiosClient.ts (baseURL EXPO_PUBLIC_API_URL, timeout 15s, interceptor Bearer desde token en memoria) y .env.example (placeholder EXPO_PUBLIC_API_URL). npx expo install añadió plugin expo-secure-store a app.json (esperado). tsc --noEmit pasa; ESLint se difiere a TASK-06. Listo para que el Humano pruebe Android/iOS (no hay UI de login aún; son DTOs/cliente HTTP/persistencia). SIGUIENTE: TASK-03 — npx expo install @react-navigation/native @react-navigation/native-stack react-native-screens, AuthProvider+useAuth, navigation/types.ts+RootNavigator.tsx, HomePlaceholderScreen, stubs LoginScreen/BiometricUnlockScreen, App.tsx providers→RootNavigator."
+  "agent_notes": "TASK-03 COMPLETADA (2026-08-29): instalados @react-navigation/native@^7.3.18, @react-navigation/native-stack@^7.18.10, react-native-screens@~4.26.0 vía npx expo install. Creados src/navigation/types.ts (AuthStackParamList Login|BiometricUnlock, AppStackParamList HomePlaceholder, RootStackParamList Auth|App), src/navigation/RootNavigator.tsx (un solo NavigationContainer con tema bg-fondo; si status===authenticated monta AppStack con header nativo guinda/título INICIO/Lato Bold; de lo contrario AuthStack con headerShown:false; initialRouteName = BiometricUnlock si needs_biometric, Login si unauthenticated; bootstrapping => null), src/features/auth/AuthProvider.tsx (AuthStatus bootstrapping|unauthenticated|needs_biometric|authenticated, bootstrap via loadSession+isSessionVigente+getBiometricEnabled, signIn/unlockWithBiometrics/signOut actualizan SecureStore y setAuthToken del axiosClient) y src/features/auth/useAuth.ts (hook consumidor). HomePlaceholderScreen: saludo user.name + copy radar + Cerrar sesión. Stubs institucionales LoginScreen y BiometricUnlockScreen (UI final en TASK-04/05). App.tsx: QueryClientProvider + AuthProvider + RootNavigator + StatusBar. npx tsc --noEmit pasa en verde. Cero any/TouchableOpacity/FlatList/Expo Router. Nota: en TASK-03 el desbloqueo biométrico solo confirma sesión vigente (la autenticación nativa expo-local-authentication se completa en TASK-05). SIGUIENTE: TASK-04 — componentes ui (Button/ButtonText, TextField, InstitutionalText) + LoginScreen con validación y errores de dominio + opt-in biométrico (stub biometricService)."
 }

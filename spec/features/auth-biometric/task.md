@@ -95,19 +95,19 @@ Reglas absolutas del Trabajador:
 
 ## TASK-03 — AuthProvider y Native Stack
 
-**Status:** TODO
+**Status:** COMPLETED ✅ (2026-08-29, listo para Tester Visual Humano)
 **assigned_role:** Trabajador
 
 **Objetivo:** Sesión + navegación Auth | App. Home placeholder. Sin formulario de login pulido (puede haber stub).
 
 **Pasos**
 
-- [ ] `npx expo install @react-navigation/native @react-navigation/native-stack react-native-screens`.
-- [ ] Implementar `src/features/auth/AuthProvider.tsx` + `src/features/auth/useAuth.ts` según `plan.md` §4.5. Montar `QueryClientProvider` en `App.tsx`.
-- [ ] `src/navigation/types.ts` + `src/navigation/RootNavigator.tsx`. Un `NavigationContainer`. Header nativo institucional en App; `headerShown: false` en Auth.
-- [ ] `src/screens/app/HomePlaceholderScreen.tsx`: saludo + «Cerrar sesión» + copy de radar aplazado.
-- [ ] Stub mínimo de `LoginScreen` / `BiometricUnlockScreen` (pantalla vacía institucional) para que el stack compile. UI final es TASK-04 / TASK-05.
-- [ ] Cablear `App.tsx`: fonts → providers → `RootNavigator`.
+- [x] `npx expo install @react-navigation/native @react-navigation/native-stack react-native-screens`.
+- [x] Implementar `src/features/auth/AuthProvider.tsx` + `src/features/auth/useAuth.ts` según `plan.md` §4.5. Montar `QueryClientProvider` en `App.tsx`.
+- [x] `src/navigation/types.ts` + `src/navigation/RootNavigator.tsx`. Un `NavigationContainer`. Header nativo institucional en App; `headerShown: false` en Auth.
+- [x] `src/screens/app/HomePlaceholderScreen.tsx`: saludo + «Cerrar sesión» + copy de radar aplazado.
+- [x] Stub mínimo de `LoginScreen` / `BiometricUnlockScreen` (pantalla vacía institucional) para que el stack compile. UI final es TASK-04 / TASK-05.
+- [x] Cablear `App.tsx`: fonts → providers → `RootNavigator`.
 
 **allowed_files**
 

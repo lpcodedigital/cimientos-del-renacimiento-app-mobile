@@ -75,11 +75,32 @@
 - **Arnés:** `npx tsc --noEmit` → pasa sin errores. ESLint no aplica aún (se configura en TASK-06); verificación de `any`/`TouchableOpacity`/`FlatList`/Expo Router = cero en los archivos tocados.
 - `progress/current-task.json` → `active_task: TASK-03`, `status: IN_PROGRESS`, `harness_status.typecheck_passed: true`.
 
+### 2026-08-29 — TASK-03 (Agente Trabajador)
+
+- Instalado `@react-navigation/native@^7.3.18`, `@react-navigation/native-stack@^7.18.10`, `react-native-screens@~4.26.0` vía `npx expo install` (peers documentados de React Navigation 7; cero Expo Router).
+- `src/navigation/types.ts`: `AuthStackParamList` (Login, BiometricUnlock), `AppStackParamList` (HomePlaceholder), `RootStackParamList` (Auth, App).
+- `src/features/auth/AuthProvider.tsx`: sesión con `AuthStatus` `bootstrapping | unauthenticated | needs_biometric | authenticated`. Bootstrap con `loadSession` + validación de vigencia (`expiresAt`) + `getBiometricEnabled`; si sesión vencida→limpia y `unauthenticated`. Acciones `signIn`, `unlockWithBiometrics`, `declineBiometricOptIn`, `enableBiometricAfterLogin`, `signOut` que mantienen en sincronía SecureStore y el token en memoria del `axiosClient` (`setAuthToken`).
+- `src/features/auth/useAuth.ts`: hook consumidor del contexto.
+- `src/navigation/RootNavigator.tsx`: un solo `NavigationContainer` con tema `bg-fondo`; `status === authenticated` → AppStack (header nativo guinda, título «INICIO», Lato Bold); en caso contrario AuthStack con `headerShown: false` y `initialRouteName = BiometricUnlock` si `needs_biometric`, `Login` si `unauthenticated`; `bootstrapping` → `null` (splash). Cambio de raíz desmonta el stack contrario.
+- `src/screens/app/HomePlaceholderScreen.tsx`: saludo con `user.name`, copy «Radar territorial disponible en la siguiente fase» y botón «Cerrar sesión».
+- `src/screens/auth/LoginScreen.tsx` / `BiometricUnlockScreen.tsx`: stubs institucionales mínimos (UI final en TASK-04/05) para que el stack compile.
+- `App.tsx`: cableado `QueryClientProvider` (@tanstack/react-query) → `AuthProvider` → `RootNavigator` + `StatusBar`.
+- **Arnés:** `npx tsc --noEmit` → pasa sin errores. Cero `any` / `TouchableOpacity` / `FlatList` / Expo Router en los archivos tocados. ESLint se configura en TASK-06.
+- **Nota TASK-03:** el desbloqueo biométrico solo valida que haya sesión vigente (la autenticación nativa `expo-local-authentication` se completa en TASK-05).
+- `progress/current-task.json` → `active_task: TASK-04`, `status: TODO`, `harness_status.typecheck_passed: true`.
+
+### 2026-08-29 — TASK-03 APROBADA por el Humano
+
+- **Validación:** el Tester Visual Humano compiló y validó TASK-03 con éxito en **Android e iOS** (sesión + navegación Auth | App + Home placeholder con header nativo institucional correctos).
+- Cierre: TASK-03 marcada `- [x]` / `Status: COMPLETED` en `spec/features/auth-biometric/task.md`.
+- Lista para iniciar TASK-04 (LoginScreen institucional).
+
 ### Pendiente
 
 - [x] TASK-01 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
 - [x] TASK-02 — Agente Trabajador ✅ (pendiente de validación visual/typing por el Humano)
-- [ ] TASK-03…06 — Agente Trabajador
+- [x] TASK-03 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
+- [ ] TASK-04…06 — Agente Trabajador
 - [ ] Auditoría arnés — Agente Revisor
 - [ ] Validación visual + Face ID en dispositivo físico — Tester Visual Humano
 - [ ] UI de Login Híbrido completada (bloqueada hasta handoff del Trabajador + Revisor)
