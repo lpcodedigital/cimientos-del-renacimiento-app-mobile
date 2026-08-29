@@ -57,10 +57,29 @@
   - Assets `Lato-Bold.ttf` / `Lato-Regular.ttf` incluidos. Runtime de Reanimated + worklets (peer de NativeWind v5) empaquetado.
 - **Estado:** la configuración NativeWind v5 (previo) era correcta y se mantiene; el único fix adicional fue instalar `babel-preset-expo`. Listo para validación visual por el Humano (`npx expo run:ios` / `run:android` / `expo start -c`).
 
+### 2026-08-29 — TASK-01 APROBADA por el Humano
+
+- **Validación:** el Tester Visual Humano compiló y validó TASK-01 con éxito en **Android e iOS** (Lato + paleta institucional + placeholder «Gabinete Móvil» correctos).
+- Cierre: marcadas todas las checkboxes `- [x]` de TASK-01 en `spec/features/auth-biometric/task.md`; `Status: COMPLETED`.
+- `progress/current-task.json` → `active_task: TASK-02` `status: IN_PROGRESS`, `harness_status` con bundling OK en ambas plataformas y notas actualizadas.
+
+### 2026-08-29 — TASK-02 (Agente Trabajador)
+
+- Instalado `expo-secure-store@~57.0.2`, `axios@^1.20.0`, `@tanstack/react-query@^5.102.8` vía `npx expo install` (config plugin de `expo-secure-store` añadido a `app.json` por el propio comando).
+- `src/features/auth/dto.ts`: DTOs espejo del contrato Spring Boot (cero `any`): `AuthRequestDTO`, `AuthBasicUserResponseDTO` (`idUser`, `name`, `email`, `active`, `role`, `isFirstLogin`), `AuthResponseDTO` (`token`, `expiresAt: string` ISO, `user`, `mfaRequired: boolean`).
+- `src/lib/http/axiosClient.ts`: `axiosClient` con `baseURL: process.env.EXPO_PUBLIC_API_URL`, `timeout: 15000`, `Content-Type: application/json`, interceptor request Bearer desde módulo de token en memoria (`setAuthToken`/`getAuthToken`). No loguea tokens/payloads.
+- `src/features/auth/tokenStore.ts`: claves `jwt`, `expires_at`, `user_snapshot`, `biometric_enabled`; opciones `{ keychainAccessible: WHEN_UNLOCKED_THIS_DEVICE_ONLY }`; `saveSession`/`loadSession`/`clearSession`/`setBiometricEnabled`/`getBiometricEnabled`. No persiste password. Parse de `user_snapshot` fallido → trata como sesión inválida y limpia.
+- `src/features/auth/api.ts`: `loginRequest(payload): Promise<AuthResponseDTO>` mapeando 400/401/403 → `invalid_credentials`, 5xx/timeout/red → `server_unreachable`, 200+`mfaRequired` → `mfa_required` (bloqueante, no persiste), 200+`user.active===false` → `account_inactive`. Errores de dominio tipados (`AuthDomainError`), cero `any`.
+- `.env.example` con `EXPO_PUBLIC_API_URL=` (placeholder). El Humano coloca la URL real.
+- `npx expo install` añadió el plugin `expo-secure-store` a `app.json` (esperado; plugins biométricos completos serán TASK-05).
+- **Arnés:** `npx tsc --noEmit` → pasa sin errores. ESLint no aplica aún (se configura en TASK-06); verificación de `any`/`TouchableOpacity`/`FlatList`/Expo Router = cero en los archivos tocados.
+- `progress/current-task.json` → `active_task: TASK-03`, `status: IN_PROGRESS`, `harness_status.typecheck_passed: true`.
+
 ### Pendiente
 
-- [x] TASK-01 — Agente Trabajador
-- [ ] TASK-02…06 — Agente Trabajador
+- [x] TASK-01 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
+- [x] TASK-02 — Agente Trabajador ✅ (pendiente de validación visual/typing por el Humano)
+- [ ] TASK-03…06 — Agente Trabajador
 - [ ] Auditoría arnés — Agente Revisor
 - [ ] Validación visual + Face ID en dispositivo físico — Tester Visual Humano
 - [ ] UI de Login Híbrido completada (bloqueada hasta handoff del Trabajador + Revisor)

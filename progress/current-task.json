@@ -8,27 +8,30 @@
     "task_file": "spec/features/auth-biometric/task.md"
   },
   "active_task": {
-    "id": "TASK-02",
-    "description": "DTOs, Axios y SecureStore. Contrato Spring Boot tipado + persistencia segura. Sin UI de login.",
-    "status": "TODO",
+    "id": "TASK-03",
+    "description": "AuthProvider y Native Stack. Sesión + navegación Auth | App. Home placeholder.",
+    "status": "IN_PROGRESS",
     "assigned_role": "Trabajador",
     "allowed_files_to_edit": [
       "package.json",
       "lockfile",
-      "src/features/auth/dto.ts",
-      "src/features/auth/api.ts",
-      "src/features/auth/tokenStore.ts",
-      "src/lib/http/axiosClient.ts",
-      ".env.example"
+      "App.tsx",
+      "src/features/auth/AuthProvider.tsx",
+      "src/features/auth/useAuth.ts",
+      "src/navigation/types.ts",
+      "src/navigation/RootNavigator.tsx",
+      "src/screens/app/HomePlaceholderScreen.tsx",
+      "src/screens/auth/LoginScreen.tsx",
+      "src/screens/auth/BiometricUnlockScreen.tsx"
     ]
   },
   "harness_status": {
-    "last_run": "2026-08-29 (TASK-01 hotfix babel-preset-expo)",
+    "last_run": "2026-08-29 (TASK-02 completada por Trabajador)",
     "linter_passed": false,
     "typecheck_passed": true,
     "bundling_passed_android": true,
     "bundling_passed_ios": true,
-    "blockers_or_errors": ""
+    "blockers_or_errors": "ESLint aún no configurado (corresponde a TASK-06). tsc --noEmit pasa en verde."
   },
-  "agent_notes": "TASK-01 RESUELTA y BUNDLE VERIFICADO (2026-08-29). CRITICO: el crash 'Cannot read properties of undefined (reading transformFile)' en metro/src/Bundler.js:55 era ENGAÑOSO. CAUSA RAIZ REAL: faltaba el paquete 'babel-preset-expo' (Cannot find module 'babel-preset-expo'). Sin el preset, el Transformer de Metro lanzaba MODULE_NOT_FOUND al construir; el .catch del constructor del Bundler tragaba el error dejando _transformer=undefined, y el siguiente transformFile crasheaba. Se instaló babel-preset-expo@57.0.9 via npx expo install. CONTEXTO: la migración previa a NativeWind v5 era correcta y se mantiene (v4 + css-interop 0.2.x rompen Metro 0.84/Expo SDK 57). VERIFICADO: npx tsc --noEmit pasa; CI=1 npx expo export --platform android (1130 modulos) e --platform ios (1132 modulos) compilan OK con Lato assets. Pendiente: validación visual final con npx expo run:ios/android o npx expo start -c (Humano). Prohibido nativo a mano y solo Humano ejecuta expo start/run. Siguiente: instalar expo-secure-store axios @tanstack/react-query."
+  "agent_notes": "TASK-02 COMPLETADA (2026-08-29): expo-secure-store@~57.0.2, axios@^1.20.0, @tanstack/react-query@^5.102.8 instalados. Creados src/features/auth/dto.ts (AuthRequestDTO/AuthBasicUserResponseDTO/AuthResponseDTO, cero any), src/features/auth/api.ts (loginRequest con errores de dominio tipados AuthDomainError: invalid_credentials/server_unreachable/mfa_required/account_inactive), src/features/auth/tokenStore.ts (claves jwt/expires_at/user_snapshot/biometric_enabled, WHEN_UNLOCKED_THIS_DEVICE_ONLY, no persiste password, parse fallido => limpia), src/lib/http/axiosClient.ts (baseURL EXPO_PUBLIC_API_URL, timeout 15s, interceptor Bearer desde token en memoria) y .env.example (placeholder EXPO_PUBLIC_API_URL). npx expo install añadió plugin expo-secure-store a app.json (esperado). tsc --noEmit pasa; ESLint se difiere a TASK-06. Listo para que el Humano pruebe Android/iOS (no hay UI de login aún; son DTOs/cliente HTTP/persistencia). SIGUIENTE: TASK-03 — npx expo install @react-navigation/native @react-navigation/native-stack react-native-screens, AuthProvider+useAuth, navigation/types.ts+RootNavigator.tsx, HomePlaceholderScreen, stubs LoginScreen/BiometricUnlockScreen, App.tsx providers→RootNavigator."
 }

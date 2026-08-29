@@ -24,21 +24,23 @@ Reglas absolutas del Trabajador:
 
 ## TASK-01 — Bootstrap Expo, NativeWind, Lato y paleta
 
-**Status:** IN_PROGRESS
+**Status:** COMPLETED ✅ (validado por Humano en Android + iOS, 2026-08-29)
 **assigned_role:** Trabajador
 
-**Objetivo:** Proyecto Expo SDK 57 en la raíz, TypeScript estricto, NativeWind v4, tokens institucionales, fuentes Lato locales. Sin pantallas de negocio.
+**Objetivo:** Proyecto Expo SDK 57 en la raíz, TypeScript estricto, NativeWind, tokens institucionales, fuentes Lato locales. Sin pantallas de negocio.
+
+> Nota de implementación: se migró a **NativeWind v5** (5.0.0-preview.4) + **react-native-css@3.0.7** + **Tailwind v4 (CSS-first)**: v4/css-interop 0.2.x no soporta Metro 0.84/Expo SDK 57. Desvía la pin `v4` original del plan (era pre-release al redactarlo); decisión aprobada por Orquestador/Humano y registrada en `progress/history.md`. Se instaló además `babel-preset-expo` (causa raíz del crash de Metro).
 
 **Pasos**
 
-- [ ] Crear el app con `npx create-expo-app@latest . --template blank-typescript` (o copia segura desde `/tmp` si el dir no vacío lo bloquea). No usar template `default`. No borrar `/spec`, `/progress`, `AGENTS.md`, `opencode.json`, `.agents`.
-- [ ] Forzar `strict` + `noImplicitAny` y alias `@/*` → `./src/*` en `tsconfig.json`.
-- [ ] Instalar NativeWind v4 y peers: `nativewind`, `react-native-reanimated`, `react-native-safe-area-context`, `tailwindcss@^3.4.17` (dev). Configurar `babel.config.js`, `metro.config.js`, `global.css`, `tailwind.config.js` (colors + fontFamily de la spec), `nativewind-env.d.ts`.
-- [ ] Instalar `expo-font`, `expo-splash-screen`. Colocar `assets/fonts/Lato-Regular.ttf` y `assets/fonts/Lato-Bold.ttf` (SIL OFL).
-- [ ] Crear `src/theme/tokens.ts` con hex y nombres de familia. Extender Tailwind con esos tokens. Cero UI de login todavía.
-- [ ] `App.tsx`: `useFonts` Lato + `SplashScreen.preventAutoHideAsync` / hide. Placeholder mínimo institucional (`bg-fondo`, texto Lato, copy «Gabinete Móvil») para verificar marca. Importar `./global.css`.
-- [ ] `app.json`: nombre «Gabinete Móvil», slug `cimientos-del-renacimiento`, `web.bundler: metro`. Aún sin plugins biométricos (TASK-05).
-- [ ] Scripts `lint` y `typecheck` pueden quedar para TASK-06; no bloquear aquí.
+- [x] Crear el app con `npx create-expo-app@latest . --template blank-typescript` (o copia segura desde `/tmp` si el dir no vacío lo bloquea). No usar template `default`. No borrar `/spec`, `/progress`, `AGENTS.md`, `opencode.json`, `.agents`.
+- [x] Forzar `strict` + `noImplicitAny` y alias `@/*` → `./src/*` en `tsconfig.json`.
+- [x] Instalar NativeWind y peers: `nativewind@5.0.0-preview.4`, `react-native-reanimated`, `react-native-safe-area-context`, `react-native-css`, `tailwindcss@^4.3.3` (dev). Configurar `babel.config.js`, `metro.config.js`, `global.css` (layers Tailwind v4 + `@theme` tokens), `postcss.config.mjs`, `nativewind-env.d.ts` (referencia `react-native-css/types`).
+- [x] Instalar `expo-font`, `expo-splash-screen`. Colocar `assets/fonts/Lato-Regular.ttf` y `assets/fonts/Lato-Bold.ttf` (SIL OFL).
+- [x] Crear `src/theme/tokens.ts` con hex y nombres de familia. Tokens expuestos a Tailwind vía `@theme` en `global.css`. Cero UI de login todavía.
+- [x] `App.tsx`: `useFonts` Lato + `SplashScreen.preventAutoHideAsync` / hide. Placeholder mínimo institucional (`bg-fondo`, texto Lato, copy «Gabinete Móvil») para verificar marca. Importar `./global.css`.
+- [x] `app.json`: nombre «Gabinete Móvil», slug `cimientos-del-renacimiento`, `web.bundler: metro`. Aún sin plugins biométricos (TASK-05).
+- [x] Scripts `lint` y `typecheck` pueden quedar para TASK-06; no bloquear aquí.
 
 **allowed_files**
 
@@ -63,19 +65,19 @@ Reglas absolutas del Trabajador:
 
 ## TASK-02 — DTOs, Axios y SecureStore
 
-**Status:** TODO
+**Status:** COMPLETED ✅ (2026-08-29, listo para Tester Visual Humano)
 **assigned_role:** Trabajador
 
 **Objetivo:** Contrato Spring Boot tipado + persistencia segura. Sin UI de login.
 
 **Pasos**
 
-- [ ] `npx expo install expo-secure-store axios @tanstack/react-query`.
-- [ ] Crear `src/features/auth/dto.ts` espejo exacto: `AuthRequestDTO`, `AuthBasicUserResponseDTO`, `AuthResponseDTO` (`mfaRequired: boolean`, `expiresAt: string`).
-- [ ] Crear `src/lib/http/axiosClient.ts` (`baseURL` de `EXPO_PUBLIC_API_URL`, timeout 15s, interceptor Bearer desde un getter inyectable / módulo de token en memoria).
-- [ ] Crear `src/features/auth/tokenStore.ts` con claves y opciones de `plan.md` §4.2.
-- [ ] Crear `src/features/auth/api.ts` con `loginRequest(payload: AuthRequestDTO): Promise<AuthResponseDTO>`. Mapear 400/401/5xx a errores de dominio tipados (no `any`).
-- [ ] Crear `.env.example` con `EXPO_PUBLIC_API_URL=`.
+- [x] `npx expo install expo-secure-store axios @tanstack/react-query`.
+- [x] Crear `src/features/auth/dto.ts` espejo exacto: `AuthRequestDTO`, `AuthBasicUserResponseDTO`, `AuthResponseDTO` (`mfaRequired: boolean`, `expiresAt: string`).
+- [x] Crear `src/lib/http/axiosClient.ts` (`baseURL` de `EXPO_PUBLIC_API_URL`, timeout 15s, interceptor Bearer desde un getter inyectable / módulo de token en memoria).
+- [x] Crear `src/features/auth/tokenStore.ts` con claves y opciones de `plan.md` §4.2.
+- [x] Crear `src/features/auth/api.ts` con `loginRequest(payload: AuthRequestDTO): Promise<AuthResponseDTO>`. Mapear 400/401/5xx a errores de dominio tipados (no `any`).
+- [x] Crear `.env.example` con `EXPO_PUBLIC_API_URL=`.
 
 **allowed_files**
 

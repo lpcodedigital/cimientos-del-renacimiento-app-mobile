@@ -28,7 +28,7 @@ Confirma que has procesado las reglas absolutas, la tipografía estricta Lato y 
 
 Nota: Si tienes alguna duda sobre las APIs modernas de Expo SDK para redactar tu plan técnico, es OBLIGATORIO que utilices tu herramienta MCP context7 para consultar la documentación oficial.
 
-## INSTRUCCIONES PARA EL AGENTE TRABAJADOR (MODE BUILD)
+## INSTRUCCIONES PARA EL AGENTE TRABAJADOR TASK-01 (MODE BUILD)
 
 ## 2. ¿Qué decirle a DeepSeek? (Copia y pega este prompt)
 "Asume el rol de Agente Trabajador siguiendo las reglas absolutas de AGENTS.md.
@@ -58,6 +58,6 @@ Por favor:
 2. Corrige el problema en los archivos de configuración permitidos en TASK-01.
 3. Confírmame para volver a reiniciar la caché de Metro (`npx expo start -c`) y probar la compilación.
 
-## Instrucciones para continuar con la siguiente tarea
+## INSTRUCCIONES PARA LA SIGUIENTE TAREA TASK-02 (NEW SESSION - BUILD)
 
-"TASK-01 probada y validada en emulador con éxito. Marca TASK-01 como completada en task.md y procede a ejecutar TASK-02."
+En esta nueva sesion asume tu rol de trabajador segun @AGENTS.md . Sincroniza tu contexto leyendo unicamente estos archivos @progress/current-task.json y @spec/features/auth-biometric/task.md y revisa @spec/features/auth-biometric/spec.md (para conocer el contrato exacto de la API para los DTOs) (revisa brevemente el @spec/features/auth-biometric/plan.md si necesitas contxto de la arquitectura de la fase 1). Las TASK-01 de @spec/features/auth-biometric/task.md ya fue completada y validada en dispisitivos. Comienza y ejecuta unicamente con la TASK-02 desglosada en @spec/features/auth-biometric/task.md . Modifica solo los archivos permitidos. Una vez terminada la TASK-02 verifica con linter/Typescript, actualiza el estado correspondiente en @progress/current-task.json y avisame para realizar las pruebas en Android y iOS
