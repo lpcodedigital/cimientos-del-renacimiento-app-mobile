@@ -189,19 +189,19 @@ Reglas absolutas del Trabajador:
 
 ## TASK-06 — Arnés de control
 
-**Status:** TODO
+**Status:** COMPLETED ✅ (2026-08-29, listo para auditoría del Revisor)
 **assigned_role:** Trabajador (primera pasada) → Revisor (auditoría)
 
 **Objetivo:** ESLint + TypeCheck verdes. Cierre de Fase 1 para el Humano.
 
 **Pasos**
 
-- [ ] Instalar ESLint y plugins (`npx expo install --dev eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint-plugin-react eslint-plugin-react-hooks`). Configurar `eslint.config.js` o `.eslintrc` compatible con RN/TS. Activar `react-hooks` y preferir `react/jsx-no-leaked-render` si el plugin lo permite.
-- [ ] Scripts `lint` y `typecheck` en `package.json`.
-- [ ] Correr `npx eslint .` y `npx tsc --noEmit`. Corregir solo archivos ya tocados por TASK-01…05 (no refactors de alcance).
-- [ ] Verificar grep mental / búsqueda: cero `any`, cero `TouchableOpacity`, cero `FlatList`, cero imports de `expo-router`.
-- [ ] Actualizar `progress/current-task.json`: `harness_status`, notas. Dejar `active_task` en TASK-06 `status: READY_FOR_REVIEW`.
-- [ ] No ejecutar `npx expo start`.
+- [x] Instalar ESLint y plugins (`npx expo install --dev eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint-plugin-react eslint-plugin-react-hooks`). Configurar `eslint.config.js` o `.eslintrc` compatible con RN/TS. Activar `react-hooks` y preferir `react/jsx-no-leaked-render` si el plugin lo permite.
+- [x] Scripts `lint` y `typecheck` en `package.json`.
+- [x] Correr `npx eslint .` y `npx tsc --noEmit`. Corregir solo archivos ya tocados por TASK-01…05 (no refactors de alcance).
+- [x] Verificar grep mental / búsqueda: cero `any`, cero `TouchableOpacity`, cero `FlatList`, cero imports de `expo-router`.
+- [x] Actualizar `progress/current-task.json`: `harness_status`, notas. Dejar `active_task` en TASK-06 `status: READY_FOR_REVIEW`.
+- [x] No ejecutar `npx expo start`.
 
 **allowed_files**
 

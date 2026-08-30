@@ -76,3 +76,10 @@ la TASK-04 fue complepletada con exito, se valido en los dispositivos Android y 
 ## INSTRUCCIONES PARA LA SIGUIENTE TAREA TASK-05 (NEW SESSION - BUILD)
 
 En esta nueva sesion asume tu rol de trabajador segun @AGENTS.md . Sincroniza tu contexto leyendo unicamente estos archivos @progress/current-task.json y @spec/features/auth-biometric/task.md y revisa @spec/features/auth-biometric/spec.md (revisa brevemente el @spec/features/auth-biometric/plan.md si necesitas contexto de la arquitectura de la fase 1). Las TASK-04 de @spec/features/auth-biometric/task.md ya fue completada y validada en dispisitivos. Comienza y ejecuta unicamente con la TASK-04 desglosada en @spec/features/auth-biometric/task.md . Modifica solo los archivos permitidos. Una vez terminada la TASK-05 verifica con linter/Typescript, actualiza el estado correspondiente en @progress/current-task.json y avisame para realizar las pruebas en Android y iOS
+
+## INSTRUCCIONES PARA LA SIGUIENTE TAREA TASK-06 (NEW SESSION - BUILD)
+
+En esta nueva sesion asume tu rol de trabajador segun @AGENTS.md . Sincroniza tu contexto leyendo unicamente estos archivos @progress/current-task.json y @spec/features/auth-biometric/task.md y revisa @spec/features/auth-biometric/spec.md (revisa brevemente el @spec/features/auth-biometric/plan.md si necesitas contexto de la arquitectura de la fase 1). Las TASK-05 de @spec/features/auth-biometric/task.md ya fue completada y validada en dispisitivos. Comienza y ejecuta unicamente con la TASK-06 desglosada en @spec/features/auth-biometric/task.md . Modifica solo los archivos permitidos. Una vez terminada la TASK-06 verifica con linter/Typescript, actualiza el estado correspondiente en @progress/current-task.json y avisame para realizar las pruebas en Android y iOS
+
+## Actualizar el history.md
+la TASK-06 fue complepletada con exito, se valido en los dispositivos Android y iOS unicamente ahora actualiza el @progress/history.md 
