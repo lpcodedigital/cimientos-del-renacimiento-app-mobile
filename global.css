@@ -13,6 +13,22 @@
   --color-error: #8b1e1e;
   --color-superficie: #ffffff;
 
+  --color-auth-bg-top: #5a1320;
+  --color-auth-bg-mid: #3b0917;
+  --color-auth-bg-bottom: #290810;
+  --color-auth-crema: #edd6a8;
+  --color-auth-taupe: #a58571;
+  --color-auth-taupe-dim: #6c4a44;
+  --color-auth-dorado: #c9a854;
+  --color-auth-dorado-tenue: #8f693b;
+  --color-auth-surface: #471725;
+  --color-auth-surface-border: #7a3b48;
+  --color-auth-card-active: #45201b;
+  --color-auth-card-inactive: #331016;
+  --color-auth-gold-grad-start: #f5e5af;
+  --color-auth-gold-grad-end: #d9b563;
+  --color-auth-btn-text: #2d0a14;
+
   --font-lato: "Lato";
   --font-lato-bold: "Lato-Bold";
 }

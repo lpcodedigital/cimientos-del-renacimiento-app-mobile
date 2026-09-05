@@ -8,25 +8,25 @@
     "task_file": "spec/features/auth-ui-polish/task.md"
   },
   "active_task": {
-    "id": "TASK-01",
-    "description": "Tokens auth-* en global.css/tokens.ts + npx expo install expo-linear-gradient + verificación del asset del escudo.",
+    "id": "TASK-02",
+    "description": "Componentes UI del sistema auth oscuro: AuthScaffold, GoldButton, BiometricMethodCard, TextField dark.",
     "status": "TODO",
     "assigned_role": "Trabajador",
     "allowed_files_to_edit": [
-      "package.json",
-      "lockfile",
-      "global.css",
-      "src/theme/tokens.ts",
-      "progress/current-task.json"
+      "src/components/ui/AuthScaffold.tsx",
+      "src/components/ui/GoldButton.tsx",
+      "src/components/ui/BiometricMethodCard.tsx",
+      "src/components/ui/TextField.tsx"
     ]
   },
   "harness_status": {
-    "last_run": "2026-08-29 (cierre Fase 1; Fase 1.5a aún no ejecuta arnés propio)",
-    "linter_passed": true,
+    "last_run": "2026-09-04 (TASK-01 cerrada: typecheck en verde, validación del Humano recibida)",
+    "linter_passed": false,
     "typecheck_passed": true,
-    "bundling_passed_android": true,
-    "bundling_passed_ios": true,
-    "blockers_or_errors": "Ninguno heredado de Fase 1. BLOQUEANTE PARCIAL Fase 1.5a: el Humano debe colocar el escudo institucional en assets/images/escudo-yucatan.png antes de TASK-03 (si falta, el Trabajador usa placeholder del plan §2.4 y lo reporta)."
+    "typecheck_detail": "npx tsc --noEmit → salió en verde sin errores (exit 0) al cierre de TASK-01.",
+    "bundling_passed_android": null,
+    "bundling_passed_ios": null,
+    "blockers_or_errors": "Sin errores ni bloqueantes. ASSET RESUELTO: el Humano colocó assets/images/escudo-yucatan.png (se respeta el plan original §2.4: PNG @2x/@3x renderizado con Image de react-native). No queda decisión pendiente de asset para TASK-03."
   },
-  "agent_notes": "2026-09-04 — Orquestador (Lead Planner). Plan de Fase 1.5 APROBADO por el Humano. Decisiones cerradas: (1) orden 1.5a UI → 1.5b refactor; (2) Lato se mantiene (serif del mockup se aproxima con Lato Bold); (3) '¿Olvidaste tu contraseña?' = link informativo con Alert institucional (sin flujo de recuperación, mission.md §4); (4) arranques posteriores = auto-prompt nativo + botón 'INICIAR SESIÓN' de reintento; primer uso tras activar = manual obligatorio; (5) escudo institucional lo proporciona el Humano en assets/images/escudo-yucatan.png; (6) autorizada dependencia expo-linear-gradient (única nueva); (7) 'Volver' del Unlock = fallback que limpia sesión (semántica Fase 1). Artefactos escritos: enmienda roadmap.md (Fase 1.5 insertada, Fase 2 bloqueada hasta aprobar 1.5a+1.5b), enmienda tech-stack.md (§2.1 paleta auth-* con 15 tokens extraídos por muestreo de píxeles de los mockups, §gradientes expo-linear-gradient, §5 arquitectura Clean Architecture vigente desde 1.5b), reescritura completa de spec/features/auth-ui-polish/spec.md (tokens reales, flujo nuevo §5 con BiometricOptInScreen + primer uso manual, tabla de reglas superseded de Fase 1 §7, CA-01…CA-10), plan.md (máquina de estados con nuevo status biometric_opt_in + biometricUnlockMode auto/manual, componentes AuthScaffold/GoldButton/BiometricMethodCard/TextField dark, confirmBiometricOptIn + getSupportedBiometricMethods), task.md (TASK-01…06 con allowed_files). Hallazgos de baseline registrados en plan §1: campos muertos shouldOfferBiometricOptIn/biometricEnrollHint/dismissBiometricOptIn se eliminan en TASK-04; confirmBiometricOptIn no existe (se crea); caja 'Prueba local' se elimina de LoginScreen (demo login en api.ts NO se toca); clearSession() no borra biometric_enabled (se mantiene, habilita spec §5.3.2). SIGUIENTE: Agente Trabajador inicia TASK-01."
+  "agent_notes": "2026-09-04 — Orquestador (Lead Planner). Plan de Fase 1.5 APROBADO por el Humano. Decisiones cerradas: (1) orden 1.5a UI → 1.5b refactor; (2) Lato se mantiene (serif del mockup se aproxima con Lato Bold); (3) '¿Olvidaste tu contraseña?' = link informativo con Alert institucional (sin flujo de recuperación, mission.md §4); (4) arranques posteriores = auto-prompt nativo + botón 'INICIAR SESIÓN' de reintento; primer uso tras activar = manual obligatorio; (5) escudo institucional lo proporciona el Humano en assets/images/escudo-yucatan.png; (6) autorizada dependencia expo-linear-gradient (única nueva); (7) 'Volver' del Unlock = fallback que limpia sesión (semántica Fase 1). Artefactos: roadmap.md (Fase 1.5), tech-stack.md (§2.1 paleta auth-*, §gradientes), spec/plan/task de auth-ui-polish (TASK-01…06).\n\n2026-09-04 — Trabajador (TASK-01 EJECUTADA y luego APROBADA por el Humano): (1) expo-linear-gradient ~57.0.1 instalada vía 'npx expo install' (package.json + lockfile); (2) global.css: 15 tokens --color-auth-* dentro del @theme existente, sin tocar tokens de Fase 1 ni fuentes; (3) src/theme/tokens.ts: añadido authPalette (bgTop/bgMid/bgBottom/goldGradStart/goldGradEnd) + btnText '#2D0A14'; palette y fontFamily intactos; (4) npx tsc --noEmit → VERDE (exit 0); (5) task.md: TASK-01 'Status: COMPLETED'. Cierre de documento en spec/features/auth-ui-polish/task.md y actualización de progress/ history.md.\n\nASSET (consolidado, se respeta el plan original §2.4): el escudo institucional se usa como PNG — assets/images/escudo-yucatan.png ya lo colocó el Humano (con transparencia; se verifica si existen variantes @2x/@3x). TASK-03 lo renderizará con <Image> de react-native (resizeMode contain, accessibilityLabel 'Escudo del Gobierno del Estado de Yucatán'). El archivo escudo-yucatan.svg sigue presente en assets/images como fuente opcional del Humano, pero NO es el asset de consumo de la app.\n\nSIGUIENTE: TASK-02 (componentes UI) a ejecutar en NUEVA SESIÓN por el Agente Trabajador. El Humano autorizó en esta instancia únicamente marcar TASK-01 como completada y actualizar progress/; NO ejecutar TASK-02 aquí."
 }

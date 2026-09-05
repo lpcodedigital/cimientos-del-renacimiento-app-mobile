@@ -12,3 +12,12 @@ export const fontFamily = {
   lato: "Lato",
   "lato-bold": "Lato-Bold",
 } as const;
+
+export const authPalette = {
+  bgTop: "#5A1320",
+  bgMid: "#3B0917",
+  bgBottom: "#290810",
+  goldGradStart: "#F5E5AF",
+  goldGradEnd: "#D9B563",
+  btnText: "#2D0A14",
+} as const;

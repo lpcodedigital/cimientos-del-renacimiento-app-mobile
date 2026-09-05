@@ -157,6 +157,14 @@
 
 ## Fase 1.5a — Pulido UI/UX de Autenticación (auth-ui-polish)
 
+### 2026-09-04 — TASK-01 APROBADA por el Humano
+
+- **Validación:** artefactos de base (tokens + dependencia) comprobados por el Humano; TASK-01 marcada `COMPLETED`.
+- **Hecho:** `expo-linear-gradient@~57.0.1` instalada vía `npx expo install` (única dependencia nueva; `package.json` + lockfile). `global.css`: 15 tokens `--color-auth-*` dentro del `@theme` existente (paleta de Fase 1 y fuentes intactos). `src/theme/tokens.ts`: añadido `authPalette` (`bgTop`/`bgMid`/`bgBottom`/`goldGradStart`/`goldGradEnd`) más `btnText "#2D0A14"`; `palette` y `fontFamily` sin cambios.
+- **Arnés:** `npx tsc --noEmit` → verde (exit 0).
+- **Asset (consolidado — se respeta el plan original §2.4):** el Humano colocó **`assets/images/escudo-yucatan.png`** (PNG transparente). TASK-03 lo renderizará con `Image` de react-native (`resizeMode="contain"`, `accessibilityLabel="Escudo del Gobierno del Estado de Yucatán"`). `assets/images/escudo-yucatan.svg` permanece en el repo solo como fuente del Humano, no es asset de consumo de la app. Sin decisiones pendientes de asset para TASK-03.
+- `progress/current-task.json` → `active_task: TASK-02`, `status: TODO`, `harness_status.typecheck_passed: true`. TASK-02 NO se ejecuta en esta instancia (la autoriza el Humano en nueva sesión).
+
 ### 2026-09-04 — Orquestación (Lead Planner)
 
 - **Contexto:** Fase 1 concluida y validada por el Humano (2026-08-29). El Humano solicitó pulido visual del flujo de login contra mockups (`spec/features/auth-ui-polish/mockups/`), ajuste del flujo de interacción biométrico (`sutuacion-actual.md`) y un refactor Clean Architecture + SOLID, y pidió criterio sobre cómo encajarlo en el SDD del proyecto.
@@ -176,6 +184,10 @@
 - [x] TASK-04 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
 - [x] TASK-05 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
 - [x] TASK-06 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
-- [ ] Fase 1.5a TASK-01…06 — Agente Trabajador → Revisor → Tester Visual Humano (pixel-diff CA-01…03 + flujos CA-04…08 + biometría física)
-- [ ] Escudo institucional: el Humano coloca `assets/images/escudo-yucatan.png` antes de TASK-03
+- [x] Fase 1.5a TASK-01 — Tokens + expo-linear-gradient + asset (Agente Trabajador, APROBADA 2026-09-04)
+- [ ] Fase 1.5a TASK-02 — Componentes UI (AuthScaffold, GoldButton, BiometricMethodCard, TextField dark)
+- [ ] Fase 1.5a TASK-03 — LoginScreen pixel-perfect (usará `assets/images/escudo-yucatan.png` con `Image`, plan §2.4)
+- [ ] Fase 1.5a TASK-04 — Máquina de estados + BiometricOptInScreen
+- [ ] Fase 1.5a TASK-05 — BiometricUnlockScreen pixel-perfect
+- [ ] Fase 1.5a TASK-06 — Arnés (Revisor → Tester Visual Humano, CA-01…10 + biometría física)
 - [ ] Fase 1.5b `core-arch-refactor` — spec/plan/task se redactan al aprobarse 1.5a (Orquestador)

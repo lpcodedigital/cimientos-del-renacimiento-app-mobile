@@ -25,18 +25,19 @@ Reglas absolutas del Trabajador:
 
 ## TASK-01 — Tokens auth + expo-linear-gradient + verificación de asset
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
+**validation:** APROBADA por el Humano (2026-09-04)
 
 **Objetivo:** Base de tokens oscuros institucionales y la única dependencia nueva. Sin pantallas.
 
 **Pasos**
 
-- [ ] `npx expo install expo-linear-gradient`.
-- [ ] `global.css`: añadir los 15 tokens `--color-auth-*` dentro del `@theme` existente (plan §2.2). No tocar tokens de Fase 1.
-- [ ] `src/theme/tokens.ts`: añadir `authPalette` (plan §2.3) incluyendo `btnText: "#2D0A14"`. No modificar `palette` ni `fontFamily`.
-- [ ] Verificar si existe `assets/images/escudo-yucatan.png`. Si NO existe: reportarlo en `progress/current-task.json` (`agent_notes`) como bloqueante parcial — TASK-03 usará el placeholder del plan §2.4. No crear el PNG (lo proporciona el Humano).
-- [ ] `npx tsc --noEmit` debe pasar.
+- [x] `npx expo install expo-linear-gradient`.
+- [x] `global.css`: añadir los 15 tokens `--color-auth-*` dentro del `@theme` existente (plan §2.2). No tocar tokens de Fase 1.
+- [x] `src/theme/tokens.ts`: añadir `authPalette` (plan §2.3) incluyendo `btnText: "#2D0A14"`. No modificar `palette` ni `fontFamily`.
+- [x] Verificar si existe `assets/images/escudo-yucatan.png`. Si NO existe: reportarlo en `progress/current-task.json` (`agent_notes`) como bloqueante parcial — TASK-03 usará el placeholder del plan §2.4. No crear el PNG (lo proporciona el Humano).
+- [x] `npx tsc --noEmit` debe pasar.
 
 **allowed_files**
 
