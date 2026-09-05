@@ -171,24 +171,30 @@ Reglas absolutas del Trabajador:
 
 ## TASK-06 — Arnés de control
 
-**Status:** TODO
-**assigned_role:** Trabajador (primera pasada) → Revisor (auditoría)
+**Status:** COMPLETED (APROBADA por el Humano 2026-09-05 — Fase 1.5a cerrada)
+**assigned_role:** Agente Trabajador + Revisor (auditoría) + Tester Visual Humano
 
 **Objetivo:** ESLint + TypeCheck verdes. Cierre de Fase 1.5a para el Humano.
 
 **Pasos**
 
-- [ ] Correr `npx eslint .` y `npx tsc --noEmit`. Corregir solo archivos de TASK-01…05 (sin refactors de alcance).
-- [ ] Verificación bans: cero `any`, cero `TouchableOpacity`, cero `FlatList`, cero imports de `expo-router`, cero emojis en UI auth, cero `StyleSheet.create` injustificado.
-- [ ] Verificar por diff: `api.ts`, `dto.ts`, `tokenStore.ts`, `app.json` sin cambios; única dependencia nueva = `expo-linear-gradient`.
-- [ ] Actualizar `progress/current-task.json`: `harness_status`, `active_task` TASK-06 `status: READY_FOR_REVIEW`.
-- [ ] No ejecutar `npx expo start`.
+- [x] Correr `npx eslint .` y `npx tsc --noEmit`. Corregir solo archivos de TASK-01…05 (sin refactors de alcance).
+- [x] Verificación bans: cero `any`, cero `TouchableOpacity`, cero `FlatList`, cero imports de `expo-router`, cero emojis en UI auth, cero `StyleSheet.create` injustificado.
+- [x] Verificar por diff: `api.ts`, `dto.ts`, `tokenStore.ts`, `app.json` sin cambios; única dependencia nueva = `expo-linear-gradient`.
+- [x] Actualizar `progress/current-task.json`: `harness_status`, `active_task` TASK-06 `status: READY_FOR_REVIEW`.
+- [x] No ejecutar `npx expo start`.
 
 **allowed_files**
 
 - Archivos de TASK-01…05 **solo** para correcciones de lint/tipos
+- `src/assets/images.ts` (nuevo, módulo compartido de asset estilo `@/assets` autorizado por esta task para resolver el require() pendiente)
+- `nativewind-env.d.ts` (declaración de módulo `*.png` para el import tipado del asset)
 - `progress/current-task.json`
 - `progress/history.md`
+
+**Cierre (TASK-06, primera pasada del Trabajador):** `npx eslint .` → exit 0; `npx tsc --noEmit` → exit 0 (sin `expo start`, reservado al Humano). Correcciones restrictas a lint/tipos dentro de TASK-01…05: (1) `TextField.tsx` `jsx-no-leaked-render` en `secureTextEntry={secureToggle && isSecure}` → const booleana `isSecureActive`; (2) `AuthProvider.tsx` `prefer-const` en `nextMode`; (3) `LoginScreen.tsx` y `BiometricUnlockScreen.tsx`: el `require()` público del escudo se sustituyó por `imageAssets.escudoYucatan` importado desde el nuevo módulo compartido `src/assets/images.ts` (import tipado del `.png`; sin mutar `assets/images/escudo-yucatan.png`), respaldado por la declaración de módulo `*.png` (`ImageSourcePropType`) en `nativewind-env.d.ts`, misma forma que el `*.css` existente. Bans a cero (grep: sin `any`, `TouchableOpacity`, `FlatList`, `expo-router`, emojis, `StyleSheet.create`). Invariantes por diff contra HEAD: `api.ts`, `dto.ts`, `tokenStore.ts` y `app.json` sin cambios; dependencia nueva de Fase 1.5a = `expo-linear-gradient` ~57.0.1 (+ `@expo/vector-icons` ^15.0.2 autorizado en TASK-02).
+
+**validation (cierre):** APROBADA por el Humano (2026-09-05) — el Humano revalidó el arnés (eslint + tsc en verde) y el diff de invariantes, y confirmó en dispositivo el comportamiento de los cambios de asset. **La Fase 1.5a `auth-ui-polish` queda CERRADA y aprobada.** Fase 1.5b `core-arch-refactor` NO abierta (se planifica cuando el Humano la autorice).
 
 **Definition of done:** CA-09 y CA-10. El Revisor re-ejecuta el arnés. El Humano hace pixel-diff (CA-01…03), valida flujos (CA-04…08) y prueba Face ID/huella en físico.
 

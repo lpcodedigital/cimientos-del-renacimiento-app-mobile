@@ -24,6 +24,7 @@ export function TextField({
   const hasError = errorLabel !== undefined && errorLabel.length > 0;
 
   const toggleSecure = () => setIsSecure((current) => !current);
+  const isSecureActive = secureToggle && isSecure;
 
   return (
     <View className="gap-2">
@@ -33,7 +34,7 @@ export function TextField({
       <View>
         <TextInput
           {...props}
-          secureTextEntry={secureToggle && isSecure}
+          secureTextEntry={isSecureActive}
           placeholderTextColor="#A58571"
           accessibilityLabel={
             props.accessibilityLabel !== undefined ? props.accessibilityLabel : label

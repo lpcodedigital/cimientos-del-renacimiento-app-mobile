@@ -16,6 +16,7 @@ import { useAuth } from "@/features/auth/useAuth";
 import { AuthScaffold } from "@/components/ui/AuthScaffold";
 import { GoldButton, GoldButtonText } from "@/components/ui/GoldButton";
 import { TextField } from "@/components/ui/TextField";
+import { imageAssets } from "@/assets/images";
 import type { AuthStackParamList } from "@/navigation/types";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -99,7 +100,7 @@ export function LoginScreen({ navigation }: LoginScreenProps) {
               </Text>
 
               <Image
-                source={require("../../../assets/images/escudo-yucatan.png")}
+                source={imageAssets.escudoYucatan}
                 resizeMode="contain"
                 accessibilityLabel="Escudo del Gobierno del Estado de Yucatán"
                 className="h-32 w-28"

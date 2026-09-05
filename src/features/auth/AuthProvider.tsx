@@ -94,7 +94,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         const biometricEnabled = await getBiometricEnabled();
 
         let nextStatus: AuthStatus = "authenticated";
-        let nextMode: BiometricUnlockMode = "auto";
+        const nextMode: BiometricUnlockMode = "auto";
         if (biometricEnabled) {
           const availability = await getBiometricAvailability();
           if (availability.hasHardware && availability.isEnrolled) {

@@ -3,6 +3,7 @@ import { Image, Pressable, Text, View } from "react-native";
 
 import { AuthScaffold } from "@/components/ui/AuthScaffold";
 import { GoldButton, GoldButtonText } from "@/components/ui/GoldButton";
+import { imageAssets } from "@/assets/images";
 import { useAuth } from "@/features/auth/useAuth";
 import { fontFamily as font } from "@/theme/tokens";
 
@@ -103,7 +104,7 @@ export function BiometricUnlockScreen() {
           </Text>
 
           <Image
-            source={require("../../../assets/images/escudo-yucatan.png")}
+            source={imageAssets.escudoYucatan}
             resizeMode="contain"
             accessibilityLabel="Escudo del Gobierno del Estado de Yucatán"
             style={{ width: 160, height: 160 }}

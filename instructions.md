@@ -267,3 +267,41 @@ CONTROL DE FLUJO (INNEGOCIABLE):
 
 Al terminar respóndeme: (1) archivos modificados, (2) salida del typecheck,
 (3) qué debo validar yo como Humano antes de autorizar TASK-06.
+
+## Instruccion worker DeepSeek v4 flash Fase1.5a/task 06 
+
+spec/features/auth-ui-polish/task.md (sección TASK-06; TASK-01..05 COMPLETED y aprobadas por el Humano
+2026-09-05, incluyendo: TASK-05 BiometricUnlockScreen pixel-perfect visual 10/10 vs biometric-login.png,
+modos auto/manual funcionando en físico iOS+Android, y el fix de navegación en vivo en RootNavigator
+con <NavigationContainer key={status}> que pasa de BiometricOptInScreen a BiometricUnlockScreen modo
+manual tras ACTIVAR).
+
+TAREA ASIGNADA: ejecutar ÚNICAMENTE la TASK-06 descrita en spec/features/auth-ui-polish/task.md
+(Fase 1.5a — Arnés de control).
+
+REGLAS ESTRICTAS:
+- Ejecutar `npx eslint .` y `npx tsc --noEmit`. Corregir SOLO archivos de TASK-01..05 (sin refactors de
+  alcance). No editar raíces Auth|App, api/dto/tokenStore, ni AuthProvider/useAuth.
+- NO ejecutar `npx expo start` (prohibido a agentes; el bundling en físico lo hace el Humano).
+- PENDIENTE DE LINT CONOCIDO (TASK-05): en `src/screens/auth/BiometricUnlockScreen.tsx` (~línea 106) el
+  asset del escudo se carga con `require(...)` público y eslint lo rechaza
+  (`@typescript-eslint/no-require-imports` está off solo en `App.tsx`/configs). LoginScreen (TASK-03)
+  usa el mismo patrón y quedó aprobado por el Humano. Decide la estrategia de TASK-06 sin romper las
+  fuentes de asset (p. ej. definir la imagen como import/const en un módulo .ts estilo `@/assets`
+  reutilizable por Login y Unlock) y déjalo en verde en ambbos archivos.
+- Verificar bans (rg sobre .ts/.tsx): cero `any` público, cero `TouchableOpacity`, cero `FlatList`,
+  cero imports de `expo-router`, cero emojis en UI auth, cero `StyleSheet.create` injustificado.
+  Nota: `@expo/vector-icons` y `expo-linear-gradient` fueron autorizados como dependencias de la Fase 1.5a.
+- Verificar por diff: `api.ts`, `dto.ts`, `tokenStore.ts`, `app.json` sin cambios; única dependencia
+  nueva de la Fase = `expo-linear-gradient` (+ `@expo/vector-icons` autorizado).
+- Actualizar `progress/current-task.json`: `harness_status` con resultado real de eslint+tsc,
+  `active_task` TASK-06 `status: READY_FOR_REVIEW` (NO avanzar a otra task/fase).
+- Añadir entrada de cierre en `progress/history.md` bajo la sección Fase 1.5a.
+- Marca checkboxes `- [x]` y `Status: COMPLETED` de TASK-06 en spec/features/auth-ui-polish/task.md.
+- TE DETIENES AHÍ al terminar: NO inicies Fase 1.5b ni la auditoría del Revisor por tu cuenta; reporta
+  para que el Revisor re-ejecute el arnés y el Humano haga pixel-diff (CA-01..03), valide flujos
+  (CA-04..08) y pruebe Face ID/huella en físico.
+
+Al terminar respóndeme: (1) archivos modificados/corregidos, (2) salida de `npx eslint .` y
+`npx tsc --noEmit`, (3) resultado de la verificación de bans e invariantes por diff, (4) qué debo
+validar yo como Humano antes de autorizar la Fase 1.5b (pixel-diff, flujos y biometría física).

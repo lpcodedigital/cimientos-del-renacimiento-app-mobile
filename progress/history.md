@@ -226,6 +226,27 @@
 - `progress/current-task.json` → `active_task: TASK-05`, `status: COMPLETED` (el puntero NO avanza a TASK-06; lo autoriza el Humano en nueva sesión al ejecutar la TASK-06). `harness_status` bundling Android/iOS `true` y typecheck `true`.
 - **SIGUIENTE:** TASK-06 (ARNÉS) en NUEVA SESIÓN — ESLint + TypeCheck + verificación de bans e invariantes por diff, para dejar la Fase 1.5a lista para pixel-diff (CA-01…03), flujos (CA-04…08) y biometría física del Humano. Solo al autorizarlo el Humano.
 
+### 2026-09-05 — TASK-06 (Arnés de control) — READY_FOR_REVIEW (primera pasada del Trabajador)
+
+- **Arnés real sobre todo el repo:**
+  - `npx tsc --noEmit` → **exit 0** (verde, sin errores).
+  - `npx eslint .` → **exit 0** (sin errores ni warnings).
+  - NO se ejecutó `npx expo start` (prohibido a agentes; bundling real en físico queda reservado al Humano).
+- **Correcciones de lint aplicadas (solo archivos de TASK-01…05, sin refactors de alcance):**
+  1. `src/components/ui/TextField.tsx` (TASK-02): `react/jsx-no-leaked-render` en `secureTextEntry={secureToggle && isSecure}` → nueva const derivada `isSecureActive` (booleana), usada como prop. Cero cambio funcional.
+  2. `src/features/auth/AuthProvider.tsx` (TASK-04): `@typescript-eslint/prefer-const` → `nextMode` de `let` a `const` (nunca se reasignaba).
+  3. `src/screens/auth/LoginScreen.tsx` (TASK-03) y `src/screens/auth/BiometricUnlockScreen.tsx` (TASK-05): resuelto el **require() público del escudo** pendiente (`@typescript-eslint/no-require-imports` está off solo en `App.tsx`/configs). Estrategia de TASK-06: el asset se define como import/const en un módulo nuevo compartido **`src/assets/images.ts`** (`imageAssets.escudoYucatan`, import tipado del `.png` vía alias relativo), reutilizable por Login y Unlock, y se sustituyó el `require(...)` inline en ambos screens por `source={imageAssets.escudoYucatan}`. Para que el `import` del `.png` tipara se añadió la **declaración de módulo `*.png`** (`source: ImageSourcePropType`) en `nativewind-env.d.ts`, misma forma que el `declare module "*.css"` preexistente. **Fuentes de asset intactas** (`assets/images/escudo-yucatan.png` no fue modificado).
+- **Verificación de bans (grep sobre `.ts`/`.tsx`): cero `any`, cero `TouchableOpacity`, cero `FlatList`, cero imports de `expo-router`, cero emojis en UI auth, cero `StyleSheet.create`.**
+- **Verificación de invariantes por diff contra HEAD:** `src/features/auth/api.ts`, `src/features/auth/dto.ts`, `src/features/auth/tokenStore.ts` y `app.json` **sin cambios** (exit 0). Dependencia nueva de Fase 1.5a = `expo-linear-gradient@~57.0.1` (+ `@expo/vector-icons@^15.0.2` autorizado en TASK-02 y registrado en las invariantes como pidió el Revisor).
+- `spec/features/auth-ui-polish/task.md`: TASK-06 marcada `- [x]` (pasos) / `Status: COMPLETED` (primera pasada del Trabajador) con allowed_files ampliado para incluir el módulo compartido y la declaración `*.png`.
+- `progress/current-task.json` → `active_task: TASK-06`, `status: READY_FOR_REVIEW`, `harness_status.linter_passed: true`, `typecheck_passed: true`, bundling Android/iOS `PENDIENTE (Humano)`.
+- **PARADA CONTROLADA (sin avanzar de fase):** NO se inició Fase 1.5b ni la auditoría del Revisor. Siguientes actores por turno: el **Revisor** re-ejecuta el arnés y verifica el diff de invariantes; después el **Tester Visual Humano** hace pixel-diff (CA-01…03), valida flujos (CA-04…08) y comprueba Face ID/huella en físico (iOS + Android) antes de autorizar que el Orquestador redacte Fase 1.5b.
+
+### 2026-09-05 — TASK-06 APROBADA por el Humano — Fase 1.5a CERRADA
+
+- **Validación:** el Humano dio por completada la TASK-06 y cerró la **Fase 1.5a `auth-ui-polish`**. Revalidó el arnés (ESLint + TypeCheck en verde) y las invariantes por diff, y confirmó en dispositivo el comportamiento de los cambios de asset (módulo `src/assets/images.ts` + import tipado del escudo). Aprobación formal en `spec/features/auth-ui-polish/task.md`, `progress/current-task.json` (TASK-06 `APPROVED`, `harness_status` actualizado) y esta bitácora.
+- **Siguiente fase (gobernanza):** la **Fase 1.5b `core-arch-refactor`** (Clean Architecture + SOLID) NO ha sido abierta ni planificada. Conforme a `roadmap.md`, se redactará y arrancará cuando el Humano la autorice en una nueva instancia. El puntero de `current-task.json` queda detenido en TASK-06 `APPROVED`.
+
 ### Pendiente
 
 - [x] TASK-01 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
@@ -239,5 +260,5 @@
 - [x] Fase 1.5a TASK-03 — LoginScreen pixel-perfect (Agente Trabajador, APROBADA 2026-09-05; match con login-form.png en iOS y Android)
 - [x] Fase 1.5a TASK-04 — Máquina de estados + BiometricOptInScreen (Agente Trabajador, APROBADA 2026-09-05; ver bloque de cierre abajo)
 - [x] Fase 1.5a TASK-05 — BiometricUnlockScreen pixel-perfect (Agente Trabajador, APROBADA 2026-09-05; ver bloque de cierre abajo)
-- [ ] Fase 1.5a TASK-06 — Arnés (Revisor → Tester Visual Humano, CA-01…10 + biometría física)
-- [ ] Fase 1.5b `core-arch-refactor` — spec/plan/task se redactan al aprobarse 1.5a (Orquestador)
+- [x] Fase 1.5a TASK-06 — Arnés (APROBADA por el Humano 2026-09-05; Fase 1.5a CERRADA)
+- [ ] Fase 1.5b `core-arch-refactor` — spec/plan/task se redactan al autorizarla el Humano en nueva instancia (Orquestador; NO abierta)

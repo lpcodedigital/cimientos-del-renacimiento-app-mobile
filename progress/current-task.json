@@ -8,23 +8,27 @@
     "task_file": "spec/features/auth-ui-polish/task.md"
   },
   "active_task": {
-    "id": "TASK-05",
-    "description": "BiometricUnlockScreen pixel-perfect contra biometric-login.png + modos auto/manual (rediseño del Unlock dentro de AuthScaffold: «< Volver» → signOut, título de marca, escudo w-40, cuerpo institucional, error, GoldButton «INICIAR SESIÓN» con loading → unlockWithBiometrics; auto-prompt 500 ms una sola vez SOLO en modo auto, manual solo al presionar el botón). Incluye el fix de navegación en vivo en RootNavigator (key={status} en NavigationContainer).",
-    "status": "COMPLETED",
-    "assigned_role": "Trabajador",
+    "id": "TASK-06",
+    "description": "Arnés de control (Fase 1.5a): npx eslint . + npx tsc --noEmit en verde, corrección del patrón require() público de asset en LoginScreen/TASK-03 y BiometricUnlockScreen/TASK-05 mediante módulo compartido @/assets/images, bans (any/TouchableOpacity/FlatList/expo-router/emojis/StyleSheet.create injustificado) a cero, invariantes por diff (api.ts/dto.ts/tokenStore.ts/app.json intactos; única dependencia nueva expo-linear-gradient + @expo/vector-icons autorizado) verificadas. Cierre de Fase 1.5a listo para el Revisor y el Tester Visual Humano.",
+    "status": "APPROVED",
+    "assigned_role": "Agente Trabajador + Revisor (auditoría de arnés) + Tester Visual Humano",
+    "validation": "APROBADA y Fase 1.5a CERRADA por el Humano (2026-09-05). El Humano revalidó el arnés (eslint + tsc en verde), el diff de invariantes y confirmó visualmente el comportamiento de los cambios de asset en dispositivo. No se abre Fase 1.5b en esta instancia.",
     "allowed_files_to_edit": [
-      "src/screens/auth/BiometricUnlockScreen.tsx",
-      "src/navigation/RootNavigator.tsx (fix de navegación en vivo autorizado por el Humano durante la revisión)"
+      "Archivos de TASK-01..05 para correcciones de lint/tipos (TextField, AuthProvider, LoginScreen, BiometricUnlockScreen)",
+      "src/assets/images.ts (módulo compartido de asset estilo @/assets, TASK-06)",
+      "nativewind-env.d.ts (declaración de módulo *.png para asset tipado, TASK-06)",
+      "progress/current-task.json",
+      "progress/history.md"
     ]
   },
   "harness_status": {
-    "last_run": "2026-09-05 (TASK-05 APROBADA por el Humano en Android + iOS)",
-    "linter_passed": false,
+    "last_run": "2026-09-05 (Fase 1.5a CERRADA por el Humano)",
+    "linter_passed": true,
     "typecheck_passed": true,
-    "typecheck_detail": "npx tsc --noEmit → salió en verde sin errores (exit 0) al cerrar TASK-05. ESLint no corrido a nivel de todo el repo (se reserva a TASK-06 por plan/task); lint puntual de los archivos tocados: RootNavigator.tsx limpio; queda pendiente en BiometricUnlockScreen.tsx:106 el patrón público require() (misma forma que LoginScreen/TASK-03) que se resolverá en TASK-06.",
-    "bundling_passed_android": true,
-    "bundling_passed_ios": true,
-    "blockers_or_errors": "APROBADA (2026-09-05): BiometricUnlockScreen reescrita con estilos INLINE JS dentro de AuthScaffold (Volver→signOut, título Cimientos del Renacimiento Lato-Bold crema, escudo escudo-yucatan.png w-40 contain, cuerpo taupe, error text-error, GoldButton INICIAR SESIÓN loading=pending). Auto-prompt setTimeout 500 ms SOLO si biometricUnlockMode==='auto' (manual → solo al presionar el botón). FIX de navegación en vivo: key={status} en NavigationContainer fuerza reset del estado de navegación en cada transición de la máquina de estados (resuelve que tras ACTIVAR en BiometricOptInScreen la app quedara pegada en OptIn en vez de pasar a BiometricUnlockScreen modo manual). Validado en iOS y Android por el Humano. El puntero NO avanza a TASK-06: lo autoriza el Humano en nueva sesión. ESLint global se reserva a TASK-06."
+    "typecheck_detail": "npx tsc --noEmit → exit 0 sin errores. npx eslint . → exit 0 sin errores ni warnings. NO se ejecutó npx expo start (prohibido a agentes; el bundling en físico es del Humano).",
+    "bundling_passed_android": "PENDIENTE - asumido OK por el Humano al cerrar la Fase 1.5a",
+    "bundling_passed_ios": "PENDIENTE - asumido OK por el Humano al cerrar la Fase 1.5a",
+    "blockers_or_errors": "Cero bloqueantes — Fase 1.5a (auth-ui-polish) CERRADA y APROBADA por el Humano (2026-09-05). Correcciones de TASK-06 consolidadas: (1) TextField.tsx — jsx-no-leaked-render resuelto con const isSecureActive. (2) AuthProvider.tsx — prefer-const nextMode. (3) LoginScreen.tsx y BiometricUnlockScreen.tsx — require() público del escudo reemplazado por import tipado vía módulo compartido src/assets/images.ts (imageAssets.escudoYucatan) + declaración de módulo '*.png' en nativewind-env.d.ts; fuentes de asset intactas. Bans a cero. Invariantes por diff vs HEAD: api.ts/dto.ts/tokenStore.ts/app.json sin cambios; dependencia nueva de Fase 1.5a = expo-linear-gradient (~57.0.1) + @expo/vector-icons (^15.0.2, autorizado). Fase 1.5b NO abierta (queda para nueva instancia cuando el Humano la autorice tras la revisión del Orquestador)."
   },
-  "agent_notes": "TASK-05 COMPLETED y validada en físico (iOS + Android). Lista para TASK-06 (ARNÉS) en nueva sesión, solo cuando el Humano lo autorice. No avanzar el puntero a TASK-06 hasta que el Humano lo indique explícitamente."
+  "agent_notes": "Fase 1.5a (auth-ui-polish) COMPLETA y CERRADA por el Humano (2026-09-05). TASK-06 APPROVED. Según la gobernanza del proyecto (roadmap.md), la Fase 1.5b core-arch-refactor NO se planifica ni arranca hasta que el Humano la autorice en una nueva instancia. El puntero se detiene aquí: próxima fase declarada pero NO iniciada."
 }
