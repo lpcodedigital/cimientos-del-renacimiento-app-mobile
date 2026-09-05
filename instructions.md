@@ -1,5 +1,7 @@
 **Instrucciones**
 
+## FASE 1 ##
+
 ## INSTRUCCIONES PARA AGENTE ORQUESTADOR (MODE PLAN)
 
 ## 1. ¿Qué decirle a Grok 4.6? (Copia y pega este prompt)
@@ -83,3 +85,40 @@ En esta nueva sesion asume tu rol de trabajador segun @AGENTS.md . Sincroniza tu
 
 ## Actualizar el history.md
 la TASK-06 fue complepletada con exito, se valido en los dispositivos Android y iOS unicamente ahora actualiza el @progress/history.md 
+
+## FASE 1.5b ##
+
+## Instrucciones lead planner Kimi K3
+
+Usa unicamente por ahora el  @AGENTS.md y todo lo que este en  @spec/ para entrar en contexto, Todas las tareas a nivel funcional y validadas de la Fase 1 que se definio en el @spec/constitution/roadmap.md  esta completa. Teoricamente deberiamos continua con las fase 2 pero necesito hacer un pulido visual en la UI/UX para que la pantalla del login empate con mis mockups los cuales estan en  @spec/features/auth-ui-polish/mockups/ al igual que necesito afinar el flujo de interaccion del login de la app con el usuaro y aplicar un refactor del proyecto pata aplicar buenas practicas + clean arquitecture + proncipios solid para que se mantenible y escalable a largo plazo. pero no se si para esto debe ser tareas adicionales a la fase 1 o debe de ser una  nueva fase consecuitava a la fase 1 por ejemplo 1.5  con sus propias task.md spec.md y plan.md y asi crear  una nueva feature o quiza hacer un ajuste en el plan original y agregarlo  al agents.md, mission.md y tech-stack.md pero no se si esto impacto en lo que ya se logro, . Necesito saber como manejar esta situacion para este proyecto. Con respecto al pulido visual de la UI/UX y el flujo de la app la situacion la tengo @sutuacion-actual.md por favor evitar lecturas innecesarias de carpetas pesadas (`node_modules`, `android`, `ios`, `build`, etc.) solo si es necesario usalo esto con el objetivo de prevenir errores de límite de tokens (*Invalid-argument*). 
+
+## Instruccion worker DeepSeek v4 flash
+
+Rol: Agente Trabajador (Execution Agent). Proyecto: Cimientos del Renacimiento — Gabinete Móvil.
+
+CONTEXTO OBLIGATORIO (lee en este orden, sin excepción):
+1. /AGENTS.md
+2. /progress/current-task.json (memoria activa: feature auth-ui-polish, TASK-01 TODO)
+3. /spec/constitution/tech-stack.md (especialmente §2.1 paleta auth-* y §gradientes)
+4. /spec/features/auth-ui-polish/spec.md
+5. /spec/features/auth-ui-polish/plan.md
+6. /spec/features/auth-ui-polish/task.md
+
+TAREA ASIGNADA: ejecutar ÚNICAMENTE la TASK-01 (Tokens auth + expo-linear-gradient + verificación de asset) descrita en spec/features/auth-ui-polish/task.md.
+
+REGLAS ESTRICTAS:
+- SOLO puedes editar los archivos listados en allowed_files de TASK-01: package.json, lockfile, global.css, src/theme/tokens.ts, progress/current-task.json.
+- Instala expo-linear-gradient EXCLUSIVAMENTE con `npx expo install expo-linear-gradient`. Nunca `npm i`. Cero otras dependencias.
+- Los 15 tokens --color-auth-* van dentro del @theme existente en global.css (plan §2.2). NO toques los tokens de Fase 1 ni tailwind configs.
+- En src/theme/tokens.ts solo AÑADES authPalette (incluyendo btnText: "#2D0A14"); no modifiques palette ni fontFamily (plan §2.3).
+- Verifica que exista assets/images/escudo-yucatan.png (el Humano ya lo colocó). Repórtalo en agent_notes.
+- Ejecuta `npx tsc --noEmit` al finalizar; debe pasar en verde. NO ejecutes `npx expo start` (prohibido para agentes).
+- Cero any, cero TouchableOpacity, cero StyleSheet.create, cero código nativo.
+
+CONTROL DE FLUJO (INNEGOCIABLE):
+- Al terminar TASK-01: no marca sus checkboxes `- [x]` y `Status: COMPLETED` en spec/features/auth-ui-polish/task.md.
+- No Actualizes el progress/current-task.json: active_task.status = "READY_FOR_HUMAN_VALIDATION" (NO avances el puntero a TASK-02), registra harness_status con el resultado del typecheck y no escribas agent_notes detallando lo hecho.
+- no Añadas una entrada en progress/history.md bajo la sección Fase 1.5a.
+- TE DETIENES AHÍ. Tienes TERMINANTEMENTE PROHIBIDO iniciar TASK-02 o cualquier otra task hasta que el Humano valide visualmente TASK-01 y te lo indique explícitamente en esta sesión. Unicamente vas a actulizar todo lo que este relacionado con el progress hasta que de por concluida la TASK actual
+
+Al finalizar, respóndeme con: (1) lista exacta de archivos modificados, (2) salida del typecheck, (3) qué debo validar yo como Humano antes de autorizar TASK-02.

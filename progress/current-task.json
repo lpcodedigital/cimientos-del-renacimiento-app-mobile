@@ -1,33 +1,32 @@
 {
   "project_name": "Cimientos del Renacimiento - Gabinete Móvil",
-  "current_roadmap_phase": "Fase 1: Shell Base, Navegación y Login Híbrido",
-  "active_feature": "auth-biometric",
+  "current_roadmap_phase": "Fase 1.5a: Pulido UI/UX de Autenticación (auth-ui-polish)",
+  "active_feature": "auth-ui-polish",
   "context_pointers": {
-    "spec_file": "spec/features/auth-biometric/spec.md",
-    "plan_file": "spec/features/auth-biometric/plan.md",
-    "task_file": "spec/features/auth-biometric/task.md"
+    "spec_file": "spec/features/auth-ui-polish/spec.md",
+    "plan_file": "spec/features/auth-ui-polish/plan.md",
+    "task_file": "spec/features/auth-ui-polish/task.md"
   },
   "active_task": {
-    "id": "TASK-06",
-    "description": "Arnés de control: ESLint + TypeCheck verdes, cierre de Fase 1 para el Revisor y Tester Visual Humano.",
-    "status": "READY_FOR_REVIEW",
-    "assigned_role": "Trabajador (primera pasada) → Revisor (auditoría)",
+    "id": "TASK-01",
+    "description": "Tokens auth-* en global.css/tokens.ts + npx expo install expo-linear-gradient + verificación del asset del escudo.",
+    "status": "TODO",
+    "assigned_role": "Trabajador",
     "allowed_files_to_edit": [
       "package.json",
       "lockfile",
-      "eslint.config.js / .eslintrc.js / .eslintrc.cjs / eslint.config.mjs (uno)",
-      "archivos de TASK-01…05 solo para correcciones de lint/tipos",
-      "progress/current-task.json",
-      "progress/history.md"
+      "global.css",
+      "src/theme/tokens.ts",
+      "progress/current-task.json"
     ]
   },
   "harness_status": {
-    "last_run": "2026-08-29 (TASK-06 completada por Trabajador, re-ejecutada tras reset de rama git)",
+    "last_run": "2026-08-29 (cierre Fase 1; Fase 1.5a aún no ejecuta arnés propio)",
     "linter_passed": true,
     "typecheck_passed": true,
     "bundling_passed_android": true,
     "bundling_passed_ios": true,
-    "blockers_or_errors": "Ninguno. ESLint 9.39.5 configurado (eslint.config.js flat) con @typescript-eslint + react + react-hooks. npx eslint . y npx tsc --noEmit pasan en verde. Cero any / TouchableOpacity / FlatList / expo-router. Fase 1 lista para auditoría del Revisor y validación visual/física del Humano."
+    "blockers_or_errors": "Ninguno heredado de Fase 1. BLOQUEANTE PARCIAL Fase 1.5a: el Humano debe colocar el escudo institucional en assets/images/escudo-yucatan.png antes de TASK-03 (si falta, el Trabajador usa placeholder del plan §2.4 y lo reporta)."
   },
-  "agent_notes": "TASK-06 COMPLETADA (2026-08-29) y lista para Revisor. Nota: la rama git se reinició y se perdió la pasada previa de TASK-06; se re-ejecutó completa. Instaladas dependencias dev con 'npx expo install --dev eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint-plugin-react eslint-plugin-react-hooks' (eslint 9.39.5, @typescript-eslint 8.68.0, eslint-plugin-react 7.37.5, eslint-plugin-react-hooks 7.1.1), registradas en package.json+lockfile. eslint.config.js (flat config ESLint 9): spread de @typescript-eslint flat/recommended + rules react/react-hooks (react-in-jsx-scope off, prop-types off, self-closing-comp, jsx-no-leaked-render ternary), react-hooks/exhaustive-deps (warn), @typescript-eslint/no-explicit-any (error), no-unused-vars (warn). Overrides para permitir require() en configs JS (eslint/metro/babel/postcss) y en App.tsx (assets fonts). Scripts en package.json: 'lint': 'eslint .', 'typecheck': 'tsc --noEmit'. Corrección de lint en src/screens/auth/BiometricUnlockScreen.tsx: eliminada directiva eslint-disable-next-line react-hooks/exhaustive-deps sin usar (exhaustive-deps ya era warn en la config). Arnés: npx eslint . → 0 errores/0 warnings; npx tsc --noEmit → verde. Verificación bans: cero any / TouchableOpacity / FlatList / imports expo-router. progress/current-task.json: active_task=TASK-06 status=READY_FOR_REVIEW, harness_status.linter_passed=true, typecheck_passed=true. SIGUIENTE: Auditoría del Revisor (re-ejecutar arnés) y validación visual + face ID por el Tester Visual Humano."
+  "agent_notes": "2026-09-04 — Orquestador (Lead Planner). Plan de Fase 1.5 APROBADO por el Humano. Decisiones cerradas: (1) orden 1.5a UI → 1.5b refactor; (2) Lato se mantiene (serif del mockup se aproxima con Lato Bold); (3) '¿Olvidaste tu contraseña?' = link informativo con Alert institucional (sin flujo de recuperación, mission.md §4); (4) arranques posteriores = auto-prompt nativo + botón 'INICIAR SESIÓN' de reintento; primer uso tras activar = manual obligatorio; (5) escudo institucional lo proporciona el Humano en assets/images/escudo-yucatan.png; (6) autorizada dependencia expo-linear-gradient (única nueva); (7) 'Volver' del Unlock = fallback que limpia sesión (semántica Fase 1). Artefactos escritos: enmienda roadmap.md (Fase 1.5 insertada, Fase 2 bloqueada hasta aprobar 1.5a+1.5b), enmienda tech-stack.md (§2.1 paleta auth-* con 15 tokens extraídos por muestreo de píxeles de los mockups, §gradientes expo-linear-gradient, §5 arquitectura Clean Architecture vigente desde 1.5b), reescritura completa de spec/features/auth-ui-polish/spec.md (tokens reales, flujo nuevo §5 con BiometricOptInScreen + primer uso manual, tabla de reglas superseded de Fase 1 §7, CA-01…CA-10), plan.md (máquina de estados con nuevo status biometric_opt_in + biometricUnlockMode auto/manual, componentes AuthScaffold/GoldButton/BiometricMethodCard/TextField dark, confirmBiometricOptIn + getSupportedBiometricMethods), task.md (TASK-01…06 con allowed_files). Hallazgos de baseline registrados en plan §1: campos muertos shouldOfferBiometricOptIn/biometricEnrollHint/dismissBiometricOptIn se eliminan en TASK-04; confirmBiometricOptIn no existe (se crea); caja 'Prueba local' se elimina de LoginScreen (demo login en api.ts NO se toca); clearSession() no borra biometric_enabled (se mantiene, habilita spec §5.3.2). SIGUIENTE: Agente Trabajador inicia TASK-01."
 }

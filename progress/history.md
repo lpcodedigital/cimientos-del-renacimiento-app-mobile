@@ -155,6 +155,19 @@
 - **Validación:** el Tester Visual Humano compiló y validó TASK-06 con éxito en **Android e iOS** — arnés de control operativo (ESLint + TypeCheck en verde) y la app de Fase 1 compila y funciona íntegra sin romper el flujo del Login Híbrido validado en TASK-05.
 - Cierre: la **Fase 1 (Shell Base, Navegación y Login Híbrido)** queda concluida y validada por el Humano en **Android e iOS**. Pendiente solo la re-auditoría opcional del Agente Revisor del arnés antes de planificar Fase 2 (Radar / GPS).
 
+## Fase 1.5a — Pulido UI/UX de Autenticación (auth-ui-polish)
+
+### 2026-09-04 — Orquestación (Lead Planner)
+
+- **Contexto:** Fase 1 concluida y validada por el Humano (2026-08-29). El Humano solicitó pulido visual del flujo de login contra mockups (`spec/features/auth-ui-polish/mockups/`), ajuste del flujo de interacción biométrico (`sutuacion-actual.md`) y un refactor Clean Architecture + SOLID, y pidió criterio sobre cómo encajarlo en el SDD del proyecto.
+- **Decisión de gobernanza (aprobada por el Humano):** NO son tareas adicionales de la Fase 1 (queda congelada como baseline). Se crea la **Fase 1.5** en `roadmap.md` con dos sub-fases estrictamente secuenciales: **1.5a `auth-ui-polish`** (UI pixel-perfect + flujo) y **1.5b `core-arch-refactor`** (Clean Architecture + SOLID, invariante: cero cambio visual/funcional). Fase 2 permanece bloqueada hasta auditoría + aprobación humana de ambas.
+- **Extracción de tokens:** muestreo de píxeles de los 3 PNG con script Python stdlib (sin PIL). 15 tokens `auth-*` consolidados: fondo gradiente `#5A1320→#3B0917→#290810`, crema `#EDD6A8`, taupe `#A58571`/`#6C4A44`, dorado `#C9A854`/`#8F693B`, surface `#471725`/`#7A3B48`, cards `#45201B`/`#331016`, gradiente dorado `#F5E5AF→#D9B563`, texto botón `#2D0A14`.
+- **Decisiones del Humano (2026-09-04):** (1) orden 1.5a → 1.5b; (2) Lato se mantiene (título serif del mockup se aproxima con Lato Bold — desviación documentada); (3) «¿Olvidaste tu contraseña?» = link informativo con Alert institucional; (4) arranques posteriores = auto-prompt + botón de reintento; primer uso tras activar biometría = manual obligatorio (`biometric-login.png`); (5) escudo institucional lo proporciona el Humano (`assets/images/escudo-yucatan.png`, bloqueante parcial para TASK-03); (6) autorizada `expo-linear-gradient` como única dependencia nueva; (7) «Volver» del Unlock limpia sesión (semántica Fase 1 intacta).
+- **Enmiendas constitucionales:** `roadmap.md` (Fase 1.5 insertada); `tech-stack.md` (§2.1 paleta auth-* exclusiva del flujo de autenticación, autorización de `expo-linear-gradient`, §5 Arquitectura de Software obligatoria desde 1.5b). `mission.md` y `AGENTS.md` sin cambios.
+- **Artefactos SDD escritos:** `spec/features/auth-ui-polish/spec.md` (reescritura completa: tokens reales, flujo §5 con nueva `BiometricOptInScreen` + primer uso manual + caso biometría ya activada, §7 tabla de reglas superseded de Fase 1, CA-01…CA-10), `plan.md` (nuevo status `biometric_opt_in` + `biometricUnlockMode auto/manual`, componentes `AuthScaffold`/`GoldButton`/`BiometricMethodCard`/TextField dark, `confirmBiometricOptIn` + `getSupportedBiometricMethods`, eliminación de campos muertos del provider, eliminación de la caja «Prueba local» del Login), `task.md` (TASK-01…06 con allowed_files estrictos; `api.ts`/`dto.ts`/`tokenStore.ts` congelados).
+- **Flujo resultante:** Login → (sin hardware: Home) / (biometría ya activa: Unlock manual) / (Opt-In → ACTIVAR → confirm nativo → primer uso manual → Home; Ahora no → Home sin revertir login). Arranque en frío con biometría: Unlock con auto-prompt + reintento manual; Volver → limpia sesión → Login.
+- `progress/current-task.json` → feature `auth-ui-polish`, TASK-01 `TODO`, assigned_role Trabajador.
+
 ### Pendiente
 
 - [x] TASK-01 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
@@ -163,6 +176,6 @@
 - [x] TASK-04 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
 - [x] TASK-05 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
 - [x] TASK-06 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
-- [ ] Auditoría arnés — Agente Revisor
-- [ ] Validación visual + Face ID en dispositivo físico — Tester Visual Humano
-- [ ] UI de Login Híbrido completada (bloqueada hasta handoff del Trabajador + Revisor)
+- [ ] Fase 1.5a TASK-01…06 — Agente Trabajador → Revisor → Tester Visual Humano (pixel-diff CA-01…03 + flujos CA-04…08 + biometría física)
+- [ ] Escudo institucional: el Humano coloca `assets/images/escudo-yucatan.png` antes de TASK-03
+- [ ] Fase 1.5b `core-arch-refactor` — spec/plan/task se redactan al aprobarse 1.5a (Orquestador)
