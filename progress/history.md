@@ -214,6 +214,18 @@
 - `progress/current-task.json` → `active_task: TASK-04`, `status: COMPLETED` (el puntero NO avanza a TASK-05; lo autoriza el Humano en nueva sesión). `harness_status` bundling Android/iOS `true` y typecheck `true`.
 - **SIGUIENTE:** TASK-05 (BiometricUnlockScreen pixel-perfect + modos auto/manual, plan §6.3/§5.4) en NUEVA SESIÓN, solo al autorizarlo el Humano.
 
+### 2026-09-05 — TASK-05 APROBADA por el Humano (Fase 1.5a)
+
+- **Validación (físico, iOS + Android):** el Tester Visual Humano dio por cerrada TASK-05. Visual de `BiometricUnlockScreen` con match de `biometric-login.png`; flujo completo validado: en `BiometricOptInScreen`, ACTIVAR dispara Face ID/huella nativo → la app navega a `BiometricUnlockScreen` en modo **`manual` (sin auto-prompt)** → al presionar «INICIAR SESIÓN» valida el método y lleva a Home.
+- **Hecho (secuencia TASK-05):**
+  - `src/screens/auth/BiometricUnlockScreen.tsx`: reescrita íntegra con **estilos INLINE JS** (los `className` de archivos nuevos no se aplican en iOS). AuthScaffold + header Pressable `< Volver` → `signOut` (fallback que limpia sesión), título «Cimientos del Renacimiento» (Lato-Bold, crema), escudo `assets/images/escudo-yucatan.png` (`Image` contain, w-40=160×160, accessibilityLabel institucional), cuerpo «Utilice su método biométrico para acceder» (taupe), error de desbloqueo `text-error` si existe, `GoldButton` «INICIAR SESIÓN» (loading/disabled = pending) → `unlockWithBiometrics`. Reutiliza `AuthScaffold`/`GoldButton`/`GoldButtonText` (ya inline de TASK-03). Cero `any`/`TouchableOpacity`/`FlatList`/`expo-router`/emojis.
+  - Auto-prompt: efecto `setTimeout` 500 ms protegido por `autoPrompted` ref **solo cuando `biometricUnlockMode === "auto"`**; en `"manual"` no hay auto-prompt, el prompt salta únicamente al presionar el botón. Conserva `handleUnlock` (errores de dominio vía `errorMessage`, `pending` anti-duplicado en ref). Resuelve el bug real en físico: iOS bloqueaba el segundo `authenticateAsync` encadenado justo tras ACTIVAR/OptIn y tras re-login con biometría activa.
+  - **FIX de navegación en vivo (`src/navigation/RootNavigator.tsx`), escalado del handoff de TASK-04 y confirmado con esta task:** el `initialRouteName` del `AuthStack.Navigator` NO se re-aplicaba en un navigator ya montado (el `NavigationContainer` conservaba el estado previo y la pantalla OptIn quedaba pegada tras ACTIVAR; igual ocurría Login→OptIn). Solución definitiva: **`<NavigationContainer key={status} …>`** — cada transición de la máquina de estados remonta el container sin estado previo e inicia limpio en el `initialRouteName` derivado del `status`. Se eliminó el `key={initialRouteName}` interno del Navigator. Transiciones sancadas: `biometric_opt_in`→Unlock manual, `unauthenticated`→Login, `signIn`→`biometric_opt_in`, y `needs_biometric` auto/manual en arranque en frío.
+- **Arnés:** `npx tsc --noEmit` → verde (exit 0). Bundling verificado por el Humano (Android + iOS). ESLint se reserva a TASK-06 (queda pendiente ahí el lint de `typecheck` puro ya verde y el caso del patrón `require()` en `BiometricUnlockScreen.tsx:106`, mismo patrón aprobado en LoginScreen).
+- `spec/features/auth-ui-polish/task.md`: TASK-05 marcada `- [x]` / `Status: COMPLETED`.
+- `progress/current-task.json` → `active_task: TASK-05`, `status: COMPLETED` (el puntero NO avanza a TASK-06; lo autoriza el Humano en nueva sesión al ejecutar la TASK-06). `harness_status` bundling Android/iOS `true` y typecheck `true`.
+- **SIGUIENTE:** TASK-06 (ARNÉS) en NUEVA SESIÓN — ESLint + TypeCheck + verificación de bans e invariantes por diff, para dejar la Fase 1.5a lista para pixel-diff (CA-01…03), flujos (CA-04…08) y biometría física del Humano. Solo al autorizarlo el Humano.
+
 ### Pendiente
 
 - [x] TASK-01 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
@@ -226,6 +238,6 @@
 - [x] Fase 1.5a TASK-02 — Componentes UI (AuthScaffold, GoldButton, BiometricMethodCard, TextField dark) (Agente Trabajador, APROBADA 2026-09-04)
 - [x] Fase 1.5a TASK-03 — LoginScreen pixel-perfect (Agente Trabajador, APROBADA 2026-09-05; match con login-form.png en iOS y Android)
 - [x] Fase 1.5a TASK-04 — Máquina de estados + BiometricOptInScreen (Agente Trabajador, APROBADA 2026-09-05; ver bloque de cierre abajo)
-- [ ] Fase 1.5a TASK-05 — BiometricUnlockScreen pixel-perfect
+- [x] Fase 1.5a TASK-05 — BiometricUnlockScreen pixel-perfect (Agente Trabajador, APROBADA 2026-09-05; ver bloque de cierre abajo)
 - [ ] Fase 1.5a TASK-06 — Arnés (Revisor → Tester Visual Humano, CA-01…10 + biometría física)
 - [ ] Fase 1.5b `core-arch-refactor` — spec/plan/task se redactan al aprobarse 1.5a (Orquestador)

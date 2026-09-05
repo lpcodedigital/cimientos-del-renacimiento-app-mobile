@@ -8,28 +8,23 @@
     "task_file": "spec/features/auth-ui-polish/task.md"
   },
   "active_task": {
-    "id": "TASK-04",
-    "description": "Máquina de estados + BiometricOptInScreen contra biometric-opt-in-request.png (nuevo status biometric_opt_in, BiometricUnlockMode auto|manual, confirmBiometricOptIn + getSupportedBiometricMethods en biometricService, nueva pantalla BiometricOptInScreen, registro en navigation y RootNavigator).",
+    "id": "TASK-05",
+    "description": "BiometricUnlockScreen pixel-perfect contra biometric-login.png + modos auto/manual (rediseño del Unlock dentro de AuthScaffold: «< Volver» → signOut, título de marca, escudo w-40, cuerpo institucional, error, GoldButton «INICIAR SESIÓN» con loading → unlockWithBiometrics; auto-prompt 500 ms una sola vez SOLO en modo auto, manual solo al presionar el botón). Incluye el fix de navegación en vivo en RootNavigator (key={status} en NavigationContainer).",
     "status": "COMPLETED",
     "assigned_role": "Trabajador",
     "allowed_files_to_edit": [
-      "src/features/auth/biometricService.ts",
-      "src/features/auth/AuthProvider.tsx",
-      "src/features/auth/useAuth.ts",
-      "src/navigation/types.ts",
-      "src/navigation/RootNavigator.tsx",
-      "src/screens/auth/BiometricOptInScreen.tsx",
-      "src/screens/app/HomePlaceholderScreen.tsx (solo ajuste por campos eliminados, si aplica)"
+      "src/screens/auth/BiometricUnlockScreen.tsx",
+      "src/navigation/RootNavigator.tsx (fix de navegación en vivo autorizado por el Humano durante la revisión)"
     ]
   },
   "harness_status": {
-    "last_run": "2026-09-05 (TASK-04 APROBADA por el Humano en Android + iOS)",
+    "last_run": "2026-09-05 (TASK-05 APROBADA por el Humano en Android + iOS)",
     "linter_passed": false,
     "typecheck_passed": true,
-    "typecheck_detail": "npx tsc --noEmit → salió en verde sin errores (exit 0) al cerrar TASK-04. ESLint no corrido (se reserva a TASK-06 por plan/task).",
+    "typecheck_detail": "npx tsc --noEmit → salió en verde sin errores (exit 0) al cerrar TASK-05. ESLint no corrido a nivel de todo el repo (se reserva a TASK-06 por plan/task); lint puntual de los archivos tocados: RootNavigator.tsx limpio; queda pendiente en BiometricUnlockScreen.tsx:106 el patrón público require() (misma forma que LoginScreen/TASK-03) que se resolverá en TASK-06.",
     "bundling_passed_android": true,
     "bundling_passed_ios": true,
-    "blockers_or_errors": "APROBADA (2026-09-05): Opt-In visual match con biometric-opt-in-request.png en iOS y Android; «Ahora no» → Home; ACTIVAR → prompt Face ID aceptado; arranque en frío con Face ID → Home; «Cerrar sesión» → Login. FIX navegación en vivo integrado: key={initialRouteName} en AuthStack.Navigator de RootNavigator (el initialRouteName no se re-aplicaba en un navigator ya montado tras el login). BiometricOptInScreen escrita con estilos INLINE JS (los className de archivos nuevos no se aplican en iOS). NOTA DE HANDOFF A TASK-05 (NO es bug de TASK-04): tras ACTIVAR (primer uso) y tras re-login con biometría activa, el status aterriza correctamente en needs_biometric + modo manual; pero BiometricUnlockScreen heredada (provisional Fase 1) aún auto-promputea incondicional, y iOS bloquea el segundo authenticateAsync encadenado → se queda colgado hasta reiniciar. Ese tramo se corrige exclusivamente en TASK-05 (modo manual sin auto-prompt + botón INICIAR SESIÓN). ESLint se reserva a TASK-06."
+    "blockers_or_errors": "APROBADA (2026-09-05): BiometricUnlockScreen reescrita con estilos INLINE JS dentro de AuthScaffold (Volver→signOut, título Cimientos del Renacimiento Lato-Bold crema, escudo escudo-yucatan.png w-40 contain, cuerpo taupe, error text-error, GoldButton INICIAR SESIÓN loading=pending). Auto-prompt setTimeout 500 ms SOLO si biometricUnlockMode==='auto' (manual → solo al presionar el botón). FIX de navegación en vivo: key={status} en NavigationContainer fuerza reset del estado de navegación en cada transición de la máquina de estados (resuelve que tras ACTIVAR en BiometricOptInScreen la app quedara pegada en OptIn en vez de pasar a BiometricUnlockScreen modo manual). Validado en iOS y Android por el Humano. El puntero NO avanza a TASK-06: lo autoriza el Humano en nueva sesión. ESLint global se reserva a TASK-06."
   },
-  "agent_notes": ""
+  "agent_notes": "TASK-05 COMPLETED y validada en físico (iOS + Android). Lista para TASK-06 (ARNÉS) en nueva sesión, solo cuando el Humano lo autorice. No avanzar el puntero a TASK-06 hasta que el Humano lo indique explícitamente."
 }

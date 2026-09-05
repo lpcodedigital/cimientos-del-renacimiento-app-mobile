@@ -141,23 +141,31 @@ Reglas absolutas del Trabajador:
 
 ## TASK-05 — BiometricUnlockScreen pixel-perfect (`biometric-login.png`)
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
+**validation:** APROBADA por el Humano (2026-09-05; iOS y Android: visual match con `biometric-login.png`, flujo ACTIVAR→Unlock manual, desbloqueo → Home; fix de navegación en vivo en RootNavigator integrado)
 
 **Objetivo:** Rediseño visual del Unlock + modos auto/manual.
 
 **Pasos**
 
-- [ ] Reescribir `src/screens/auth/BiometricUnlockScreen.tsx` según plan §6.3: `AuthScaffold`, «Volver» → `signOut`, título de marca, escudo (`w-40`), cuerpo institucional, error de desbloqueo, `GoldButton` «INICIAR SESIÓN» con `loading`.
-- [ ] Auto-prompt (efecto `setTimeout` 500 ms, una sola vez) **solo** cuando `biometricUnlockMode === "auto"`. En `"manual"` el prompt salta únicamente al presionar el botón.
-- [ ] Conservar la lógica actual de `handleUnlock` (errores de dominio, `pending`, ref anti-duplicado).
-- [ ] `npx tsc --noEmit` debe pasar.
+- [x] Reescribir `src/screens/auth/BiometricUnlockScreen.tsx` según plan §6.3: `AuthScaffold`, «Volver» → `signOut`, título de marca, escudo (`w-40`), cuerpo institucional, error de desbloqueo, `GoldButton` «INICIAR SESIÓN» con `loading`.
+- [x] Auto-prompt (efecto `setTimeout` 500 ms, una sola vez) **solo** cuando `biometricUnlockMode === "auto"`. En `"manual"` el prompt salta únicamente al presionar el botón.
+- [x] Conservar la lógica actual de `handleUnlock` (errores de dominio, `pending`, ref anti-duplicado).
+- [x] `npx tsc --noEmit` debe pasar.
 
 **allowed_files**
 
 - `src/screens/auth/BiometricUnlockScreen.tsx`
 
 **Definition of done:** CA-03/05/07 implementados. TypeCheck verde.
+
+**Notas de cierre (TASK-05, estilos inline + fix de navegación):**
+- `BiometricUnlockScreen.tsx` se reescribió íntegra con **estilos INLINE JS** (los `className` de archivos nuevos no se aplican en iOS): AuthScaffold + header `< Volver` → `signOut`, título «Cimientos del Renacimiento» (Lato-Bold crema), escudo `assets/images/escudo-yucatan.png` (`Image`, `w-40` = 160×160, contain, accessibilityLabel), cuerpo «Utilice su método biométrico para acceder» (taupe), error `text-error`, `GoldButton` «INICIAR SESIÓN» (loading/disabled = pending) → `unlockWithBiometrics`. Reutiliza `AuthScaffold`/`GoldButton`/`GoldButtonText` (ya inline). Cero `any`/`TouchableOpacity`/`FlatList`/emojis.
+- Auto-prompt: efecto `setTimeout` 500 ms guardado por `autoPrompted` ref **solo cuando `biometricUnlockMode === "auto"`**; en `"manual"` no hay auto-prompt y el desbloqueo se dispara únicamente presionando el botón (resuelve el bloqueo de iOS por doble `authenticateAsync` encadenado tras ACTIVAR/re-login).
+- FIX de navegación en vivo (RootNavigator, room en handoff de TASK-04 y validado con esta task): el `initialRouteName` del `AuthStack.Navigator` no se re-aplicaba en un stack ya montado (el container conservaba la OptIn y quedaba pegado). Se re-llavea el `NavigationContainer` con `key={status}`, forzando un reset del estado de navegación en cada transición de la máquina de estados: tras ACTIVAR (`biometric_opt_in`→`needs_biometric`) aterriza en `BiometricUnlock`; `signIn`→`biometric_opt_in` en `BiometricOptIn`; `unauthenticated`→`Login`; etc. Se quitó el `key={initialRouteName}` interno del Navigator.
+- Arnés: `npx tsc --noEmit` → verde. ESLint pendiente (TASK-06), incluido el lint del patrón `require()` público en `BiometricUnlockScreen.tsx:106` (misma forma que en LoginScreen/TASK-03, pendiente de resolver en TASK-06).
+- El Human validó en físico (iOS y Android): OptIn → ACTIVAR dispara Face ID/huella, la app pasa a `BiometricUnlockScreen` en modo `manual` (sin auto-prompt), y al presionar «INICIAR SESIÓN» valida el método y lleva a Home. No regresión del resto de flujos de la máquina de estados.
 
 ---
 

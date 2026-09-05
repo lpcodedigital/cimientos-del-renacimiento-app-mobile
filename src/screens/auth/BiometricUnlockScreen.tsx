@@ -1,6 +1,16 @@
-import { useState, useEffect, useRef } from "react";
-import { Pressable, Text, View } from "react-native";import { useAuth } from "@/features/auth/useAuth";
-import { InstitutionalText } from "@/components/ui/InstitutionalText";
+import { useEffect, useRef, useState } from "react";
+import { Image, Pressable, Text, View } from "react-native";
+
+import { AuthScaffold } from "@/components/ui/AuthScaffold";
+import { GoldButton, GoldButtonText } from "@/components/ui/GoldButton";
+import { useAuth } from "@/features/auth/useAuth";
+import { fontFamily as font } from "@/theme/tokens";
+
+const COLOR = {
+  crema: "#EDD6A8",
+  taupe: "#A58571",
+  error: "#8B1E1E",
+} as const;
 
 function errorMessage(error: unknown): string {
   if (
@@ -15,7 +25,7 @@ function errorMessage(error: unknown): string {
 }
 
 export function BiometricUnlockScreen() {
-  const { unlockWithBiometrics, signOut } = useAuth();
+  const { biometricUnlockMode, unlockWithBiometrics, signOut } = useAuth();
   const [unlockError, setUnlockError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const autoPrompted = useRef(false);
@@ -36,7 +46,7 @@ export function BiometricUnlockScreen() {
   }
 
   useEffect(() => {
-    if (autoPrompted.current) {
+    if (autoPrompted.current || biometricUnlockMode === "manual") {
       return;
     }
     autoPrompted.current = true;
@@ -46,48 +56,97 @@ export function BiometricUnlockScreen() {
     return () => {
       clearTimeout(timer);
     };
-  }, []);
+  }, [biometricUnlockMode]);
 
   return (
-    <View className="flex-1 items-center justify-center bg-fondo px-8">
-      <InstitutionalText variant="bold" className="text-guinda text-4xl">
-        Gabinete Móvil
-      </InstitutionalText>
-      <InstitutionalText className="mt-2 text-texto-suave text-base">
-        Desbloquea con Face ID / huella / pin para continuar.
-      </InstitutionalText>
-
-      {unlockError !== null ? (
-        <InstitutionalText className="mt-4 text-center text-error text-sm">
-          {unlockError}
-        </InstitutionalText>
-      ) : null}
-
-      <Pressable
-        className="mt-8 w-full rounded-xl bg-guinda px-6 py-4"
-        accessibilityRole="button"
-        accessibilityLabel="Desbloquear"
-        disabled={pending}
-        onPress={() => {
-          void handleUnlock();
+    <AuthScaffold>
+      <View
+        style={{
+          flex: 1,
+          paddingHorizontal: 32,
+          paddingVertical: 16,
         }}
       >
-        <Text className="text-center font-lato-bold text-superficie text-base">
-          {pending ? "Desbloqueando…" : "Desbloquear"}
-        </Text>
-      </Pressable>
-      <Pressable
-        className="mt-4 py-2"
-        accessibilityRole="button"
-        accessibilityLabel="Usar correo y contraseña"
-        onPress={() => {
-          void signOut();
-        }}
-      >
-        <Text className="font-lato text-guinda text-base underline">
-          Usar correo y contraseña
-        </Text>
-      </Pressable>
-    </View>
+        <Pressable
+          onPress={() => {
+            void signOut();
+          }}
+          accessibilityRole="button"
+          accessibilityLabel="Volver"
+          disabled={pending}
+          hitSlop={8}
+          style={{ alignSelf: "flex-start", paddingVertical: 4 }}
+        >
+          <Text style={{ fontFamily: font.lato, fontSize: 16, color: COLOR.taupe }}>
+            {"< Volver"}
+          </Text>
+        </Pressable>
+
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 24,
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: font["lato-bold"],
+              fontSize: 28,
+              lineHeight: 34,
+              color: COLOR.crema,
+              textAlign: "center",
+            }}
+          >
+            Cimientos del Renacimiento
+          </Text>
+
+          <Image
+            source={require("../../../assets/images/escudo-yucatan.png")}
+            resizeMode="contain"
+            accessibilityLabel="Escudo del Gobierno del Estado de Yucatán"
+            style={{ width: 160, height: 160 }}
+          />
+
+          <Text
+            style={{
+              fontFamily: font.lato,
+              fontSize: 16,
+              lineHeight: 24,
+              color: COLOR.taupe,
+              textAlign: "center",
+            }}
+          >
+            Utilice su método biométrico para acceder
+          </Text>
+
+          {unlockError !== null ? (
+            <Text
+              style={{
+                fontFamily: font.lato,
+                fontSize: 14,
+                color: COLOR.error,
+                textAlign: "center",
+              }}
+            >
+              {unlockError}
+            </Text>
+          ) : null}
+        </View>
+
+        <View style={{ gap: 12 }}>
+          <GoldButton
+            loading={pending}
+            disabled={pending}
+            onPress={() => {
+              void handleUnlock();
+            }}
+          >
+            <GoldButtonText>INICIAR SESIÓN</GoldButtonText>
+          </GoldButton>
+        </View>
+      </View>
+    </AuthScaffold>
   );
 }

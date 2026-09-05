@@ -222,3 +222,48 @@ CONTROL DE FLUJO (INNEGOCIABLE):
 - TE DETIENES AHÍ. Tienes TERMINANTEMENTE PROHIBIDO iniciar TASK-05 o cualquier otra task hasta que el Humano valide visualmente TASK-04 y te lo indique explícitamente en esta sesión. Unicamente vas a actulizar todo lo que este relacionado con el progress hasta que de por concluida la TASK actual
 
 Al terminar, respóndeme con: (1) lista exacta de archivos modificados, (2) salida del typecheck, (3) qué debo validar yo como Humano (pixel-diff login vs login-form.png, CanSubmit/errores, secureToggle, escudo, divisor biométrico) antes de autorizar TASK-05.
+
+## Instruccion worker DeepSeek v4 flash Fase1.5a/task 05 
+
+spec/features/auth-ui-polish/task.md (sección TASK-05; TASK-01..04 COMPLETED y aprobadas
+por el Humano 2026-09-05, incluyendo la BiometricOptInScreen visual 10/10).
+
+TAREA ASIGNADA: ejecutar ÚNICAMENTE la TASK-05 descrita en
+spec/features/auth-ui-polish/task.md.
+
+REGLAS ESTRICTAS:
+- SOLO editar src/screens/auth/BiometricUnlockScreen.tsx (único allowed_file de TASK-05).
+- Reescribir la pantalla según plan §6.3 DENTRO de AuthScaffold: AuthScaffold + header
+  Pressable «< Volver» → signOut (fallback que limpia sesión), título de marca
+  «Cimientos del Renacimiento» (Lato Bold, text-auth-crema), escudo de Yucatán
+  (w-40, centered, resizeMode contain, Image), cuerpo «Utilice su método biométrico
+  para acceder» (text-auth-taupe), error de desbloqueo si existe (text-error),
+  GoldButton «INICIAR SESIÓN» (loading = pending) → unlockWithBiometrics.
+- LEER en el provider el modo con useAuth(): const { biometricUnlockMode } =
+  useAuth(). Auto-prompt (efecto setTimeout 500 ms, una sola vez con ref) SOLO cuando
+  biometricUnlockMode === "auto". En "manual" el prompt salta ÚNICAMENTE al presionar
+  el botón. Conservar handleUnlock actual (errores de dominio, pending, ref
+  anti-duplicado) para no reintentar doble prompt.
+- CONTEXTO DE INTEGRACIÓN (bug confirmado en físico): la pantalla heredada auto-promputea
+  incondicional e iOS bloquea el segundo authenticateAsync encadenado justo tras
+  ACTIVAR/OptIn y tras re-login con biometría activa → quedaba colgada hasta reiniciar.
+  TASK-05 corrige esto respetando "manual": tras ACTIVAR (primer uso) y tras re-login con
+  biometría ya activa el provider entrega status=needs_biometric con mode="manual", así
+  que NO debe dispararse auto-prompt y el Home llega solo al presionar INICIAR SESIÓN.
+- IMPORTANTE INTEGRACIÓN NativeWind en iOS: los className de archivos NUEVOS no se aplican
+  en iOS. Aplica ESTILOS INLINE JS en toda la pantalla (igual que AuthScaffold/GoldButton
+  y BiometricOptInScreen ya migrados). Reutiliza AuthScaffold y GoldButton/GoldButtonText
+  (ya inline). Describe cualquier componente className-based que deba migrarse igual.
+- NO toques raíces Auth|App, api/dto/tokenStore, ni AuthProvider/useAuth ya entregados en
+  TASK-04. Cero any/TouchableOpacity/FlatList/expo-router/emojis.
+- npx expo run / expo start PROHIBIDOS a agentes.
+- Ejecuta npx tsc --noEmit; debe pasar en verde.
+
+CONTROL DE FLUJO (INNEGOCIABLE):
+- Al terminar TASK-05: no marca sus checkboxes `- [x]` y `Status: COMPLETED` en spec/features/auth-ui-polish/task.md.
+- No Actualizes el progress/current-task.json: active_task.status = "READY_FOR_HUMAN_VALIDATION" (NO avances el puntero a TASK-06), registra harness_status con el resultado del typecheck y no escribas agent_notes detallando lo hecho.
+- no Añadas una entrada en progress/history.md bajo la sección Fase 1.5a.
+- TE DETIENES AHÍ. Tienes TERMINANTEMENTE PROHIBIDO iniciar TASK-06 o cualquier otra task hasta que el Humano valide visualmente TASK-05 y te lo indique explícitamente en esta sesión. Unicamente vas a actulizar todo lo que este relacionado con el progress hasta que de por concluida la TASK actual
+
+Al terminar respóndeme: (1) archivos modificados, (2) salida del typecheck,
+(3) qué debo validar yo como Humano antes de autorizar TASK-06.

@@ -39,15 +39,14 @@ const AUTH_INITIAL_ROUTE: Record<
 
 function AuthStackNavigator({ status }: { status: AuthStatus }) {
   const initialRouteName =
-    status === "needs_biometric"
-      ? AUTH_INITIAL_ROUTE.needs_biometric
-      : status === "biometric_opt_in"
+    status === "biometric_opt_in"
       ? AUTH_INITIAL_ROUTE.biometric_opt_in
+      : status === "needs_biometric"
+      ? AUTH_INITIAL_ROUTE.needs_biometric
       : AUTH_INITIAL_ROUTE.unauthenticated;
 
   return (
     <AuthStack.Navigator
-      key={initialRouteName}
       screenOptions={{ headerShown: false }}
       initialRouteName={initialRouteName}
     >
@@ -91,7 +90,7 @@ export function RootNavigator() {
 
   return (
     <SafeAreaProvider>
-      <NavigationContainer theme={appTheme}>
+      <NavigationContainer key={status} theme={appTheme}>
         {status === "authenticated" ? (
           <AppStackNavigator />
         ) : (
