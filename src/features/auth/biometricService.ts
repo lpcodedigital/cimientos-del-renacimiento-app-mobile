@@ -22,6 +22,54 @@ function androidCanAuthenticate(
   );
 }
 
+export type BiometricMethodKind = "facial" | "fingerprint" | "iris" | "none";
+
+function optInOptions(): LocalAuthentication.LocalAuthenticationOptions {
+  if (Platform.OS === "ios") {
+    return {
+      promptMessage: "Confirmar Face ID para Gabinete Móvil",
+      cancelLabel: "Cancelar",
+      fallbackLabel: "",
+      disableDeviceFallback: true,
+    };
+  }
+  return {
+    promptMessage: "Confirmar desbloqueo biométrico",
+    cancelLabel: "Cancelar",
+    disableDeviceFallback: false,
+  };
+}
+
+export async function confirmBiometricOptIn(): Promise<boolean> {
+  try {
+    const result = await LocalAuthentication.authenticateAsync(
+      optInOptions()
+    );
+    return result.success;
+  } catch {
+    return false;
+  }
+}
+
+export async function getSupportedBiometricMethods(): Promise<BiometricMethodKind[]> {
+  const kinds: BiometricMethodKind[] = [];
+  try {
+    const types = await LocalAuthentication.supportedAuthenticationTypesAsync();
+    if (types.includes(LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION)) {
+      kinds.push("facial");
+    }
+    if (types.includes(LocalAuthentication.AuthenticationType.FINGERPRINT)) {
+      kinds.push("fingerprint");
+    }
+    if (types.includes(LocalAuthentication.AuthenticationType.IRIS)) {
+      kinds.push("iris");
+    }
+  } catch {
+    return ["none"];
+  }
+  return kinds.length > 0 ? kinds : ["none"];
+}
+
 export async function getBiometricAvailability(): Promise<BiometricAvailability> {
   if (Platform.OS === "android") {
     const level = await LocalAuthentication.getEnrolledLevelAsync();

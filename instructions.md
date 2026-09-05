@@ -190,3 +190,35 @@ CONTROL DE FLUJO (INNEGOCIABLE):
 - TE DETIENES AHÍ. Tienes TERMINANTEMENTE PROHIBIDO iniciar TASK-04 o cualquier otra task hasta que el Humano valide visualmente TASK-03 y te lo indique explícitamente en esta sesión. Unicamente vas a actulizar todo lo que este relacionado con el progress hasta que de por concluida la TASK actual
 
 Al terminar, respóndeme con: (1) lista exacta de archivos modificados, (2) salida del typecheck, (3) qué debo validar yo como Humano (pixel-diff login vs login-form.png, CanSubmit/errores, secureToggle, escudo, divisor biométrico) antes de autorizar TASK-04.
+
+## Instruccion worker DeepSeek v4 flash Fase1.5a/task 04 
+
+CONTEXTO OBLIGATORIO (léelo en este orden, sin excepción):
+1. /AGENTS.md
+2. /progress/current-task.json (memoria activa: feature auth-ui-polish, TASK-04 es el puntero activo, status TODO; TASK-01..03 COMPLETED y aprobadas por el Humano)
+3. /progress/history.md (entradas del 2026-09-04/05: TASK-01, TASK-02, y «TASK-03 APROBADA por el Humano» con las correcciones de TASK-02 escaladas: AuthScaffold/GoldButton reescritos a estilos inline JS por el pruning de NativeWind en iOS)
+4. /spec/constitution/tech-stack.md (§2.1 paleta auth-*, §gradientes expo-linear-gradient, §5 Clean Architecture prohibido hasta 1.5b)
+5. /spec/features/auth-ui-polish/spec.md
+6. /spec/features/auth-ui-polish/plan.md (§3 máquina de estados, §4 navegación, §6.2 BiometricOptInScreen)
+7. /spec/features/auth-ui-polish/task.md (sección TASK-04; TASK-01..03 COMPLETED y aprobadas)
+TAREA ASIGNADA: ejecutar ÚNICAMENTE la TASK-04 descrita en spec/features/auth-ui-polish/task.md.
+REGLAS ESTRICTAS:
+- SOLO editar los archivos en allowed_files de TASK-04:
+- src/features/auth/biometricService.ts (añadir confirmBiometricOptIn() y getSupportedBiometricMethods() + tipo BiometricMethodKind; NO modificar authenticateWithResult ni getBiometricAvailability)
+- src/features/auth/AuthProvider.tsx (plan §3: añadir status biometric_opt_in, BiometricUnlockMode auto|manual, transiciones signIn/enableBiometricAfterLogin/declineBiometricOptIn; eliminar shouldOfferBiometricOptIn, biometricEnrollHint, dismissBiometricOptIn; conservar canUseBiometricLogin añadido en TASK-03)
+- src/features/auth/useAuth.ts (sincronizar interfaz, añadir biometricUnlockMode)
+- src/navigation/types.ts (añadir BiometricOptIn: undefined)
+- src/navigation/RootNavigator.tsx (registrar screen + mapear ruta inicial biometric_opt_in)
+- src/screens/auth/BiometricOptInScreen.tsx (nueva pantalla segun plan §6.2)
+- src/screens/app/HomePlaceholderScreen.tsx (solo ajuste mínimo si consume campos eliminados)
+- IMPORTANTE INTEGRACIÓN: dado el pruning de NativeWind descubierto en TASK-02/03 (los className de archivos nuevos no se aplican en iOS), aplica ESTILOS INLINE JS en los archivos/screens nuevos (especialmente BiometricOptInScreen). Reutiliza AuthScaffold (ya inline), GoldButton/GoldButtonText (inline), BiometricMethodCard y TextField (evaluar si requieren misma corrección). Valida con tsc y describe cualquier componente que deba migrarse igual.
+- Conserva la ruta y semántica biométrica de Fase 1; NO toques api/dto/tokenStore ni raíces Auth|App. Cero any/TouchableOpacity/FlatList/expo-router/emojis. npx expo run y expo start PROHIBIDOS a agentes.
+- Ejecuta npx tsc --noEmit; debe pasar en verde.
+
+CONTROL DE FLUJO (INNEGOCIABLE):
+- Al terminar TASK-04: no marca sus checkboxes `- [x]` y `Status: COMPLETED` en spec/features/auth-ui-polish/task.md.
+- No Actualizes el progress/current-task.json: active_task.status = "READY_FOR_HUMAN_VALIDATION" (NO avances el puntero a TASK-05), registra harness_status con el resultado del typecheck y no escribas agent_notes detallando lo hecho.
+- no Añadas una entrada en progress/history.md bajo la sección Fase 1.5a.
+- TE DETIENES AHÍ. Tienes TERMINANTEMENTE PROHIBIDO iniciar TASK-05 o cualquier otra task hasta que el Humano valide visualmente TASK-04 y te lo indique explícitamente en esta sesión. Unicamente vas a actulizar todo lo que este relacionado con el progress hasta que de por concluida la TASK actual
+
+Al terminar, respóndeme con: (1) lista exacta de archivos modificados, (2) salida del typecheck, (3) qué debo validar yo como Humano (pixel-diff login vs login-form.png, CanSubmit/errores, secureToggle, escudo, divisor biométrico) antes de autorizar TASK-05.

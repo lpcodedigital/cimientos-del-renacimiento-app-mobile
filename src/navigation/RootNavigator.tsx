@@ -10,6 +10,7 @@ import type {
 } from "@/navigation/types";
 
 import { LoginScreen } from "@/screens/auth/LoginScreen";
+import { BiometricOptInScreen } from "@/screens/auth/BiometricOptInScreen";
 import { BiometricUnlockScreen } from "@/screens/auth/BiometricUnlockScreen";
 import { HomePlaceholderScreen } from "@/screens/app/HomePlaceholderScreen";
 
@@ -25,10 +26,14 @@ const appTheme = {
 };
 
 const AUTH_INITIAL_ROUTE: Record<
-  Extract<AuthStatus, "unauthenticated" | "needs_biometric">,
+  Extract<
+    AuthStatus,
+    "unauthenticated" | "biometric_opt_in" | "needs_biometric"
+  >,
   keyof AuthStackParamList
 > = {
   unauthenticated: "Login",
+  biometric_opt_in: "BiometricOptIn",
   needs_biometric: "BiometricUnlock",
 };
 
@@ -36,14 +41,18 @@ function AuthStackNavigator({ status }: { status: AuthStatus }) {
   const initialRouteName =
     status === "needs_biometric"
       ? AUTH_INITIAL_ROUTE.needs_biometric
+      : status === "biometric_opt_in"
+      ? AUTH_INITIAL_ROUTE.biometric_opt_in
       : AUTH_INITIAL_ROUTE.unauthenticated;
 
   return (
     <AuthStack.Navigator
+      key={initialRouteName}
       screenOptions={{ headerShown: false }}
       initialRouteName={initialRouteName}
     >
       <AuthStack.Screen name="Login" component={LoginScreen} />
+      <AuthStack.Screen name="BiometricOptIn" component={BiometricOptInScreen} />
       <AuthStack.Screen
         name="BiometricUnlock"
         component={BiometricUnlockScreen}

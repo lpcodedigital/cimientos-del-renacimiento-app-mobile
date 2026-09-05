@@ -196,6 +196,24 @@
 - `progress/current-task.json` → `active_task: TASK-04`, `status: TODO`, `harness_status` con bundling Android/iOS `true` y typecheck `true`.
 - **SIGUIENTE:** TASK-04 (máquina de estados + BiometricOptInScreen, plan §3/§4/§6.2) en NUEVA SESIÓN, solo al autorizarlo el Humano.
 
+### 2026-09-05 — TASK-04 APROBADA por el Humano (Fase 1.5a)
+
+- **Validación:** el Tester Visual Humano compiló en **Android e iOS**. El login con Face ID activo (aún no activado en la app) mostró la `BiometricOptInScreen`: **visual 10/10, match con `biometric-opt-in-request.png`**. «Ahora no» → Home con sesión intacta. «ACTIVAR BIOMÉTRICO» → solicita permiso Face ID; aceptado → `biometric_enabled`. Arranque en frío con Face ID → reconoce → Home; «Cerrar sesión» → Login.
+- **Hecho (secuencia TASK-04):**
+  - `biometricService.ts`: añadidos `confirmBiometricOptIn()` (iOS `disableDeviceFallback:true`+`fallbackLabel""`, Android `disableDeviceFallback:false`, try/catch→false), `getSupportedBiometricMethods()` y tipo `BiometricMethodKind` (`facial|fingerprint|iris|none`), mapeando `AuthenticationType.FACIAL_RECOGNITION/FINGERPRINT/IRIS`. Sin tocar `authenticateWithResult` ni `getBiometricAvailability`.
+  - `AuthProvider.tsx`: `AuthStatus` ampliado con `biometric_opt_in`; nuevo `BiometricUnlockMode = "auto"|"manual"` + estado `biometricUnlockMode` (default auto). Transiciones de plan §3.3: bootstrap (con biometría → needs_biometric/auto); `signIn` (sin hardware → authenticated; hardware + ya activada → needs_biometric/manual; hardware + no activada → biometric_opt_in); `declineBiometricOptIn` (persiste false → authenticated); `enableBiometricAfterLogin` (`confirmBiometricOptIn()` success → true + manual + needs_biometric; cancelado → false + authenticated, login NO revertido). Eliminados `shouldOfferBiometricOptIn`, `biometricEnrollHint`, `dismissBiometricOptIn`. Conservado `canUseBiometricLogin`.
+  - `useAuth.ts`: interfaz sincronizada (`biometricUnlockMode` añadido, campos muertos eliminados, re-export de `BiometricUnlockMode`).
+  - `navigation/types.ts`: añadido `BiometricOptIn: undefined`.
+  - `RootNavigator.tsx`: registrada `BiometricOptInScreen` y extendido el mapeo `AUTH_INITIAL_ROUTE` (`biometric_opt_in → "BiometricOptIn"`).
+  - `src/screens/auth/BiometricOptInScreen.tsx`: nueva pantalla (Volver/Ahora no → `declineBiometricOptIn`; ACTIVAR → `enableBiometricAfterLogin` con `loading`; cards FACE ID / HUELLA desde `getSupportedBiometricMethods()` — la soportada seleccionada, la otra `opacity 0.5` atenuda no-seleccionada, el hardware manda; beneficios lock-closed/flash/refresh con Ionicons). **Escrita con estilos INLINE JS** (los `className` de archivos nuevos no se aplican en iOS; no se reutilizó `BiometricMethodCard`, className-poisoned).
+  - `HomePlaceholderScreen.tsx`: ajuste mínimo — eliminado el bloque que consumía los campos eliminados (el opt-in ya no vive ahí); volvió al placeholder de sesión simple con «Cerrar sesión».
+- **FIX navegación en vivo (RootNavigator):** tras el login el `status` cambiaba pero el `AuthStack.Navigator` ya montado no re-aplicaba su `initialRouteName` → Login colgada sin navegar. Solución: `key={initialRouteName}` en el Navigator (remonta en la ruta inicial correcta al cambiar de status). Esto saneó Login → Opt-In en vivo.
+- **Handoff a TASK-05 (documentado, NO es bug de TASK-04):** tras ACTIVAR (primer uso) y tras re-login con biometría activa, el status aterriza correctamente en `needs_biometric` + `manual`; pero la `BiometricUnlockScreen` heredada (provisional Fase 1) aún **auto-promputea incondicional** y iOS bloquea el segundo `authenticateAsync` encadenado → queda colgada hasta reiniciar. Ese tramo (modo manual sin auto-prompt + botón «INICIAR SESIÓN» + reintento manual) se resuelve EXCLUSIVAMENTE en TASK-05. OptIn/Unlock comparten el AuthScaffold oscuro; la Opt-In quedó aprobada.
+- **Arnés:** `npx tsc --noEmit` → verde (exit 0). Bundling verificado por el Humano (Android + iOS). ESLint se reserva a TASK-06.
+- `spec/features/auth-ui-polish/task.md`: TASK-04 marcada `- [x]` / `Status: COMPLETED`.
+- `progress/current-task.json` → `active_task: TASK-04`, `status: COMPLETED` (el puntero NO avanza a TASK-05; lo autoriza el Humano en nueva sesión). `harness_status` bundling Android/iOS `true` y typecheck `true`.
+- **SIGUIENTE:** TASK-05 (BiometricUnlockScreen pixel-perfect + modos auto/manual, plan §6.3/§5.4) en NUEVA SESIÓN, solo al autorizarlo el Humano.
+
 ### Pendiente
 
 - [x] TASK-01 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
@@ -207,7 +225,7 @@
 - [x] Fase 1.5a TASK-01 — Tokens + expo-linear-gradient + asset (Agente Trabajador, APROBADA 2026-09-04)
 - [x] Fase 1.5a TASK-02 — Componentes UI (AuthScaffold, GoldButton, BiometricMethodCard, TextField dark) (Agente Trabajador, APROBADA 2026-09-04)
 - [x] Fase 1.5a TASK-03 — LoginScreen pixel-perfect (Agente Trabajador, APROBADA 2026-09-05; match con login-form.png en iOS y Android)
-- [ ] Fase 1.5a TASK-04 — Máquina de estados + BiometricOptInScreen
+- [x] Fase 1.5a TASK-04 — Máquina de estados + BiometricOptInScreen (Agente Trabajador, APROBADA 2026-09-05; ver bloque de cierre abajo)
 - [ ] Fase 1.5a TASK-05 — BiometricUnlockScreen pixel-perfect
 - [ ] Fase 1.5a TASK-06 — Arnés (Revisor → Tester Visual Humano, CA-01…10 + biometría física)
 - [ ] Fase 1.5b `core-arch-refactor` — spec/plan/task se redactan al aprobarse 1.5a (Orquestador)

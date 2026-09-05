@@ -1,5 +1,6 @@
 export type AuthStackParamList = {
   Login: undefined;
+  BiometricOptIn: undefined;
   BiometricUnlock: undefined;
 };
 

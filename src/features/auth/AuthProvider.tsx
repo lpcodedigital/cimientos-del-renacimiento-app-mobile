@@ -19,15 +19,20 @@ import {
 } from "./tokenStore";
 import {
   authenticateWithResult,
+  confirmBiometricOptIn,
   getBiometricAvailability,
 } from "./biometricService";
+import type { PersistedSession } from "./tokenStore";
 import { setAuthToken } from "@/lib/http/axiosClient";
 
 export type AuthStatus =
   | "bootstrapping"
   | "unauthenticated"
+  | "biometric_opt_in"
   | "needs_biometric"
   | "authenticated";
+
+export type BiometricUnlockMode = "auto" | "manual";
 
 interface AuthContextValue {
   status: AuthStatus;
@@ -35,13 +40,11 @@ interface AuthContextValue {
   user: AuthBasicUserResponseDTO | null;
   expiresAt: string | null;
   canUseBiometricLogin: boolean;
-  shouldOfferBiometricOptIn: boolean;
-  biometricEnrollHint: string | null;
+  biometricUnlockMode: BiometricUnlockMode;
   signIn: (email: string, password: string) => Promise<void>;
   unlockWithBiometrics: () => Promise<void>;
   declineBiometricOptIn: () => Promise<void>;
   enableBiometricAfterLogin: () => Promise<void>;
-  dismissBiometricOptIn: () => void;
   signOut: () => Promise<void>;
 }
 
@@ -57,11 +60,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<AuthBasicUserResponseDTO | null>(null);
   const [expiresAt, setExpiresAt] = useState<string | null>(null);
   const [canUseBiometricLogin, setCanUseBiometricLogin] = useState(false);
-  const [shouldOfferBiometricOptIn, setShouldOfferBiometricOptIn] =
-    useState(false);
-  const [biometricEnrollHint, setBiometricEnrollHint] = useState<string | null>(
-    null
-  );
+  const [biometricUnlockMode, setBiometricUnlockMode] =
+    useState<BiometricUnlockMode>("auto");
   const bootstrapped = useRef(false);
 
   useEffect(() => {
@@ -83,9 +83,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
             setToken(null);
             setUser(null);
             setExpiresAt(null);
+            setBiometricUnlockMode("auto");
             setCanUseBiometricLogin(false);
-            setStatus("unauthenticated");
             setAuthToken(null);
+            setStatus("unauthenticated");
           }
           return;
         }
@@ -93,6 +94,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         const biometricEnabled = await getBiometricEnabled();
 
         let nextStatus: AuthStatus = "authenticated";
+        let nextMode: BiometricUnlockMode = "auto";
         if (biometricEnabled) {
           const availability = await getBiometricAvailability();
           if (availability.hasHardware && availability.isEnrolled) {
@@ -104,7 +106,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
           setToken(session.token);
           setUser(session.user);
           setExpiresAt(session.expiresAt);
-          setCanUseBiometricLogin(biometricEnabled && isSessionVigente(session.expiresAt));
+          setBiometricUnlockMode(nextMode);
+          setCanUseBiometricLogin(
+            biometricEnabled && isSessionVigente(session.expiresAt)
+          );
           setAuthToken(session.token);
           setStatus(nextStatus);
         }
@@ -113,9 +118,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
           setToken(null);
           setUser(null);
           setExpiresAt(null);
+          setBiometricUnlockMode("auto");
           setCanUseBiometricLogin(false);
-          setStatus("unauthenticated");
           setAuthToken(null);
+          setStatus("unauthenticated");
         }
       }
     }
@@ -129,26 +135,32 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
   const signIn = useCallback(async (email: string, password: string) => {
     const response = await loginRequest({ email, password });
-    await saveSession({
+    const session: PersistedSession = {
       token: response.token,
       expiresAt: response.expiresAt,
       user: response.user,
-    });
+    };
+    await saveSession(session);
 
     const availability = await getBiometricAvailability();
     const available = availability.hasHardware && availability.isEnrolled;
+    const previouslyEnabled = await getBiometricEnabled();
 
-    setToken(response.token);
-    setUser(response.user);
-    setExpiresAt(response.expiresAt);
-    setAuthToken(response.token);
-    setShouldOfferBiometricOptIn(available);
-    setBiometricEnrollHint(
-      availability.hasHardware && !availability.isEnrolled
-        ? "El dispositivo soporta Face ID / huella pero aún no tiene ninguna registrada. Regístrala en los Ajustes del dispositivo."
-        : null
-    );
-    setStatus("authenticated");
+    setToken(session.token);
+    setUser(session.user);
+    setExpiresAt(session.expiresAt);
+    setAuthToken(session.token);
+
+    if (!available) {
+      setStatus("authenticated");
+      return;
+    }
+    if (previouslyEnabled) {
+      setBiometricUnlockMode("manual");
+      setStatus("needs_biometric");
+      return;
+    }
+    setStatus("biometric_opt_in");
   }, []);
 
   const unlockWithBiometrics = useCallback(async () => {
@@ -183,20 +195,20 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, []);
 
   const declineBiometricOptIn = useCallback(async () => {
-    setShouldOfferBiometricOptIn(false);
-    setBiometricEnrollHint(null);
     await setBiometricEnabled(false);
+    setStatus("authenticated");
   }, []);
 
   const enableBiometricAfterLogin = useCallback(async () => {
+    const confirmed = await confirmBiometricOptIn();
+    if (!confirmed) {
+      await setBiometricEnabled(false);
+      setStatus("authenticated");
+      return;
+    }
     await setBiometricEnabled(true);
-    setShouldOfferBiometricOptIn(false);
-    setBiometricEnrollHint(null);
-  }, []);
-
-  const dismissBiometricOptIn = useCallback(() => {
-    setShouldOfferBiometricOptIn(false);
-    setBiometricEnrollHint(null);
+    setBiometricUnlockMode("manual");
+    setStatus("needs_biometric");
   }, []);
 
   const signOut = useCallback(async () => {
@@ -204,8 +216,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     setUser(null);
     setExpiresAt(null);
     setCanUseBiometricLogin(false);
-    setShouldOfferBiometricOptIn(false);
-    setBiometricEnrollHint(null);
+    setBiometricUnlockMode("auto");
     setAuthToken(null);
     setStatus("unauthenticated");
     await Promise.allSettled([clearSession(), setBiometricEnabled(false)]);
@@ -218,13 +229,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
       user,
       expiresAt,
       canUseBiometricLogin,
-      shouldOfferBiometricOptIn,
-      biometricEnrollHint,
+      biometricUnlockMode,
       signIn,
       unlockWithBiometrics,
       declineBiometricOptIn,
       enableBiometricAfterLogin,
-      dismissBiometricOptIn,
       signOut,
     }),
     [
@@ -233,13 +242,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
       user,
       expiresAt,
       canUseBiometricLogin,
-      shouldOfferBiometricOptIn,
-      biometricEnrollHint,
+      biometricUnlockMode,
       signIn,
       unlockWithBiometrics,
       declineBiometricOptIn,
       enableBiometricAfterLogin,
-      dismissBiometricOptIn,
       signOut,
     ]
   );

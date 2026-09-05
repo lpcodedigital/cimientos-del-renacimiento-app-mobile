@@ -1,8 +1,8 @@
 import { useAuth as useAuthFromProvider } from "./AuthProvider";
-import type { AuthStatus } from "./AuthProvider";
+import type { AuthStatus, BiometricUnlockMode } from "./AuthProvider";
 import type { AuthBasicUserResponseDTO } from "./dto";
 
-export type { AuthStatus };
+export type { AuthStatus, BiometricUnlockMode };
 
 export interface UseAuthResult {
   status: AuthStatus;
@@ -10,13 +10,11 @@ export interface UseAuthResult {
   user: AuthBasicUserResponseDTO | null;
   expiresAt: string | null;
   canUseBiometricLogin: boolean;
-  shouldOfferBiometricOptIn: boolean;
-  biometricEnrollHint: string | null;
+  biometricUnlockMode: BiometricUnlockMode;
   signIn: (email: string, password: string) => Promise<void>;
   unlockWithBiometrics: () => Promise<void>;
   declineBiometricOptIn: () => Promise<void>;
   enableBiometricAfterLogin: () => Promise<void>;
-  dismissBiometricOptIn: () => void;
   signOut: () => Promise<void>;
 }
 

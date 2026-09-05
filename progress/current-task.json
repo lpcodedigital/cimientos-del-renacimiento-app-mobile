@@ -10,7 +10,7 @@
   "active_task": {
     "id": "TASK-04",
     "description": "Máquina de estados + BiometricOptInScreen contra biometric-opt-in-request.png (nuevo status biometric_opt_in, BiometricUnlockMode auto|manual, confirmBiometricOptIn + getSupportedBiometricMethods en biometricService, nueva pantalla BiometricOptInScreen, registro en navigation y RootNavigator).",
-    "status": "TODO",
+    "status": "COMPLETED",
     "assigned_role": "Trabajador",
     "allowed_files_to_edit": [
       "src/features/auth/biometricService.ts",
@@ -23,13 +23,13 @@
     ]
   },
   "harness_status": {
-    "last_run": "2026-09-05 (TASK-03 APROBADA por el Humano: compilación iOS y Android en verde; contenido visible en ambas y match con login-form.png. Funcionalidad del login probada en Android.)",
+    "last_run": "2026-09-05 (TASK-04 APROBADA por el Humano en Android + iOS)",
     "linter_passed": false,
     "typecheck_passed": true,
-    "typecheck_detail": "npx tsc --noEmit → salió en verde sin errores (exit 0) al cerrar TASK-03. ESLint no corrido (se reserva a TASK-06 por plan/task).",
+    "typecheck_detail": "npx tsc --noEmit → salió en verde sin errores (exit 0) al cerrar TASK-04. ESLint no corrido (se reserva a TASK-06 por plan/task).",
     "bundling_passed_android": true,
     "bundling_passed_ios": true,
-    "blockers_or_errors": "Sin errores. NOTA DE INTEGRACIÓN (correcciones de TASK-02 escaladas durante TASK-03, validadas por el Humano): expo-linear-gradient en pantallas de auth exige estilos inline JS en iOS — AuthScaffold.tsx y GoldButton.tsx/GoldButtonText.tsx se reescribieron a estilos inline (los className de archivos NUEVOS de TASK-02 no se aplicaban en iOS; Android sí). Zona de invariantes a vigilar en TASK-06. Tras TASK-03 queda en flujo el Login oscuro funcional; el botón 'o continúa con' / 'Acceso biométrico' no se renderiza (canUseBiometricLogin=false en Login), pendiente de ejercitarse vía TASK-04/05."
+    "blockers_or_errors": "APROBADA (2026-09-05): Opt-In visual match con biometric-opt-in-request.png en iOS y Android; «Ahora no» → Home; ACTIVAR → prompt Face ID aceptado; arranque en frío con Face ID → Home; «Cerrar sesión» → Login. FIX navegación en vivo integrado: key={initialRouteName} en AuthStack.Navigator de RootNavigator (el initialRouteName no se re-aplicaba en un navigator ya montado tras el login). BiometricOptInScreen escrita con estilos INLINE JS (los className de archivos nuevos no se aplican en iOS). NOTA DE HANDOFF A TASK-05 (NO es bug de TASK-04): tras ACTIVAR (primer uso) y tras re-login con biometría activa, el status aterriza correctamente en needs_biometric + modo manual; pero BiometricUnlockScreen heredada (provisional Fase 1) aún auto-promputea incondicional, y iOS bloquea el segundo authenticateAsync encadenado → se queda colgado hasta reiniciar. Ese tramo se corrige exclusivamente en TASK-05 (modo manual sin auto-prompt + botón INICIAR SESIÓN). ESLint se reserva a TASK-06."
   },
   "agent_notes": ""
 }

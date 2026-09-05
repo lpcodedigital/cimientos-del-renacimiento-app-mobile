@@ -108,21 +108,22 @@ Reglas absolutas del Trabajador:
 
 ## TASK-04 — Máquina de estados + BiometricOptInScreen (`biometric-opt-in-request.png`)
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
+**validation:** APROBADA por el Humano (2026-09-05; iOS y Android: Opt-In visual 10/10 vs `biometric-opt-in-request.png`; «Ahora no» → Home; ACTIVAR → prompt Face ID aceptado; arranque en frío con Face ID → Home). El tramo ACTIVAR→primer uso manual y el re-login en vivo dependen de la reescritura de `BiometricUnlockScreen` en TASK-05.
 
 **Objetivo:** Nuevo status `biometric_opt_in`, modo de desbloqueo, confirmación nativa y la nueva pantalla de Opt-In.
 
 **Pasos**
 
-- [ ] `biometricService.ts`: añadir `confirmBiometricOptIn()` y `getSupportedBiometricMethods()` + tipo `BiometricMethodKind` (plan §3.4). No modificar las funciones existentes.
-- [ ] `AuthProvider.tsx`: implementar plan §3.1–§3.3 completo (`biometric_opt_in`, `biometricUnlockMode`, transiciones de `signIn`/`enableBiometricAfterLogin`/`declineBiometricOptIn`; eliminar `shouldOfferBiometricOptIn`, `biometricEnrollHint`, `dismissBiometricOptIn`).
-- [ ] `useAuth.ts`: sincronizar la interfaz (eliminar campos muertos, añadir `biometricUnlockMode`).
-- [ ] `navigation/types.ts`: añadir `BiometricOptIn: undefined`.
-- [ ] `RootNavigator.tsx`: registrar la screen y extender el mapeo de ruta inicial (plan §4).
-- [ ] `src/screens/auth/BiometricOptInScreen.tsx`: nueva pantalla según plan §6.2 (Volver/Ahora no → `declineBiometricOptIn`; ACTIVAR → `enableBiometricAfterLogin` con `loading`; cards según `getSupportedBiometricMethods()`; beneficios con Ionicons).
-- [ ] Verificar consumidores de campos eliminados: si `HomePlaceholderScreen.tsx` u otro archivo los usa, ajustarlo (mínimo indispensable).
-- [ ] `npx tsc --noEmit` debe pasar.
+- [x] `biometricService.ts`: añadir `confirmBiometricOptIn()` y `getSupportedBiometricMethods()` + tipo `BiometricMethodKind` (plan §3.4). No modificar las funciones existentes.
+- [x] `AuthProvider.tsx`: implementar plan §3.1–§3.3 completo (`biometric_opt_in`, `biometricUnlockMode`, transiciones de `signIn`/`enableBiometricAfterLogin`/`declineBiometricOptIn`; eliminar `shouldOfferBiometricOptIn`, `biometricEnrollHint`, `dismissBiometricOptIn`).
+- [x] `useAuth.ts`: sincronizar la interfaz (eliminar campos muertos, añadir `biometricUnlockMode`).
+- [x] `navigation/types.ts`: añadir `BiometricOptIn: undefined`.
+- [x] `RootNavigator.tsx`: registrar la screen y extender el mapeo de ruta inicial (plan §4).
+- [x] `src/screens/auth/BiometricOptInScreen.tsx`: nueva pantalla según plan §6.2 (Volver/Ahora no → `declineBiometricOptIn`; ACTIVAR → `enableBiometricAfterLogin` con `loading`; cards según `getSupportedBiometricMethods()`; beneficios con Ionicons).
+- [x] Verificar consumidores de campos eliminados: si `HomePlaceholderScreen.tsx` u otro archivo los usa, ajustarlo (mínimo indispensable).
+- [x] `npx tsc --noEmit` debe pasar.
 
 **allowed_files**
 
