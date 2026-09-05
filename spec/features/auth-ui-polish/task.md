@@ -53,18 +53,19 @@ Reglas absolutas del Trabajador:
 
 ## TASK-02 — Componentes UI del sistema auth oscuro
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
+**validation:** APROBADA por el Humano (2026-09-04; compilación iOS + Android en verde). DESVIACIÓN AUTORIZADA: `@expo/vector-icons` ^15.0.2 instalado vía `npx expo install` (no venía transitivo en SDK 57; lo exigen los Ionicons de BiometricMethodCard y TextField).
 
 **Objetivo:** Primitivas visuales reutilizables según plan §5. Sin pantallas.
 
 **Pasos**
 
-- [ ] `src/components/ui/AuthScaffold.tsx`: gradiente vertical full-screen (`expo-linear-gradient` + `authPalette`), `<StatusBar style="light" />`, `SafeAreaView`, children (plan §5.1).
-- [ ] `src/components/ui/GoldButton.tsx`: compound `GoldButton` (gradiente horizontal, `h-14 rounded-full`, estados `pressed`/`disabled`/`loading` con `ActivityIndicator`) + `GoldButtonText` (plan §5.2). Solo `Pressable`.
-- [ ] `src/components/ui/BiometricMethodCard.tsx`: card seleccionada/atenuada con icono, título, subtítulo y checkmark (plan §5.3). No interactiva (`View`).
-- [ ] `src/components/ui/TextField.tsx`: restyle oscuro completo (label uppercase taupe, input `bg-auth-surface`, foco dorado, error `border-error`) + prop opcional `secureToggle` con iconos `eye`/`eye-off` de `@expo/vector-icons` Ionicons (plan §5.4).
-- [ ] `npx tsc --noEmit` debe pasar.
+- [x] `src/components/ui/AuthScaffold.tsx`: gradiente vertical full-screen (`expo-linear-gradient` + `authPalette`), `<StatusBar style="light" />`, `SafeAreaView`, children (plan §5.1).
+- [x] `src/components/ui/GoldButton.tsx`: compound `GoldButton` (gradiente horizontal, `h-14 rounded-full`, estados `pressed`/`disabled`/`loading` con `ActivityIndicator`) + `GoldButtonText` (plan §5.2). Solo `Pressable`.
+- [x] `src/components/ui/BiometricMethodCard.tsx`: card seleccionada/atenuada con icono, título, subtítulo y checkmark (plan §5.3). No interactiva (`View`).
+- [x] `src/components/ui/TextField.tsx`: restyle oscuro completo (label uppercase taupe, input `bg-auth-surface`, foco dorado, error `border-error`) + prop opcional `secureToggle` con iconos `eye`/`eye-off` de `@expo/vector-icons` Ionicons (plan §5.4).
+- [x] `npx tsc --noEmit` debe pasar.
 
 **allowed_files**
 

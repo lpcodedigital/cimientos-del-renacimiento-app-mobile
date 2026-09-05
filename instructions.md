@@ -88,11 +88,11 @@ la TASK-06 fue complepletada con exito, se valido en los dispositivos Android y 
 
 ## FASE 1.5b ##
 
-## Instrucciones lead planner Kimi K3
+## Instrucciones lead planner Kimi K3 Fase1.5a
 
 Usa unicamente por ahora el  @AGENTS.md y todo lo que este en  @spec/ para entrar en contexto, Todas las tareas a nivel funcional y validadas de la Fase 1 que se definio en el @spec/constitution/roadmap.md  esta completa. Teoricamente deberiamos continua con las fase 2 pero necesito hacer un pulido visual en la UI/UX para que la pantalla del login empate con mis mockups los cuales estan en  @spec/features/auth-ui-polish/mockups/ al igual que necesito afinar el flujo de interaccion del login de la app con el usuaro y aplicar un refactor del proyecto pata aplicar buenas practicas + clean arquitecture + proncipios solid para que se mantenible y escalable a largo plazo. pero no se si para esto debe ser tareas adicionales a la fase 1 o debe de ser una  nueva fase consecuitava a la fase 1 por ejemplo 1.5  con sus propias task.md spec.md y plan.md y asi crear  una nueva feature o quiza hacer un ajuste en el plan original y agregarlo  al agents.md, mission.md y tech-stack.md pero no se si esto impacto en lo que ya se logro, . Necesito saber como manejar esta situacion para este proyecto. Con respecto al pulido visual de la UI/UX y el flujo de la app la situacion la tengo @sutuacion-actual.md por favor evitar lecturas innecesarias de carpetas pesadas (`node_modules`, `android`, `ios`, `build`, etc.) solo si es necesario usalo esto con el objetivo de prevenir errores de límite de tokens (*Invalid-argument*). 
 
-## Instruccion worker DeepSeek v4 flash
+## Instruccion worker DeepSeek v4 flash Fase1.5a/task
 
 Rol: Agente Trabajador (Execution Agent). Proyecto: Cimientos del Renacimiento — Gabinete Móvil.
 
@@ -122,3 +122,36 @@ CONTROL DE FLUJO (INNEGOCIABLE):
 - TE DETIENES AHÍ. Tienes TERMINANTEMENTE PROHIBIDO iniciar TASK-02 o cualquier otra task hasta que el Humano valide visualmente TASK-01 y te lo indique explícitamente en esta sesión. Unicamente vas a actulizar todo lo que este relacionado con el progress hasta que de por concluida la TASK actual
 
 Al finalizar, respóndeme con: (1) lista exacta de archivos modificados, (2) salida del typecheck, (3) qué debo validar yo como Humano antes de autorizar TASK-02.
+
+## Instruccion worker DeepSeek v4 flash Fase1.5a/task 02
+
+Rol: Agente Trabajador (Execution Agent). Proyecto: Cimientos del Renacimiento — Gabinete Móvil.
+
+CONTEXTO OBLIGATORIO (lee en este orden, sin excepción):
+1. /AGENTS.md
+2. /progress/current-task.json (memoria activa: feature auth-ui-polish, TASK-02 TODO, puntero ya avanzado a TASK-02)
+3. /progress/history.md (ver entrada «2026-09-04 — TASK-01 APROBADA»)
+4. /spec/constitution/tech-stack.md (§2.1 paleta auth-*, §gradientes expo-linear-gradient)
+5. /spec/features/auth-ui-polish/spec.md
+6. /spec/features/auth-ui-polish/plan.md (especialmente §5 Components UI)
+7. /spec/features/auth-ui-polish/task.md (sección TASK-02)
+
+TAREA ASIGNADA: ejecutar ÚNICAMENTE la TASK-02 (Componentes UI del sistema auth oscuro) descrita en spec/features/auth-ui-polish/task.md. TASK-01 ya fue validada por el Humano y está COMPLETED.
+
+REGLAS ESTRICTAS:
+- Crea los 4 componentes: src/components/ui/AuthScaffold.tsx (gradiente vertical full-screen con expo-linear-gradient + authPalette, <StatusBar style="light" />, SafeAreaView, children — plan §5.1), GoldButton.tsx + GoldButtonText (compound; gradiente horizontal goldGradStart→goldGradEnd, h-14 rounded-full, estados pressed opacity-80 / disabled opacity-40 / loading con ActivityIndicator color authPalette.btnText; SOLO Pressable — plan §5.2), BiometricMethodCard.tsx (card no interactiva View; clases bg-auth-card-active border-auth-dorado seleccionada / bg-auth-card-inactive border-transparent no seleccionada; checkmark @expo/vector-icons Ionicons checkmark-circle color auth-dorado; plan §5.3), TextField.tsx (restyle oscuro: label uppercase taupe, input bg-auth-surface border-auth-surface-border rounded-2xl, foco focus:border-auth-dorado, error border-error; nueva prop opcional secureToggle con Pressable de iconos eye/eye-off Ionicons color taupe — plan §5.4).
+- Solo usar tokens auth-* del authPalette en tokens.ts y clases NativeWind derivadas de los 15 tokens; CERO colores inventados.
+- Consumir authPalette desde src/theme/tokens.ts (ya incluye btnText "#2D0A14").
+- Cero any, cero TouchableOpacity, cero FlatList, cero StyleSheet.create (salvo valor dinámico que lo exija; los gradientes usan props, no StyleSheet), cero emojis en UI, solo fuentes Lato.
+- SOLO puedes crear/editar los archivos listados en allowed_files de TASK-02 (los 4 componentes .tsx).
+- NO toques global.css, tokens.ts, api.ts, dto.ts, tokenStore.ts ni archivos de otras tasks (ya están congelados/avanzados).
+- Instalación: expo-linear-gradient YA instalada; NO instales ninguna otra dependencia en TASK-02.
+- Ejecuta npx tsc --noEmit; debe pasar en verde. NO ejecutes npx expo start.
+
+CONTROL DE FLUJO (INNEGOCIABLE):
+- Al terminar TASK-02: no marca sus checkboxes `- [x]` y `Status: COMPLETED` en spec/features/auth-ui-polish/task.md.
+- No Actualizes el progress/current-task.json: active_task.status = "READY_FOR_HUMAN_VALIDATION" (NO avances el puntero a TASK-03), registra harness_status con el resultado del typecheck y no escribas agent_notes detallando lo hecho.
+- no Añadas una entrada en progress/history.md bajo la sección Fase 1.5a.
+- TE DETIENES AHÍ. Tienes TERMINANTEMENTE PROHIBIDO iniciar TASK-03 o cualquier otra task hasta que el Humano valide visualmente TASK-02 y te lo indique explícitamente en esta sesión. Unicamente vas a actulizar todo lo que este relacionado con el progress hasta que de por concluida la TASK actual
+
+Al finalizar, respóndeme con: (1) lista exacta de archivos modificados, (2) salida del typecheck, (3) qué debo validar yo como Humano antes de autorizar TASK-03.

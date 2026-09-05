@@ -176,6 +176,16 @@
 - **Flujo resultante:** Login → (sin hardware: Home) / (biometría ya activa: Unlock manual) / (Opt-In → ACTIVAR → confirm nativo → primer uso manual → Home; Ahora no → Home sin revertir login). Arranque en frío con biometría: Unlock con auto-prompt + reintento manual; Volver → limpia sesión → Login.
 - `progress/current-task.json` → feature `auth-ui-polish`, TASK-01 `TODO`, assigned_role Trabajador.
 
+### 2026-09-04 — TASK-02 APROBADA por el Humano
+
+- **Validación:** el Tester Visual Humano compiló la app con éxito en **Android e iOS**; TASK-02 marcada `COMPLETED`. Aclaración: el «fondo de color» que observó en el form es el Login claro de Fase 1 — todavía sin cablear; el reestilo oscuro llega en TASK-03. Sin cambios funcionales en pantallas en esta task (solo primitivas de UI semilla).
+- **Hecho (secuencia TASK-02):** creados `AuthScaffold.tsx` (gradiente vertical `authPalette` + `StatusBar light` + `SafeAreaView`), `GoldButton.tsx` (compound `GoldButton` + `GoldButtonText` — gradiente horizontal dorado, `h-14 rounded-full`, `pressed`/`disabled`/`loading` con `ActivityIndicator`; solo `Pressable`), `BiometricMethodCard.tsx` (card `View` no interactiva, `bg-auth-card-active border-auth-dorado` / `bg-auth-card-inactive border-transparent`, checkmark Ionicons), y reestyle oscuro de `TextField.tsx` (label uppercase taupe, `bg-auth-surface`, `focus:border-auth-dorado`, error `border-error`, prop `secureToggle` con eye/eye-off). Cero `any` / `TouchableOpacity` / `FlatList` / `StyleSheet.create` injustificado; solo tokens `auth-*` + Lato.
+- **DESVIACIÓN AUTORIZADA por el Humano/Orquestador:** `@expo/vector-icons@^15.0.2` NO venía instalado ni declarado (en Expo SDK 57 no es transitivo de `expo`), pero plan §5.3/§5.4 exigen Ionicons (checkmark y eye/eye-off). Instalado con `npx expo install @expo/vector-icons` (`package.json` + lockfile). El Revisor debe incluirla en las invariantes de TASK-06.
+- **Arnés:** `npx tsc --noEmit` → verde (exit 0). Bundling verificado por el Humano (Android + iOS). ESLint se reserva a TASK-06.
+- `spec/features/auth-ui-polish/task.md`: TASK-02 marcada `- [x]` / `Status: COMPLETED`.
+- `progress/current-task.json` → `active_task: TASK-02`, `status: COMPLETED`, `harness_status` con bundling Android/iOS `true` y typecheck `true`.
+- **SIGUIENTE:** TASK-03 (LoginScreen pixel-perfect, plan §6.1) en NUEVA SESIÓN — consumirá AuthScaffold/TextField dark/GoldButton, renderizará `assets/images/escudo-yucatan.png` (plan §2.4) y añadirá el selector `canUseBiometricLogin` a `AuthProvider`/`useAuth`.
+
 ### Pendiente
 
 - [x] TASK-01 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
@@ -185,7 +195,7 @@
 - [x] TASK-05 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
 - [x] TASK-06 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
 - [x] Fase 1.5a TASK-01 — Tokens + expo-linear-gradient + asset (Agente Trabajador, APROBADA 2026-09-04)
-- [ ] Fase 1.5a TASK-02 — Componentes UI (AuthScaffold, GoldButton, BiometricMethodCard, TextField dark)
+- [x] Fase 1.5a TASK-02 — Componentes UI (AuthScaffold, GoldButton, BiometricMethodCard, TextField dark) (Agente Trabajador, APROBADA 2026-09-04)
 - [ ] Fase 1.5a TASK-03 — LoginScreen pixel-perfect (usará `assets/images/escudo-yucatan.png` con `Image`, plan §2.4)
 - [ ] Fase 1.5a TASK-04 — Máquina de estados + BiometricOptInScreen
 - [ ] Fase 1.5a TASK-05 — BiometricUnlockScreen pixel-perfect
