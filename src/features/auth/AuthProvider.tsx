@@ -34,6 +34,7 @@ interface AuthContextValue {
   token: string | null;
   user: AuthBasicUserResponseDTO | null;
   expiresAt: string | null;
+  canUseBiometricLogin: boolean;
   shouldOfferBiometricOptIn: boolean;
   biometricEnrollHint: string | null;
   signIn: (email: string, password: string) => Promise<void>;
@@ -55,6 +56,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<AuthBasicUserResponseDTO | null>(null);
   const [expiresAt, setExpiresAt] = useState<string | null>(null);
+  const [canUseBiometricLogin, setCanUseBiometricLogin] = useState(false);
   const [shouldOfferBiometricOptIn, setShouldOfferBiometricOptIn] =
     useState(false);
   const [biometricEnrollHint, setBiometricEnrollHint] = useState<string | null>(
@@ -81,6 +83,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
             setToken(null);
             setUser(null);
             setExpiresAt(null);
+            setCanUseBiometricLogin(false);
             setStatus("unauthenticated");
             setAuthToken(null);
           }
@@ -101,6 +104,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
           setToken(session.token);
           setUser(session.user);
           setExpiresAt(session.expiresAt);
+          setCanUseBiometricLogin(biometricEnabled && isSessionVigente(session.expiresAt));
           setAuthToken(session.token);
           setStatus(nextStatus);
         }
@@ -109,6 +113,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
           setToken(null);
           setUser(null);
           setExpiresAt(null);
+          setCanUseBiometricLogin(false);
           setStatus("unauthenticated");
           setAuthToken(null);
         }
@@ -153,6 +158,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       setToken(null);
       setUser(null);
       setExpiresAt(null);
+      setCanUseBiometricLogin(false);
       setAuthToken(null);
       setStatus("unauthenticated");
       return;
@@ -197,6 +203,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     setToken(null);
     setUser(null);
     setExpiresAt(null);
+    setCanUseBiometricLogin(false);
     setShouldOfferBiometricOptIn(false);
     setBiometricEnrollHint(null);
     setAuthToken(null);
@@ -210,6 +217,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       token,
       user,
       expiresAt,
+      canUseBiometricLogin,
       shouldOfferBiometricOptIn,
       biometricEnrollHint,
       signIn,
@@ -224,6 +232,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       token,
       user,
       expiresAt,
+      canUseBiometricLogin,
       shouldOfferBiometricOptIn,
       biometricEnrollHint,
       signIn,

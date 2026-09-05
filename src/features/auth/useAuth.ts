@@ -9,6 +9,7 @@ export interface UseAuthResult {
   token: string | null;
   user: AuthBasicUserResponseDTO | null;
   expiresAt: string | null;
+  canUseBiometricLogin: boolean;
   shouldOfferBiometricOptIn: boolean;
   biometricEnrollHint: string | null;
   signIn: (email: string, password: string) => Promise<void>;

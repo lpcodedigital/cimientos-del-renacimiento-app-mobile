@@ -186,6 +186,16 @@
 - `progress/current-task.json` → `active_task: TASK-02`, `status: COMPLETED`, `harness_status` con bundling Android/iOS `true` y typecheck `true`.
 - **SIGUIENTE:** TASK-03 (LoginScreen pixel-perfect, plan §6.1) en NUEVA SESIÓN — consumirá AuthScaffold/TextField dark/GoldButton, renderizará `assets/images/escudo-yucatan.png` (plan §2.4) y añadirá el selector `canUseBiometricLogin` a `AuthProvider`/`useAuth`.
 
+### 2026-09-05 — TASK-03 APROBADA por el Humano
+
+- **Validación:** el Tester Visual Humano compiló la app en **Android e iOS**; en ambas plataformas ve el contenido (título, escudo, inputs, botón) con **match visual con `login-form.png`**. Funcionalidad del login (envío, validación) probada OK en Android. TASK-03 marcada `COMPLETED`.
+- **Hecho (secuencia TASK-03):** reescrito `LoginScreen.tsx` (AuthScaffold + KAV + ScrollView `flex-1`, título de marca, escudo `assets/images/escudo-yucatan.png` con `Image` contain + accessibilityLabel, TextField dark email/password con `secureToggle` en contraseña, link «¿Olvidaste tu contraseña?» → `Alert` informativo, `GoldButton` «INICIAR SESIÓN» con loading, sección condicional divisor + «Acceso biométrico» si `canUseBiometricLogin`). Eliminada la caja «Prueba local: demo@cdr.mx / demo1234» de la UI (login demo intacto en `api.ts`). Conservados `EMAIL_PATTERN`, `canSubmit`, fase `idle|submitting` y mapeo de errores de dominio. Añadido selector `canUseBiometricLogin: boolean` a `AuthProvider` (bootstrap + signOut, default false) y su tipo en `useAuth.ts`. `LoginScreen` recibe navigation prop tipada `NativeStackScreenProps<AuthStackParamList, "Login">`. Sin cambios de rutas en navigation/types ni RootNavigator.
+- **CORRECCIONES DE TASK-02 ESCALADAS durante TASK-03 (validadas por el Humano, zona de invariantes para TASK-06):** NativeWind v5/Tailwind v4 (CSS-first) NO aplica en iOS los `className` de los archivos NUEVOS de TASK-02 (AuthScaffold, GoldButton) — el Login quedaba en blanco/en fondo sin contenido y faltaba el botón. Se reescribieron a **estilos inline JS**: `AuthScaffold.tsx` (root `flex` + `backgroundColor` fill, gradiente `StyleSheet.absoluteFill` en capa `pointerEvents="none"` detrás del contenido, `useSafeAreaInsets()` como padding sobre `View` plano — sin `SafeAreaView` nativo) y `GoldButton.tsx`/`GoldButtonText.tsx` (Pressable `height 56`, `borderRadius 999`, `overflow hidden`, `opacity` por estado, `LinearGradient` `StyleSheet.absoluteFill` + borderRadius, texto Lato-Bold inline). Android e iOS quedan idénticos tras esto.
+- **Arnés:** `npx tsc --noEmit` → verde (exit 0). Bundling verificado por el Humano (Android + iOS). ESLint se reserva a TASK-06.
+- `spec/features/auth-ui-polish/task.md`: TASK-03 marcada `- [x]` / `Status: COMPLETED`.
+- `progress/current-task.json` → `active_task: TASK-04`, `status: TODO`, `harness_status` con bundling Android/iOS `true` y typecheck `true`.
+- **SIGUIENTE:** TASK-04 (máquina de estados + BiometricOptInScreen, plan §3/§4/§6.2) en NUEVA SESIÓN, solo al autorizarlo el Humano.
+
 ### Pendiente
 
 - [x] TASK-01 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
@@ -196,7 +206,7 @@
 - [x] TASK-06 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
 - [x] Fase 1.5a TASK-01 — Tokens + expo-linear-gradient + asset (Agente Trabajador, APROBADA 2026-09-04)
 - [x] Fase 1.5a TASK-02 — Componentes UI (AuthScaffold, GoldButton, BiometricMethodCard, TextField dark) (Agente Trabajador, APROBADA 2026-09-04)
-- [ ] Fase 1.5a TASK-03 — LoginScreen pixel-perfect (usará `assets/images/escudo-yucatan.png` con `Image`, plan §2.4)
+- [x] Fase 1.5a TASK-03 — LoginScreen pixel-perfect (Agente Trabajador, APROBADA 2026-09-05; match con login-form.png en iOS y Android)
 - [ ] Fase 1.5a TASK-04 — Máquina de estados + BiometricOptInScreen
 - [ ] Fase 1.5a TASK-05 — BiometricUnlockScreen pixel-perfect
 - [ ] Fase 1.5a TASK-06 — Arnés (Revisor → Tester Visual Humano, CA-01…10 + biometría física)

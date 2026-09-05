@@ -155,3 +155,38 @@ CONTROL DE FLUJO (INNEGOCIABLE):
 - TE DETIENES AHÍ. Tienes TERMINANTEMENTE PROHIBIDO iniciar TASK-03 o cualquier otra task hasta que el Humano valide visualmente TASK-02 y te lo indique explícitamente en esta sesión. Unicamente vas a actulizar todo lo que este relacionado con el progress hasta que de por concluida la TASK actual
 
 Al finalizar, respóndeme con: (1) lista exacta de archivos modificados, (2) salida del typecheck, (3) qué debo validar yo como Humano antes de autorizar TASK-03.
+
+## Instruccion worker DeepSeek v4 flash Fase1.5a/task 03
+
+CONTEXTO OBLIGATORIO (lee en este orden, sin excepción):
+1. /AGENTS.md
+2. /progress/current-task.json (memoria activa: feature auth-ui-polish, TASK-02 COMPLETED y APROBADA por el Humano; el puntero activo sigue en TASK-02 y el estado cierra TASK-02. Avanza el puntero a TASK-03.)
+3. /progress/history.md (entradas del 2026-09-04 «TASK-01 APROBADA» y «TASK-02 APROBADA por el Humano»)
+4. /spec/constitution/tech-stack.md (§2.1 paleta auth-*, §gradientes expo-linear-gradient)
+5. /spec/features/auth-ui-polish/spec.md
+6. /spec/features/auth-ui-polish/plan.md (§2.3 authPalette, §2.4 escudo, §5 componentes UI, §6.1 LoginScreen)
+7. /spec/features/auth-ui-polish/task.md (sección TASK-03; TASK-01 y TASK-02 ya COMPLETED y validadas por el Humano)
+
+TAREA ASIGNADA: ejecutar ÚNICAMENTE la TASK-03 (LoginScreen pixel-perfect contra login-form.png) descrita en spec/features/auth-ui-polish/task.md.
+
+REGLAS ESTRICTAS:
+- SOLO editar los archivos listados en allowed_files de TASK-03:
+  - src/screens/auth/LoginScreen.tsx (reescritura según plan §6.1: AuthScaffold + KeyboardAvoidingView + ScrollView, título de marca Lato Bold crema, escudo con Image de assets/images/escudo-yucatan.png resizeMode contain accessibilityLabel "Escudo del Gobierno del Estado de Yucatán" — o placeholder View w-28 h-32 rounded-2xl border border-auth-dorado/40 si el asset no existe: reportarlo, no generarlo, plan §2.4 —, TextField dark con secureToggle en contraseña, link «¿Olvidaste tu contraseña?» Pressable → Alert institucional, GoldButton "INICIAR SESIÓN" con loading, error de dominio estilo §5.4, y sección condicional divisor + botón "Acceso biométrico" con Ionicons "scan" visible solo si canUseBiometricLogin → navegar a BiometricUnlock; usar ternarios/!! nunca `&&` suelto)
+  - src/features/auth/AuthProvider.tsx (ÚNICAMENTE el selector live canUseBiometricLogin: boolean, calculado en bootstrap y tras signOut, default false)
+  - src/features/auth/useAuth.ts (solo tipo/selector canUseBiometricLogin)
+  - assets/images/escudo-yucatan.png (SOLO si el Humano ya lo colocó; el Trabajador NO lo genera)
+- Eliminar de la UI la caja «Prueba local: demo@cdr.mx / demo1234». NO tocar api.ts (el login demo permanece).
+- Conservar intactos: EMAIL_PATTERN, canSubmit, fase idle|submitting, mapeo de errores de dominio.
+- navigation/types.ts + RootNavigator.tsx sin cambios de rutas en esta task; LoginScreen obtiene navigation vía prop tipada NativeStackScreenProps<AuthStackParamList, "Login">.
+- Cero any, cero TouchableOpacity, cero FlatList, cero StyleSheet.create injustificado, cero emojis UI, solo fuentes Lato.
+- Deja congelados: global.css, tokens.ts, api.ts, dto.ts, tokenStore.ts y archivos de otras tasks.
+- Ya instaladas: expo-linear-gradient (~57.0.1) y @expo/vector-icons (^15.0.2, desviación autorizada en TASK-02). NO instales otras dependencias en TASK-03.
+- Ejecuta `npx tsc --noEmit`; debe pasar en verde. NO ejecutes npx expo start.
+
+CONTROL DE FLUJO (INNEGOCIABLE):
+- Al terminar TASK-03: no marca sus checkboxes `- [x]` y `Status: COMPLETED` en spec/features/auth-ui-polish/task.md.
+- No Actualizes el progress/current-task.json: active_task.status = "READY_FOR_HUMAN_VALIDATION" (NO avances el puntero a TASK-04), registra harness_status con el resultado del typecheck y no escribas agent_notes detallando lo hecho.
+- no Añadas una entrada en progress/history.md bajo la sección Fase 1.5a.
+- TE DETIENES AHÍ. Tienes TERMINANTEMENTE PROHIBIDO iniciar TASK-04 o cualquier otra task hasta que el Humano valide visualmente TASK-03 y te lo indique explícitamente en esta sesión. Unicamente vas a actulizar todo lo que este relacionado con el progress hasta que de por concluida la TASK actual
+
+Al terminar, respóndeme con: (1) lista exacta de archivos modificados, (2) salida del typecheck, (3) qué debo validar yo como Humano (pixel-diff login vs login-form.png, CanSubmit/errores, secureToggle, escudo, divisor biométrico) antes de autorizar TASK-04.

@@ -80,19 +80,20 @@ Reglas absolutas del Trabajador:
 
 ## TASK-03 — LoginScreen pixel-perfect (`login-form.png`)
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
+**validation:** APROBADA por el Humano (2026-09-05; compilación iOS + Android en verde, contenido visible en ambas y match con `login-form.png`)
 
 **Objetivo:** Rediseño visual del Login contra mockup. Lógica de validación/errores actual se conserva.
 
 **Pasos**
 
-- [ ] Reescribir `src/screens/auth/LoginScreen.tsx` según plan §6.1: `AuthScaffold` + KAV/ScrollView, título de marca, escudo (asset o placeholder §2.4 del plan), labels/inputs oscuros, `secureToggle` en contraseña, link «¿Olvidaste tu contraseña?» con `Alert` informativo institucional, `GoldButton` con `loading`, sección condicional divisor + «Acceso biométrico» (visible solo si `canUseBiometricLogin`; navegar a `BiometricUnlock`).
-- [ ] **Eliminar** la caja «Prueba local: demo@cdr.mx / demo1234» de la UI. No tocar `api.ts` (el login demo permanece).
-- [ ] Conservar intactos: `EMAIL_PATTERN`, `canSubmit`, fase `idle|submitting`, mapeo de errores de dominio.
-- [ ] `AuthProvider.tsx`/`useAuth.ts`: añadir ÚNICAMENTE el selector `canUseBiometricLogin: boolean` (plan §6.1; calculado en bootstrap y tras `signOut`). Ningún otro cambio de estado en esta task.
-- [ ] `navigation/types.ts` + `RootNavigator.tsx`: sin cambios de rutas en esta task; `LoginScreen` obtiene `navigation` vía prop tipada de `NativeStackScreenProps<AuthStackParamList, "Login">`.
-- [ ] `npx tsc --noEmit` debe pasar.
+- [x] Reescribir `src/screens/auth/LoginScreen.tsx` según plan §6.1: `AuthScaffold` + KAV/ScrollView, título de marca, escudo (asset o placeholder §2.4 del plan), labels/inputs oscuros, `secureToggle` en contraseña, link «¿Olvidaste tu contraseña?» con `Alert` informativo institucional, `GoldButton` con `loading`, sección condicional divisor + «Acceso biométrico» (visible solo si `canUseBiometricLogin`; navegar a `BiometricUnlock`).
+- [x] **Eliminar** la caja «Prueba local: demo@cdr.mx / demo1234» de la UI. No tocar `api.ts` (el login demo permanece).
+- [x] Conservar intactos: `EMAIL_PATTERN`, `canSubmit`, fase `idle|submitting`, mapeo de errores de dominio.
+- [x] `AuthProvider.tsx`/`useAuth.ts`: añadir ÚNICAMENTE el selector `canUseBiometricLogin: boolean` (plan §6.1; calculado en bootstrap y tras `signOut`). Ningún otro cambio de estado en esta task.
+- [x] `navigation/types.ts` + `RootNavigator.tsx`: sin cambios de rutas en esta task; `LoginScreen` obtiene `navigation` vía prop tipada de `NativeStackScreenProps<AuthStackParamList, "Login">`.
+- [x] `npx tsc --noEmit` debe pasar.
 
 **allowed_files**
 

@@ -1,20 +1,31 @@
 import { useMemo, useState } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
+import {
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Ionicons } from "@expo/vector-icons";
 
 import { useAuth } from "@/features/auth/useAuth";
-import { InstitutionalText } from "@/components/ui/InstitutionalText";
-import { Button, ButtonText } from "@/components/ui/Button";
+import { AuthScaffold } from "@/components/ui/AuthScaffold";
+import { GoldButton, GoldButtonText } from "@/components/ui/GoldButton";
 import { TextField } from "@/components/ui/TextField";
+import type { AuthStackParamList } from "@/navigation/types";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type FormPhase = "idle" | "submitting";
 
-const DEMO_EMAIL = "demo@cdr.mx";
-const DEMO_PASSWORD = "demo1234";
+type LoginScreenProps = NativeStackScreenProps<AuthStackParamList, "Login">;
 
-export function LoginScreen() {
-  const { signIn } = useAuth();
+export function LoginScreen({ navigation }: LoginScreenProps) {
+  const { signIn, canUseBiometricLogin } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -53,6 +64,13 @@ export function LoginScreen() {
     }
   }
 
+  function handleForgotPassword() {
+    Alert.alert(
+      "Recuperación de acceso",
+      "La recuperación de acceso se gestiona en la plataforma web institucional. Contacte al administrador."
+    );
+  }
+
   const emailError = useMemo<string | null>(() => {
     if (email.trim().length === 0) {
       return null;
@@ -64,75 +82,115 @@ export function LoginScreen() {
   }, [email]);
 
   return (
-    <KeyboardAvoidingView
-      className="flex-1 bg-fondo"
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
-      <ScrollView
+    <AuthScaffold>
+      <KeyboardAvoidingView
         className="flex-1"
-        contentContainerClassName="grow justify-center px-6 py-12"
-        keyboardShouldPersistTaps="handled"
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <InstitutionalText variant="bold" className="text-guinda text-4xl">
-          Gabinete Móvil
-        </InstitutionalText>
-        <InstitutionalText className="mt-2 text-texto-suave text-base">
-          Gobierno del Estado de Yucatán
-        </InstitutionalText>
+        <ScrollView
+          className="flex-1"
+          contentContainerClassName="grow justify-center px-6 py-10"
+          keyboardShouldPersistTaps="handled"
+        >
+          <View className="gap-10">
+            <View className="items-center gap-8">
+              <Text className="text-center font-lato-bold text-3xl leading-tight text-auth-crema">
+                Cimientos del Renacimiento
+              </Text>
 
-        <View className="mt-8 gap-6">
-          <TextField
-            label="Correo electrónico"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-            textContentType="emailAddress"
-            errorLabel={
-              emailError !== null
-                ? emailError
-                : domainError !== null
-                ? domainError
-                : undefined
-            }
-          />
+              <Image
+                source={require("../../../assets/images/escudo-yucatan.png")}
+                resizeMode="contain"
+                accessibilityLabel="Escudo del Gobierno del Estado de Yucatán"
+                className="h-32 w-28"
+              />
+            </View>
 
-          <TextField
-            label="Contraseña"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            autoCapitalize="none"
-            autoCorrect={false}
-            textContentType="password"
-          />
+            <View className="gap-6">
+              <TextField
+                label="CORREO ELECTRÓNICO"
+                value={email}
+                onChangeText={setEmail}
+                placeholder="usuario@yucatan.gob.mx"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+                textContentType="emailAddress"
+                editable={!isPending}
+                errorLabel={
+                  emailError !== null ? emailError : undefined
+                }
+              />
 
-          <View className="rounded-lg border border-dorado bg-superficie p-4">
-            <InstitutionalText className="text-texto-suave text-sm">
-              Prueba local: {DEMO_EMAIL} / {DEMO_PASSWORD}
-            </InstitutionalText>
+              <View className="gap-1">
+                <TextField
+                  label="CONTRASEÑA"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureToggle
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  textContentType="password"
+                  editable={!isPending}
+                />
+                <View className="items-end">
+                  <Pressable
+                    onPress={handleForgotPassword}
+                    accessibilityRole="button"
+                    accessibilityLabel="¿Olvidaste tu contraseña?"
+                    className="py-2"
+                    hitSlop={8}
+                  >
+                    <Text className="font-lato text-sm text-auth-dorado-tenue">
+                      ¿Olvidaste tu contraseña?
+                    </Text>
+                  </Pressable>
+                </View>
+              </View>
+
+              {domainError !== null ? (
+                <Text className="font-lato text-xs text-error">{domainError}</Text>
+              ) : null}
+
+              <GoldButton
+                loading={isPending}
+                disabled={!canSubmit}
+                onPress={() => {
+                  void handleSubmit();
+                }}
+              >
+                <GoldButtonText>
+                  {isPending ? "INGRESANDO…" : "INICIAR SESIÓN"}
+                </GoldButtonText>
+              </GoldButton>
+
+              {canUseBiometricLogin ? (
+                <View className="gap-6">
+                  <View className="flex-row items-center gap-4">
+                    <View className="h-px flex-1 bg-auth-taupe-dim" />
+                    <Text className="font-lato text-sm text-auth-taupe-dim">
+                      o continúa con
+                    </Text>
+                    <View className="h-px flex-1 bg-auth-taupe-dim" />
+                  </View>
+
+                  <Pressable
+                    onPress={() => navigation.navigate("BiometricUnlock")}
+                    accessibilityRole="button"
+                    accessibilityLabel="Acceso biométrico"
+                    className="h-12 w-full flex-row items-center justify-center gap-2 rounded-full border border-auth-dorado"
+                  >
+                    <Ionicons name="scan" size={20} color="#C9A854" />
+                    <Text className="font-lato text-base text-auth-taupe">
+                      Acceso biométrico
+                    </Text>
+                  </Pressable>
+                </View>
+              ) : null}
+            </View>
           </View>
-
-          {domainError !== null && emailError === null ? (
-            <InstitutionalText className="text-error text-sm">
-              {domainError}
-            </InstitutionalText>
-          ) : null}
-
-          <Button
-            variant="primary"
-            disabled={!canSubmit || isPending}
-            onPress={() => {
-              void handleSubmit();
-            }}
-          >
-            <ButtonText variant="primary">
-              {isPending ? "Ingresando…" : "Ingresar"}
-            </ButtonText>
-          </Button>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </AuthScaffold>
   );
 }
