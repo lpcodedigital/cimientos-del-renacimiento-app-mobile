@@ -181,3 +181,115 @@ CIERRE:
    a READY_FOR_HUMAN_REVIEW y registra la ejecución, sin COMPLETED).
 5. DETENTE. No inicies TASK-04. Reporta: (1) archivos creados / modificados
    (2) salida del tsc, (3) qué debo validar yo como Humano.
+
+## Prompt para iniciar TASK-04 en nueva sesión (worker)
+Rol: Agente Trabajador. Proyecto: Cimientos del Renacimiento — Gabinete Móvil.
+Feature: core-arch-refactor (Fase 1.5b).
+MODO: EJECUCIÓN. Solo TASK-04. Cero TASK-05+. Cero dependencias. Cero código nativo
+(app.json, Info.plist, .swift, .kt, .pbxproj). Cero npx expo start. Cero npm i /
+npx expo install.
+
+CONTEXTO: TASK-03 (infrastructure adapters + shims 1.5a) ya fue EJECUTADA y aprobada
+por el humano (COMPLETED, build Android/iOS OK, login funcional). Antes de iniciar
+TASK-04, verifica en progress/current-task.json y progress/history.md.
+
+ANTES DE ESCRIBIR:
+1. Lee /AGENTS.md
+2. Lee /spec/constitution/tech-stack.md §5 (arquitectura de capas, DIP)
+3. Lee /spec/features/core-arch-refactor/spec.md (§2 decisiones, §3 invariantes, §5 límites)
+4. Lee /spec/features/core-arch-refactor/plan.md §7 (composition root, AuthProvider,
+   useAuth, pantallas, navegación) y §5 (AuthUseCases / SessionSnapshot)
+5. Lee /spec/features/core-arch-refactor/task.md TASK-04 (pasos y allowed_files)
+6. Lee /progress/current-task.json y /progress/history.md
+7. Inspecciona: src/features/auth/application/*, src/features/auth/domain/*,
+   src/features/auth/infrastructure/*, src/features/auth/AuthProvider.tsx,
+   src/features/auth/useAuth.ts, src/screens/auth/BiometricOptInScreen.tsx, App.tsx
+
+OBJETIVO TASK-04: cablear DIP con composition root. Crear/editar EXACTAMENTE:
+- src/app/compositionRoot.ts → createAuthUseCases() según plan §7.1 (ÚNICO importador
+  de infrastructure)
+- src/features/auth/AuthProvider.tsx → recibir `useCases: AuthUseCases` por props;
+  aplicar snapshots; CERO imports de api/tokenStore/biometricService/axiosClient;
+  conservar nombres públicos (enableBiometricAfterLogin, etc.); unlock re-lanza el
+  Error del use case
+- src/features/auth/useAuth.ts → misma fachada + listBiometricMethods
+- App.tsx → const authUseCases = createAuthUseCases() a nivel módulo;
+  <AuthProvider useCases={authUseCases}>; no tocar fonts/Splash/QueryClient/StatusBar/css
+- src/screens/auth/BiometricOptInScreen.tsx → quitar import de biometricService; usar
+  listBiometricMethods de useAuth; CERO cambios de estilo/JSX de layout
+
+REGLAS:
+- SOLO allowed_files de TASK-04 (+ progress/current-task.json, progress/history.md).
+- Cero cambio visual/funcional vs 1.5a. Máquina §5.2 de plan.md intacta.
+- Conservar NavigationContainer key={status}, header «INICIO», estilos inline de
+  AuthScaffold/GoldButton.
+- Cero any / TouchableOpacity / FlatList / Expo Router / emojis. Cero barrels index.ts.
+- No tocar los shims de TASK-03 (se borran en TASK-06).
+
+CIERRE:
+1. npx tsc --noEmit debe pasar (exit 0).
+2. No marques TASK-04 COMPLETED ni avances el puntero a TASK-05 hasta aprobación humana.
+3. Actualiza progress/current-task.json a TASK-04 READY_FOR_HUMAN_REVIEW (sin COMPLETED)
+   y registra la ejecución; no añadas entrada a history.md hasta aprobación humana.
+4. DETENTE. No inicies TASK-05. Reporta: (1) archivos creados/modificados,
+   (2) salida del tsc, (3) qué debe validar el Humano
+
+## Prompt para la nueva sesión (TASK-05)
+Rol: Agente Trabajador. Proyecto: Cimientos del Renacimiento — Gabinete Móvil.
+Feature: core-arch-refactor (Fase 1.5b).
+MODO: EJECUCIÓN. Solo TASK-05. Cero TASK-06+. Cero dependencias. Cero código nativo
+(app.json, Info.plist, .swift, .kt, .pbxproj). Cero npx expo start. Cero npm i /
+npx expo install.
+
+CONTEXTO: TASK-04 (composition root + AuthProvider DIP + OptIn) ya fue EJECUTADA y
+aprobada por el humano (COMPLETED, build Android/iOS OK, sin pérdida de características).
+Antes de iniciar TASK-05, verifica en progress/current-task.json y progress/history.md.
+
+ANTES DE ESCRIBIR:
+1. Lee /AGENTS.md
+2. Lee /spec/constitution/tech-stack.md §5 (arquitectura de capas, DIP)
+3. Lee /spec/features/core-arch-refactor/spec.md (§2 decisiones, §3 invariantes, §5 límites)
+4. Lee /spec/features/core-arch-refactor/plan.md §2 (árbol destino), §3 (mapping origen→
+   destino), §7.3–§7.4 (pantallas, navegación/shared UI) y §8 (orden de movimiento)
+5. Lee /spec/features/core-arch-refactor/task.md TASK-05 (pasos y allowed_files)
+6. Lee /progress/current-task.json y /progress/history.md
+7. Inspecciona todo el árbol actual: src/features/auth/{AuthProvider.tsx,useAuth.ts},
+   src/screens/auth/*, src/screens/app/HomePlaceholderScreen.tsx, src/navigation/*,
+   src/components/ui/*, src/theme/tokens.ts, src/assets/images.ts, App.tsx,
+   src/app/compositionRoot.ts
+
+OBJETIVO TASK-05: mover presentation/shared/navigation/home al árbol destino. Diff
+permitido = SOLO rutas de import y reloc. CERO cambios de JSX, estilos, copy o keys de
+navegación.
+
+MOVIMIENTOS (plan §2–§3):
+- src/features/auth/AuthProvider.tsx + useAuth.ts → src/features/auth/presentation/
+- src/screens/auth/{LoginScreen,BiometricOptInScreen,BiometricUnlockScreen}.tsx →
+  src/features/auth/presentation/screens/
+- src/screens/app/HomePlaceholderScreen.tsx → src/features/home/presentation/
+- src/navigation/{types.ts,RootNavigator.tsx} → src/app/navigation/
+- src/components/ui/* → src/shared/ui/
+- src/theme/tokens.ts → src/shared/theme/tokens.ts
+- src/assets/images.ts → src/shared/assets/images.ts (ajustar relative path del PNG:
+  desde src/shared/assets/ hacia ../../../assets/images/escudo-yucatan.png)
+
+REGLAS:
+- SOLO allowed_files de TASK-05.
+- Actualizar TODOS los imports afectados (App.tsx, compositionRoot si aplica,
+  RootNavigator, pantallas, shims). App.tsx debe apuntar ya a presentation/.
+- Dejar shims 1.5a de TASK-03 en su sitio (se borran en TASK-06). Si un path viejo de
+  presentation queda, convertirlo en reexport mínimo o eliminarlo solo si ningún import
+  lo apunta.
+- Conservar NavigationContainer key={status}, header «INICIO», AuthScaffold/GoldButton
+  con estilos inline. Máquina §5.2 intacta.
+- Cero cambio visual/funcional vs TASK-04. Cero any / TouchableOpacity / FlatList /
+  Expo Router / emojis. Cero barrels index.ts. Cero StyleSheet.create injustificado.
+- NO tocar los shims de TASK-03 (api/dto/tokenStore/biometricService/axiosClient viejos).
+
+CIERRE:
+1. npx tsc --noEmit debe pasar (exit 0).
+2. No marques TASK-05 COMPLETED ni avances el puntero a TASK-06 hasta aprobación humana.
+3. Actualiza progress/current-task.json a TASK-05 READY_FOR_HUMAN_REVIEW (sin COMPLETED)
+   y registra la ejecución; no añadas entrada a history.md hasta aprobación humana.
+4. DETENTE. No inicies TASK-06. Reporta: (1) archivos movidos/creados/modificados,
+   (2) salida del tsc, (3) qué debe validar el Humano.

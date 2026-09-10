@@ -9,7 +9,7 @@ import {
   type TextProps,
 } from "react-native";
 
-import { authPalette, fontFamily as font } from "@/theme/tokens";
+import { authPalette, fontFamily as font } from "@/shared/theme/tokens";
 
 type GoldButtonProps = Omit<PressableProps, "className" | "children"> & {
   loading?: boolean;

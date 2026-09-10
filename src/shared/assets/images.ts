@@ -1,4 +1,4 @@
-import escudoYucatanSource from "../../assets/images/escudo-yucatan.png";
+import escudoYucatanSource from "../../../assets/images/escudo-yucatan.png";
 
 export const imageAssets = {
   escudoYucatan: escudoYucatanSource,

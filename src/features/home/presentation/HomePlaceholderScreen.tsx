@@ -1,6 +1,6 @@
 import { Pressable, Text, View } from "react-native";
 
-import { useAuth } from "@/features/auth/useAuth";
+import { useAuth } from "@/features/auth/presentation/useAuth";
 
 export function HomePlaceholderScreen() {
   const { user, signOut } = useAuth();

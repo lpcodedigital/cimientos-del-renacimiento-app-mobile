@@ -9,29 +9,31 @@
     "baseline_feature": "spec/features/auth-ui-polish/spec.md"
   },
   "active_task": {
-    "id": "TASK-04",
-    "description": "Composition root + AuthProvider DIP + OptIn. Crear src/app/compositionRoot.ts (createAuthUseCases), reescribir AuthProvider para recibir useCases por props sin imports de infra, actualizar useAuth (+listBiometricMethods), cablear App.tsx a nivel módulo, y quitar import de biometricService en BiometricOptInScreen usando listBiometricMethods del contexto. Único cambio funcional permitido: OptIn obtiene métodos vía use case con mismo resultado que getSupportedBiometricMethods.",
+    "id": "TASK-06",
+    "description": "Borrar shims + fences ESLint + arnés. Eliminar paths 1.5a residuales (src/features/auth/{api,dto,tokenStore,biometricService}.ts, src/lib/http/axiosClient.ts, src/screens/**, src/components/**, src/navigation/**, src/theme/**, src/assets/**), confirmar que no queda import a esos paths, añadir tres bloques no-restricted-imports en eslint.config.js (plan §9, sin paquete nuevo), correr npx tsc --noEmit y npx eslint . en verde, verificar bans (any/TouchableOpacity/FlatList/expo-router) y DIP. Cero UI.",
     "status": "TODO",
-    "assigned_role": "Agente Trabajador",
-    "validation": "NO INICIADA. TASK-03 COMPLETED y aprobada por el Humano el 2026-09-10 (build Android/iOS OK, login funcional). TASK-04 se autoriza en nueva sesión. El puntero queda en TODO; no IN_PROGRESS.",
+    "assigned_role": "Agente Trabajador + Revisor (auditoría de arnés)",
+    "validation": "NO INICIADA. TASK-05 COMPLETED y APROBADA por el Humano el 2026-09-10 (build Android/iOS OK, sin errores). TASK-06 se autoriza en nueva sesión. El puntero queda en TODO; no IN_PROGRESS.",
     "allowed_files_to_edit": [
-      "src/app/compositionRoot.ts",
-      "src/features/auth/AuthProvider.tsx",
-      "src/features/auth/useAuth.ts",
-      "App.tsx",
-      "src/screens/auth/BiometricOptInScreen.tsx",
+      "eslint.config.js",
+      "src/features/auth/api.ts",
+      "src/features/auth/dto.ts",
+      "src/features/auth/tokenStore.ts",
+      "src/features/auth/biometricService.ts",
+      "src/lib/http/axiosClient.ts",
+      "spec/features/core-arch-refactor/task.md",
       "progress/current-task.json",
       "progress/history.md"
     ]
   },
   "harness_status": {
-    "last_run": "2026-09-10 (TASK-03 COMPLETED y aprobada por el Humano; typecheck en verde; bundling Android/iOS validado por el Humano. TASK-04 aún no iniciada)",
-    "linter_passed": true,
+    "last_run": "2026-09-10 (TASK-05 COMPLETED y APROBADA por el Humano; build Android/iOS OK sin errores; typecheck en verde. TASK-06 aún no iniciada)",
+    "linter_passed": null,
     "typecheck_passed": true,
-    "typecheck_detail": "TASK-03: npx tsc --noEmit → exit 0. Adapters canónicos de infrastructure con factories y shims 1.5a sin lógica; app 1.5a compila contra shims. ESLint completo (fences + repo) sigue reservado a TASK-06.",
-    "bundling_passed_android": "OK (Humano, 2026-09-10) — build Android generado sin problemas y login funcional",
-    "bundling_passed_ios": "OK (Humano, 2026-09-10) — build iOS generado sin problemas y login funcional",
-    "blockers_or_errors": "Cero bloqueantes. TASK-03 COMPLETED y aprobada por el Humano. El puntero queda en TASK-04 TODO; se autoriza en nueva sesión. Fase 2 bloqueada."
+    "typecheck_detail": "TASK-05: npx tsc --noEmit → exit 0. Movidos AuthProvider/useAuth → presentation/, screens auth → presentation/screens/, HomePlaceholder → features/home/presentation/, navigation → app/navigation/, components/ui → shared/ui/, theme/tokens → shared/theme/, assets/images → shared/assets/ (PNG path ajustado a ../../../assets/images/). Todos los imports actualizados; cero shims nuevos; shims TASK-03 (api/dto/tokenStore/biometricService/axiosClient + lib/http) intactos. ESLint de fences + repo completo reservado a TASK-06.",
+    "bundling_passed_android": "OK (Humano, 2026-09-10) — build Android sin errores, sin pérdida de características",
+    "bundling_passed_ios": "OK (Humano, 2026-09-10) — build iOS sin errores, sin pérdida de características",
+    "blockers_or_errors": "Cero bloqueantes. TASK-05 COMPLETED y aprobada por el Humano. El puntero queda en TASK-06 TODO; se autoriza en nueva sesión. Fase 2 bloqueada."
   },
-  "agent_notes": "TASK-03 (infrastructure adapters + shims 1.5a) COMPLETED y APROBADA por el Humano el 2026-09-10: build en dispositivos físicos Android/iOS sin problemas y login funcional. Entregables: (1) src/features/auth/infrastructure/dto.ts (verbatim); (2) AxiosAuthApi.ts → createAxiosAuthApi + loginRequest (demo, mapeo errores intactos, mapea AuthResponseDTO→Session); (3) SecureStoreSessionRepository.ts → createSecureStoreSessionRepository (claves y opciones verbatim, clear() NO borra biometric_enabled); (4) ExpoBiometricGateway.ts → createExpoBiometricGateway (prompts/branches verbatim); (5) AxiosAuthTokenHolder.ts → createAxiosAuthTokenHolder; (6) src/shared/infrastructure/http/axiosClient.ts. Shims sin lógica en features/auth/{dto,api,tokenStore,biometricService}.ts y lib/http/axiosClient.ts. npx tsc --noEmit → exit 0. PARAR. Siguiente: sesión Trabajador TASK-04 (composition root + AuthProvider DIP + OptIn), solo si el Humano la autoriza en nueva sesión."
+  "agent_notes": "TASK-05 (relocate presentation/shared/navigation/home) COMPLETED y APROBADA por el Humano el 2026-09-10: build Android/iOS OK sin errores y sin pérdida de características. Hecho: (1) git mv de src/features/auth/{AuthProvider.tsx,useAuth.ts} → src/features/auth/presentation/ con imports relativos a ../application y ../domain; (2) src/screens/auth/{Login,BiometricOptIn,BiometricUnlock}Screen.tsx → src/features/auth/presentation/screens/; (3) src/screens/app/HomePlaceholderScreen.tsx → src/features/home/presentation/; (4) src/navigation/{types,RootNavigator}.tsx → src/app/navigation/; (5) src/components/ui/* → src/shared/ui/ (6 componentes); (6) src/theme/tokens.ts → src/shared/theme/tokens.ts; (7) src/assets/images.ts → src/shared/assets/images.ts con import del PNG relativo ../../../assets/images/escudo-yucatan.png. Imports actualizados en App.tsx (presentation/AuthProvider + app/navigation/RootNavigator), RootNavigator (useAuth/theme/screens/home), pantallas (useAuth → presentation, UI → shared/ui, tokens → shared/theme, images → shared/assets, types → app/navigation) y shared/ui AuthScaffold/GoldButton (tokens → shared/theme). Se conservaron NavigationContainer key={status}, header «INICIO», AuthScaffold/GoldButton inline y la máquina §5.2 (cero cambios de JSX/estilos/copy/keys). Los paths viejos quedaron vacíos (no hay shims de presentation nuevos porque ningún import los apunta). Shims TASK-03 intactos. npx tsc --noEmit → exit 0. NO se ejecutó expo start/export. PARAR. Siguiente: sesión Trabajador TASK-06 (borrar shims + fences ESLint + arnés), solo si el Humano la autoriza en nueva sesión. Fase 2 bloqueada."
 }

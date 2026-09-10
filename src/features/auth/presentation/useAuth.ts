@@ -1,13 +1,14 @@
 import { useAuth as useAuthFromProvider } from "./AuthProvider";
-import type { AuthStatus, BiometricUnlockMode } from "./AuthProvider";
-import type { AuthBasicUserResponseDTO } from "./dto";
+import type { AuthStatus, BiometricUnlockMode } from "../domain/sessionLifecycle";
+import type { BiometricMethodKind } from "../domain/ports/BiometricGateway";
+import type { User } from "../domain/entities/User";
 
-export type { AuthStatus, BiometricUnlockMode };
+export type { AuthStatus, BiometricUnlockMode, BiometricMethodKind };
 
 export interface UseAuthResult {
   status: AuthStatus;
   token: string | null;
-  user: AuthBasicUserResponseDTO | null;
+  user: User | null;
   expiresAt: string | null;
   canUseBiometricLogin: boolean;
   biometricUnlockMode: BiometricUnlockMode;
@@ -16,6 +17,7 @@ export interface UseAuthResult {
   declineBiometricOptIn: () => Promise<void>;
   enableBiometricAfterLogin: () => Promise<void>;
   signOut: () => Promise<void>;
+  listBiometricMethods: () => Promise<BiometricMethodKind[]>;
 }
 
 export function useAuth(): UseAuthResult {
