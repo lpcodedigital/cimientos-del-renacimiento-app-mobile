@@ -26,7 +26,7 @@ Reglas absolutas del Trabajador:
 
 ## TASK-01 — Domain kernel (auth)
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
 **validation:** TypeCheck verde; domain sin imports de framework; Humano autoriza en sesión aparte antes de ejecutar
 
@@ -34,7 +34,7 @@ Reglas absolutas del Trabajador:
 
 **Pasos**
 
-- [ ] Crear exactamente los archivos del plan §4 (firmas verbatim):
+- [x] Crear exactamente los archivos del plan §4 (firmas verbatim):
   - `src/features/auth/domain/entities/User.ts`
   - `src/features/auth/domain/entities/Session.ts`
   - `src/features/auth/domain/errors/AuthError.ts`
@@ -43,8 +43,8 @@ Reglas absolutas del Trabajador:
   - `src/features/auth/domain/ports/BiometricGateway.ts`
   - `src/features/auth/domain/ports/AuthApi.ts`
   - `src/features/auth/domain/ports/AuthTokenHolder.ts`
-- [ ] Verificar que esos archivos no importan `react`, `react-native`, `expo-*`, `axios`, ni paths `@/features/auth/{application,infrastructure,presentation}`.
-- [ ] `npx tsc --noEmit` debe pasar.
+- [x] Verificar que esos archivos no importan `react`, `react-native`, `expo-*`, `axios`, ni paths `@/features/auth/{application,infrastructure,presentation}`.
+- [x] `npx tsc --noEmit` debe pasar.
 
 **allowed_files**
 

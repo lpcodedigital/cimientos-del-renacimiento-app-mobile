@@ -261,6 +261,23 @@
 - `progress/current-task.json` → feature `core-arch-refactor`, TASK-01 `TODO`, `assigned_role: Trabajador`. **No IN_PROGRESS.**
 - **PARADA CONTROLADA:** no se inició TASK-01 ni se pasó el batón al Trabajador. Fase 2 sigue bloqueada.
 
+### 2026-09-10 — TASK-01 (Domain kernel auth) — COMPLETED y APROBADA por el Humano
+
+- **Hecho (secuencia TASK-01):** creados los **8 archivos de domain** con firmas **verbatim** de `plan.md` §4, sin consumidores, sin UI, sin moves, sin dependencias:
+  - `src/features/auth/domain/entities/User.ts` (`User`: `idUser`, `name`, `email`, `active`, `role`, `isFirstLogin`).
+  - `src/features/auth/domain/entities/Session.ts` (`Session`: `token`, `expiresAt`, `user`).
+  - `src/features/auth/domain/errors/AuthError.ts` (`AuthErrorKind`, `AuthError`, `AUTH_ERROR_MESSAGES`, `authError()`).
+  - `src/features/auth/domain/sessionLifecycle.ts` (`AuthStatus`, `BiometricUnlockMode`, `isSessionVigente()`).
+  - `src/features/auth/domain/ports/SessionRepository.ts` (`save`/`load`/`clear`/`setBiometricEnabled`/`getBiometricEnabled`).
+  - `src/features/auth/domain/ports/BiometricGateway.ts` (`BiometricAvailability`, `BiometricMethodKind`, `BiometricFallbackReason`, `BiometricGateway`).
+  - `src/features/auth/domain/ports/AuthApi.ts` (`login`).
+  - `src/features/auth/domain/ports/AuthTokenHolder.ts` (`setToken`).
+- **Reglas respetadas:** domain sin imports de `react`, `react-native`, `expo-*`, `axios`, `@/shared`, `@/app` ni capas hermanas (solo imports relativos `./User` / `../entities/Session`). Cero `any`, cero clases de use case, cero barrels `index.ts`, cero comentarios. No se tocó ninguna pantalla, Provider, `api`, `tokenStore`, `biometricService`, `App.tsx` ni infraestructura.
+- **Arnés:** `npx tsc --noEmit` → **exit 0** (verde). ESLint de fences + repo completo sigue reservado a TASK-06. NO se ejecutó `npx expo start`.
+- `spec/features/core-arch-refactor/task.md`: TASK-01 marcada `- [x]` / `Status: COMPLETED`.
+- `progress/current-task.json` → `active_task: TASK-02`, `status: TODO` (no IN_PROGRESS), `harness_status` con typecheck `true`.
+- **SIGUIENTE:** TASK-02 (Application use cases: `types.ts` + 7 factories, plan §5) en **NUEVA SESIÓN**, solo al autorizarlo el Humano. Fase 2 sigue bloqueada.
+
 ### Pendiente
 
 - [x] TASK-01 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
@@ -276,8 +293,8 @@
 - [x] Fase 1.5a TASK-05 — BiometricUnlockScreen pixel-perfect (Agente Trabajador, APROBADA 2026-09-05; ver bloque de cierre abajo)
 - [x] Fase 1.5a TASK-06 — Arnés (APROBADA por el Humano 2026-09-05; Fase 1.5a CERRADA)
 - [x] Fase 1.5b Paso 0 SDD — Orquestador (2026-09-10): spec/plan/task escritos; TASK-01 en TODO
-- [ ] Fase 1.5b TASK-01 — Domain kernel (Trabajador; NO iniciada; requiere autorización humana en nueva sesión)
-- [ ] Fase 1.5b TASK-02 — Application use cases
+- [x] Fase 1.5b TASK-01 — Domain kernel (Trabajador; COMPLETED y APROBADA por el Humano 2026-09-10)
+- [ ] Fase 1.5b TASK-02 — Application use cases (TODO; requiere autorización humana en nueva sesión)
 - [ ] Fase 1.5b TASK-03 — Infrastructure + shims
 - [ ] Fase 1.5b TASK-04 — Composition root + AuthProvider DIP
 - [ ] Fase 1.5b TASK-05 — Relocate presentation/shared/nav/home

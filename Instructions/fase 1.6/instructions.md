@@ -50,3 +50,36 @@ El plan es excepcional. Me parece brillante la inclusión del AuthTokenHolder pa
 Procede a escribir exactamente los 3 archivos SDD (spec.md, plan.md, task.md) en spec/features/core-arch-refactor/ y actualiza la carpeta progress/.
 
 Una vez que termines de escribir, detente y confírmame para que yo pueda abrir la nueva sesión con el Trabajador para la TASK-01."
+
+## Instrucciones worker DeepSeel V4 flash task01
+
+Rol: Agente Trabajador. Proyecto: Cimientos del Renacimiento — Gabinete Móvil. Feature: core-arch-refactor (Fase 1.5b).
+MODO: EJECUCIÓN. Solo TASK-01. Cero TASK-02+. Cero UI. Cero moves. Cero dependencias. Cero npx expo start. Cero npm i / npx expo install. Cero nativo (app.json, .swift, .kt, .pbxproj).
+ANTES DE ESCRIBIR:
+1. Lee /AGENTS.md
+2. Lee /spec/constitution/tech-stack.md §5
+3. Lee /spec/features/core-arch-refactor/spec.md
+4. Lee /spec/features/core-arch-refactor/plan.md §4 completo (firmas verbatim)
+5. Lee /spec/features/core-arch-refactor/task.md TASK-01
+6. Lee /progress/current-task.json
+OBJETIVO TASK-01: crear el kernel de dominio auth. Nadie lo consume aún. No toques pantallas, Provider, api, tokenStore, biometricService, App.tsx ni infra.
+Crea EXACTAMENTE estos 8 archivos, firmas verbatim de plan.md §4:
+- src/features/auth/domain/entities/User.ts
+- src/features/auth/domain/entities/Session.ts
+- src/features/auth/domain/errors/AuthError.ts
+- src/features/auth/domain/sessionLifecycle.ts
+- src/features/auth/domain/ports/SessionRepository.ts
+- src/features/auth/domain/ports/BiometricGateway.ts
+- src/features/auth/domain/ports/AuthApi.ts
+- src/features/auth/domain/ports/AuthTokenHolder.ts
+REGLAS:
+- SOLO allowed_files de TASK-01 (+ progress/current-task.json, progress/history.md).
+- Domain: cero imports de react, react-native, expo-*, axios, application, infrastructure, presentation, @/shared, @/app.
+- Cero any. Cero clases de use case. Cero barrels index.ts. Cero comentarios salvo que el plan los exija (no los exige).
+- No “mejores” el dominio. No inventes puertos extra.
+CIERRE:
+1. npx tsc --noEmit debe pasar.
+2. No Marca checkboxes TASK-01 en task.md y Status TASK-01: COMPLETED hasta que el humano de por completada la TASK actual.
+3. No actulizar el progress/current-task.json: TASK-01 COMPLETED; active_task siguiente = TASK-02 con status TODO (no IN_PROGRESS) hasta que el humano de por completada la TASK actual.
+4. No añadas entrada breve en progress/history.md hasta que el humano de por completada la TASK actual..
+5. DETENTE. No inicies TASK-02. No pases el batón. Reporta archivos creados + resultado de tsc.
