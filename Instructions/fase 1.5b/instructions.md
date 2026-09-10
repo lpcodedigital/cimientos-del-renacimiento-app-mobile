@@ -293,3 +293,63 @@ CIERRE:
    y registra la ejecución; no añadas entrada a history.md hasta aprobación humana.
 4. DETENTE. No inicies TASK-06. Reporta: (1) archivos movidos/creados/modificados,
    (2) salida del tsc, (3) qué debe validar el Humano.
+
+## Prompt para iniciar TASK-06 en nueva sesión (worker)
+Rol: Agente Trabajador. Proyecto: Cimientos del Renacimiento — Gabinete Móvil.
+Feature: core-arch-refactor (Fase 1.5b).
+MODO: EJECUCIÓN. Solo TASK-06. Cero Fase 2. Cero dependencias nuevas. Cero código
+nativo (app.json, Info.plist, .swift, .kt, .pbxproj). Cero npx expo start. Cero npm i /
+npx expo install.
+
+CONTEXTO: TASK-04 (composition root + AuthProvider DIP + OptIn) y TASK-05 (relocate
+presentation/shared/navigation/home) ya fueron EJECUTADAS y aprobadas por el humano
+(COMPLETED, build Android/iOS OK sin errores). Antes de iniciar TASK-06, verifica en
+progress/current-task.json y progress/history.md.
+
+ANTES DE ESCRIBIR:
+1. Lee /AGENTS.md
+2. Lee /spec/constitution/tech-stack.md §5 (arquitectura de capas, DIP)
+3. Lee /spec/features/core-arch-refactor/spec.md (§3 invariantes, §4 CA-09…12, §5 límites)
+4. Lee /spec/features/core-arch-refactor/plan.md §8 (orden de movimiento), §9 (fences
+   ESLint, tres bloques no-restricted-imports) y §11 (criterio de hecho)
+5. Lee /spec/features/core-arch-refactor/task.md TASK-06 (pasos y allowed_files)
+6. Lee /progress/current-task.json y /progress/history.md
+7. Inspecciona el árbol actual: src/features/auth/{api.ts,dto.ts,tokenStore.ts,
+   biometricService.ts}, src/lib/http/axiosClient.ts, src/screens/**, src/components/**,
+   src/navigation/**, src/theme/**, src/assets/**, eslint.config.js, package.json.
+
+OBJETIVO TASK-06: eliminar los paths 1.5a residuales, imponer DIP por linter y dejar la
+fase lista para el Humano. Cero UI. Pasos exactos del task.md:
+- [ ] Borrar shims y dirs vacíos: src/features/auth/{api,dto,tokenStore,biometricService}.ts;
+      src/lib/http/axiosClient.ts; src/screens/**; src/components/**; src/navigation/**;
+      src/theme/**; src/assets/** (el de src/, nunca assets/ raíz).
+- [ ] Confirmar con grep que no queda ningún import a esos paths.
+- [ ] eslint.config.js: añadir los TRES bloques `no-restricted-imports` del plan §9
+      (1 domain, 2 application, 3 presentation/navigation/shared-ui). Sin paquete nuevo.
+      compositionRoot.ts y App.tsx NO entran en esos globs.
+- [ ] npx tsc --noEmit → exit 0.
+- [ ] npx eslint . → exit 0 (cero warnings).
+- [ ] Grep bans en .ts/.tsx: cero `any`, `TouchableOpacity`, `FlatList`, `expo-router`.
+- [ ] Grep DIP: cero imports de `infrastructure` desde domain/application/presentation,
+      EXCEPTO src/app/compositionRoot.ts.
+- [ ] Verificar diff: package.json / app.json sin cambios de esta feature.
+- [ ] NO ejecutar npx expo start.
+
+REGLAS:
+- SOLO allowed_files de TASK-06 (eslint.config.js, los shims a borrar,
+  progress/current-task.json, progress/history.md, spec/features/core-arch-refactor/task.md).
+- Cero cambio visual/funcional. No tocar la máquina §5.2, NavigationContainer key={status},
+  header «INICIO», stilos inline ni copy.
+- Cero barrels index.ts. Cero `any`. Mantener Lato y paleta institucional.
+- Si un shim no puede borrarse porque algo aún lo importa, NO lo borres: repara el import
+  primero (dime el archivo) y luego reintenta.
+
+CIERRE:
+1. npx tsc --noEmit y npx eslint . deben pasar (exit 0).
+2. Marca las checkboxes de TASK-06 en spec/features/core-arch-refactor/task.md y ponla
+   `Status: READY_FOR_REVIEW` (no COMPLETED; la aprueba el Humano).
+3. Actualiza progress/current-task.json a TASK-06 READY_FOR_REVIEW con el detalle de la
+   ejecución (linter/typecheck/bans/DIP).
+4. Añade la entrada de TASK-06 en progress/history.md.
+5. DETENTE. No inicies Fase 2. Reporta: (1) archivos borrados/modificados/creados,
+   (2) salida de tsc y eslint, (3) bans/DIP verdes, (4) qué debe validar el Humano.
