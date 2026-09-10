@@ -65,15 +65,15 @@ Reglas absolutas del Trabajador:
 
 ## TASK-02 — Application use cases
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
 
 **Objetivo:** Siete factories de use case + `AuthUseCases` / `SessionSnapshot`. Cero React. Cero infra concreta. Cero wiring en App.
 
 **Pasos**
 
-- [ ] Crear `src/features/auth/application/types.ts` (`SessionSnapshot`, `EMPTY_UNAUTHENTICATED`, `AuthUseCases`) según plan §5.1.
-- [ ] Crear las 7 factories según plan §5.2–5.3:
+- [x] Crear `src/features/auth/application/types.ts` (`SessionSnapshot`, `EMPTY_UNAUTHENTICATED`, `AuthUseCases`) según plan §5.1.
+- [x] Crear las 7 factories según plan §5.2–5.3:
   - `bootstrapSession.ts` → `createBootstrapSession`
   - `signIn.ts` → `createSignIn`
   - `unlockWithBiometrics.ts` → `createUnlockWithBiometrics`
@@ -81,9 +81,9 @@ Reglas absolutas del Trabajador:
   - `declineBiometricOptIn.ts` → `createDeclineBiometricOptIn`
   - `signOut.ts` → `createSignOut`
   - `listBiometricMethods.ts` → `createListBiometricMethods`
-- [ ] `signIn` no setea `canUseBiometricLogin: true`. Unlock throws `new Error` con los 3 mensajes exactos. SignIn deja subir `AuthError`.
-- [ ] Imports de application: **solo** `../domain/...`. Cero `react` / `expo` / `axios`.
-- [ ] `npx tsc --noEmit` debe pasar.
+- [x] `signIn` no setea `canUseBiometricLogin: true`. Unlock throws `new Error` con los 3 mensajes exactos. SignIn deja subir `AuthError`.
+- [x] Imports de application: **solo** `../domain/...`. Cero `react` / `expo` / `axios`.
+- [x] `npx tsc --noEmit` debe pasar.
 
 **allowed_files**
 

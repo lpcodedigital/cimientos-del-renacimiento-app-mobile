@@ -11,9 +11,9 @@
   "active_task": {
     "id": "TASK-02",
     "description": "Application use cases: types.ts (SessionSnapshot, EMPTY_UNAUTHENTICATED, AuthUseCases) + 7 factories (bootstrapSession, signIn, unlockWithBiometrics, enableBiometric, declineBiometricOptIn, signOut, listBiometricMethods). Cero React. Cero infra concreta. Cero wiring en App.",
-    "status": "TODO",
+    "status": "COMPLETED",
     "assigned_role": "Agente Trabajador",
-    "validation": "NO iniciada. El Humano autoriza TASK-02 en nueva sesión. TypeCheck verde; application solo importa ../domain. No IN_PROGRESS hasta que el Humano autorice.",
+    "validation": "COMPLETED y aprobada. TypeCheck verde; application solo importa ../domain. Humano puede autorizar TASK-03 en nueva sesión.",
     "allowed_files_to_edit": [
       "src/features/auth/application/types.ts",
       "src/features/auth/application/bootstrapSession.ts",
@@ -28,13 +28,13 @@
     ]
   },
   "harness_status": {
-    "last_run": "2026-09-10 (TASK-01 domain; typecheck en verde; linter completo sigue reservado a TASK-06)",
+    "last_run": "2026-09-10 (TASK-02 application; typecheck en verde; linter completo sigue reservado a TASK-06)",
     "linter_passed": true,
     "typecheck_passed": true,
-    "typecheck_detail": "TASK-01: npx tsc --noEmit → exit 0. Domain sin imports de react/react-native/expo-*/axios/shared/app. ESLint de fences + repo completo = TASK-06. NO se ejecutó npx expo start.",
-    "bundling_passed_android": "N/A — 1.5b TASK-01 solo domain (nadie lo consume aún)",
-    "bundling_passed_ios": "N/A — 1.5b TASK-01 solo domain (nadie lo consume aún)",
-    "blockers_or_errors": "Cero bloqueantes. TASK-01 COMPLETED y aprobada por el Humano. TASK-02 en TODO; el Trabajador no arranca hasta autorización humana. Fase 2 bloqueada."
+    "typecheck_detail": "TASK-02: npx tsc --noEmit → exit 0. Application sin imports de react/react-native/expo-*/axios/infrastructure/presentation/@/shared/@/app (solo ../domain y ./types). Grep de any/TouchableOpacity/FlatList/expo-router en application → 0 coincidencias. ESLint de fences + repo completo = TASK-06. NO se ejecutó npx expo start.",
+    "bundling_passed_android": "N/A — 1.5b TASK-02 solo application (nadie lo consume aún)",
+    "bundling_passed_ios": "N/A — 1.5b TASK-02 solo application (nadie lo consume aún)",
+    "blockers_or_errors": "Cero bloqueantes. TASK-02 COMPLETED y aprobada por el Humano. El puntero NO avanza a TASK-03 hasta que el Humano la autorice en nueva sesión. Fase 2 bloqueada."
   },
-  "agent_notes": "TASK-01 (domain kernel auth) COMPLETED y aprobada por el Humano el 2026-09-10. Creados los 8 archivos de domain con firmas verbatim de plan.md §4: User, Session, AuthError (+AuthErrorKind/authError/AUTH_ERROR_MESSAGES), sessionLifecycle (AuthStatus/BiometricUnlockMode/isSessionVigente), puertos SessionRepository/BiometricGateway/AuthApi/AuthTokenHolder. Cero consumidores, cero UI, cero moves, cero deps. npx tsc --noEmit verde. PARAR. Siguiente: sesión Trabajador TASK-02 (application use cases), solo si el Humano la autoriza."
+  "agent_notes": "TASK-02 (application use cases de auth) COMPLETED y aprobada por el Humano el 2026-09-10. Creados los 8 archivos con firmas verbatim de plan.md §5: types.ts (SessionSnapshot, EMPTY_UNAUTHENTICATED, AuthUseCases) y las 7 factories createBootstrapSession/createSignIn/createUnlockWithBiometrics/createEnableBiometric/createDeclineBiometricOptIn/createSignOut/createListBiometricMethods. Tabla §5.2 respetada (signIn siempre canUseBiometricLogin:false; unlock lanza new Error(reason) con los 3 mensajes exactos y no lanza si la sesión falta/expira; decline/enable reexponen token/user/expiresAt vigentes; signOut = setToken(null)+allSettled(clear,setBiometricEnabled(false))+EMPTY_UNAUTHENTICATED). Cero consumidores, cero UI, cero moves, cero deps. npx tsc --noEmit verde. PARAR. Siguiente: sesión Trabajador TASK-03 (infrastructure adapters + shims), solo si el Humano la autoriza."
 }

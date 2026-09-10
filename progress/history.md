@@ -278,6 +278,25 @@
 - `progress/current-task.json` → `active_task: TASK-02`, `status: TODO` (no IN_PROGRESS), `harness_status` con typecheck `true`.
 - **SIGUIENTE:** TASK-02 (Application use cases: `types.ts` + 7 factories, plan §5) en **NUEVA SESIÓN**, solo al autorizarlo el Humano. Fase 2 sigue bloqueada.
 
+### 2026-09-10 — TASK-02 (Application use cases) — COMPLETED y APROBADA por el Humano
+
+- **Objetivo:** crear la capa `application` de auth, aún sin consumidores: el contrato de inyección y las 7 factories que orquestan los puertos del `domain`, replicando la máquina de estados congelada de 1.5a (plan §5.2). Nadie la instancia todavía.
+- **Hecho (secuencia TASK-02):** creados los **8 archivos** con firmas **verbatim** de `plan.md` §5, sin consumidores, sin UI, sin moves, sin dependencias:
+  - `src/features/auth/application/types.ts` (`SessionSnapshot`, `EMPTY_UNAUTHENTICATED`, `AuthUseCases`).
+  - `src/features/auth/application/bootstrapSession.ts` → `createBootstrapSession`.
+  - `src/features/auth/application/signIn.ts` → `createSignIn`.
+  - `src/features/auth/application/unlockWithBiometrics.ts` → `createUnlockWithBiometrics`.
+  - `src/features/auth/application/enableBiometric.ts` → `createEnableBiometric`.
+  - `src/features/auth/application/declineBiometricOptIn.ts` → `createDeclineBiometricOptIn`.
+  - `src/features/auth/application/signOut.ts` → `createSignOut`.
+  - `src/features/auth/application/listBiometricMethods.ts` → `createListBiometricMethods`.
+- **Tabla §5.2 respetada:** `signIn` devuelve siempre `canUseBiometricLogin: false` (no lo “arregla”); `unlockWithBiometrics` lanza `new Error(reason)` con los 3 mensajes institucionales exactos y **no** lanza si la sesión está ausente/expirada (retorna `EMPTY_UNAUTHENTICATED`); `decline`/`enable` reexponen `token`/`user`/`expiresAt` vigentes vía `load()` sin limpiar el JWT; `signOut` = `tokenHolder.setToken(null)` + `Promise.allSettled([clear(), setBiometricEnabled(false)])` + `EMPTY_UNAUTHENTICATED`. Factories = closures, no clases. `signIn` deja subir `AuthError` sin `catch`.
+- **Reglas respetadas:** application solo importa `../domain/...` y `./types` (cero `react`, `react-native`, `expo-*`, `axios`, `infrastructure`, `presentation`, `@/shared`, `@/app`). Cero `any`, cero comentarios, cero barrels `index.ts`. No se tocó pantalla, Provider, `api`, `tokenStore`, `biometricService`, `App.tsx` ni infraestructura.
+- **Arnés:** `npx tsc --noEmit` → **exit 0** (verde). Grep de `any`/`TouchableOpacity`/`FlatList`/`expo-router` en `application/` → 0 coincidencias. ESLint de fences + repo completo sigue reservado a TASK-06. NO se ejecutó `npx expo start`.
+- **PARADA CONTROLADA:** TASK-02 **COMPLETED** aprobada por el Humano el 2026-09-10. El puntero **no** avanza a TASK-03 (se autoriza en nueva sesión). `spec/features/core-arch-refactor/task.md`: TASK-02 marcada `- [x]` / `Status: COMPLETED`. `progress/current-task.json` → `active_task: TASK-02`, `status: COMPLETED`, `harness_status.typecheck_passed: true`.
+- **Nota para TASK-03 (3 interpretaciones de §5.2 confirmadas):** (1) `unlockWithBiometrics` success → `canUseBiometricLogin: true`; (2) `enableBiometric` → `canUseBiometricLogin: false` en ambas ramas; (3) `decline`/`enable` usan `session?.token ?? null` para reexponer la sesión vigente sin limpiar el JWT.
+- **SIGUIENTE:** TASK-03 (Infrastructure adapters + shims 1.5a, plan §6) en **NUEVA SESIÓN**, solo al autorizarlo el Humano. Fase 2 sigue bloqueada.
+
 ### Pendiente
 
 - [x] TASK-01 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
@@ -294,7 +313,7 @@
 - [x] Fase 1.5a TASK-06 — Arnés (APROBADA por el Humano 2026-09-05; Fase 1.5a CERRADA)
 - [x] Fase 1.5b Paso 0 SDD — Orquestador (2026-09-10): spec/plan/task escritos; TASK-01 en TODO
 - [x] Fase 1.5b TASK-01 — Domain kernel (Trabajador; COMPLETED y APROBADA por el Humano 2026-09-10)
-- [ ] Fase 1.5b TASK-02 — Application use cases (TODO; requiere autorización humana en nueva sesión)
+- [x] Fase 1.5b TASK-02 — Application use cases (Trabajador; COMPLETED y APROBADA por el Humano 2026-09-10)
 - [ ] Fase 1.5b TASK-03 — Infrastructure + shims
 - [ ] Fase 1.5b TASK-04 — Composition root + AuthProvider DIP
 - [ ] Fase 1.5b TASK-05 — Relocate presentation/shared/nav/home

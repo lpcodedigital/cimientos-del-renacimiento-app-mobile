@@ -83,3 +83,41 @@ CIERRE:
 3. No actulizar el progress/current-task.json: TASK-01 COMPLETED; active_task siguiente = TASK-02 con status TODO (no IN_PROGRESS) hasta que el humano de por completada la TASK actual.
 4. No añadas entrada breve en progress/history.md hasta que el humano de por completada la TASK actual..
 5. DETENTE. No inicies TASK-02. No pases el batón. Reporta archivos creados + resultado de tsc.
+
+## Prompt correcto para iniciar TASK-02 en una nueva sesión:
+
+Rol: Agente Trabajador. Proyecto: Cimientos del Renacimiento — Gabinete Móvil. Feature: core-arch-refactor (Fase 1.5b).
+MODO: EJECUCIÓN. Solo TASK-02. Cero TASK-03+. Cero UI. Cero moves. Cero dependencias. Cero npx expo start. Cero npm i / npx expo install. Cero nativo (app.json, .swift, .kt, .pbxproj).
+
+ANTES DE ESCRIBIR:
+1. Lee /AGENTS.md
+2. Lee /spec/constitution/tech-stack.md §5
+3. Lee /spec/features/core-arch-refactor/spec.md
+4. Lee /spec/features/core-arch-refactor/plan.md §5 completo (firmas y tabla §5.2 verbatim)
+5. Lee /spec/features/core-arch-refactor/task.md TASK-02
+6. Lee /progress/current-task.json
+
+OBJETIVO TASK-02: crear la capa application (aún sin consumidores). No toques pantallas, Provider, api, tokenStore, biometricService, App.tsx ni infra.
+Crea EXACTAMENTE estos 8 archivos, firmas verbatim de plan.md §5:
+- src/features/auth/application/types.ts (SessionSnapshot, EMPTY_UNAUTHENTICATED, AuthUseCases)
+- src/features/auth/application/bootstrapSession.ts → createBootstrapSession
+- src/features/auth/application/signIn.ts → createSignIn
+- src/features/auth/application/unlockWithBiometrics.ts → createUnlockWithBiometrics
+- src/features/auth/application/enableBiometric.ts → createEnableBiometric
+- src/features/auth/application/declineBiometricOptIn.ts → createDeclineBiometricOptIn
+- src/features/auth/application/signOut.ts → createSignOut
+- src/features/auth/application/listBiometricMethods.ts → createListBiometricMethods
+
+REGLAS:
+- SOLO allowed_files de TASK-02 (+ progress/current-task.json, progress/history.md).
+- Application: imports SOLO de ../domain/... (cero react, react-native, expo-*, axios, infrastructure, presentation, @/shared, @/app).
+- Use cases = factories (closures), NO clases. Cero any. Cero barrels index.ts. Cero comentarios salvo que el plan los exija.
+- Respeta la tabla §5.2 al pie de la letra: signIn NO setea canUseBiometricLogin:true (siempre false); unlockWithBiometrics throws new Error(reason) con los 3 mensajes exactos y NO throw si la sesión está ausente/expirada; decline/enable reexponen token/user/expiresAt vigentes; signOut = setToken(null) + Promise.allSettled([clear(), setBiometricEnabled(false)]) + EMPTY_UNAUTHENTICATED.
+- No "mejores" el dominio. No inventes puertos ni factories extra.
+
+CIERRE:
+1. npx tsc --noEmit debe pasar.
+2. No marques checkboxes TASK-02 ni Status COMPLETED hasta que el humano la dé por completada.
+3. No actualices current-task.json a TASK-02 COMPLETED ni avances el puntero a TASK-03 hasta aprobación humana.
+4. No añadas entrada en history.md hasta aprobación humana.
+5. DETENTE. No inicies TASK-03. Reporta: (1) archivos creados / archivos modificados (2) salida del tsc, (3) qué debo validar yo como Humano
