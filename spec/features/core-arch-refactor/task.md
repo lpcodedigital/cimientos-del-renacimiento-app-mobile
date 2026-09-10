@@ -150,19 +150,20 @@ Reglas absolutas del Trabajador:
 
 ## TASK-04 — Composition root + AuthProvider DIP + OptIn
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
+**validation:** COMPLETED y APROBADA por el Humano (build Android/iOS sin problemas, sin pérdida de características; typecheck verde)
 
 **Objetivo:** Cablear DIP. Único cambio funcional permitido: OptIn obtiene métodos vía `listBiometricMethods` del contexto (mismo resultado que `getSupportedBiometricMethods`).
 
 **Pasos**
 
-- [ ] Crear `src/app/compositionRoot.ts` (`createAuthUseCases`) según plan §7.1.
-- [ ] Reescribir `src/features/auth/AuthProvider.tsx` para recibir `useCases: AuthUseCases`, aplicar snapshots, **sin** imports de api/tokenStore/biometricService/axiosClient. Conservar nombres públicos (`enableBiometricAfterLogin`, etc.).
-- [ ] Actualizar `src/features/auth/useAuth.ts`: misma fachada + `listBiometricMethods`.
-- [ ] `App.tsx`: `const authUseCases = createAuthUseCases()` a nivel módulo; `<AuthProvider useCases={authUseCases}>`. No tocar fonts/Splash/QueryClient/StatusBar/css.
-- [ ] `BiometricOptInScreen.tsx`: quitar import de `biometricService`; usar `listBiometricMethods` de `useAuth`. Cero cambios de estilo/JSX de layout.
-- [ ] `npx tsc --noEmit` debe pasar.
+- [x] Crear `src/app/compositionRoot.ts` (`createAuthUseCases`) según plan §7.1.
+- [x] Reescribir `src/features/auth/AuthProvider.tsx` para recibir `useCases: AuthUseCases`, aplicar snapshots, **sin** imports de api/tokenStore/biometricService/axiosClient. Conservar nombres públicos (`enableBiometricAfterLogin`, etc.).
+- [x] Actualizar `src/features/auth/useAuth.ts`: misma fachada + `listBiometricMethods`.
+- [x] `App.tsx`: `const authUseCases = createAuthUseCases()` a nivel módulo; `<AuthProvider useCases={authUseCases}>`. No tocar fonts/Splash/QueryClient/StatusBar/css.
+- [x] `BiometricOptInScreen.tsx`: quitar import de `biometricService`; usar `listBiometricMethods` de `useAuth`. Cero cambios de estilo/JSX de layout.
+- [x] `npx tsc --noEmit` debe pasar.
 
 **allowed_files**
 

@@ -9,11 +9,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-import { useAuth } from "@/features/auth/useAuth";
-import {
-  getSupportedBiometricMethods,
-  type BiometricMethodKind,
-} from "@/features/auth/biometricService";
+import { useAuth, type BiometricMethodKind } from "@/features/auth/useAuth";
 import { AuthScaffold } from "@/components/ui/AuthScaffold";
 import { GoldButton, GoldButtonText } from "@/components/ui/GoldButton";
 import { fontFamily as font } from "@/theme/tokens";
@@ -67,13 +63,14 @@ const BENEFITS: BenefitRow[] = [
 ];
 
 export function BiometricOptInScreen() {
-  const { declineBiometricOptIn, enableBiometricAfterLogin } = useAuth();
+  const { declineBiometricOptIn, enableBiometricAfterLogin, listBiometricMethods } =
+    useAuth();
   const [methods, setMethods] = useState<BiometricMethodKind[]>([]);
   const [activating, setActivating] = useState(false);
 
   useEffect(() => {
     let active = true;
-    void getSupportedBiometricMethods().then((result) => {
+    void listBiometricMethods().then((result) => {
       if (active) {
         setMethods(result);
       }
@@ -81,7 +78,7 @@ export function BiometricOptInScreen() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [listBiometricMethods]);
 
   async function handleActivate() {
     if (activating) {

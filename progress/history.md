@@ -319,6 +319,21 @@
 - **PARADA CONTROLADA:** `progress/current-task.json` → `active_task: TASK-04`, `status: TODO` (no IN_PROGRESS), `harness_status` con bundling Android/iOS `OK`. El puntero **no** se ejecuta: TASK-04 se autoriza en nueva sesión. Fase 2 sigue bloqueada.
 - **SIGUIENTE:** TASK-04 (Composition root + AuthProvider DIP + OptIn, plan §7) en **NUEVA SESIÓN**, solo al autorizarlo el Humano.
 
+### 2026-09-10 — TASK-04 (Composition root + AuthProvider DIP + OptIn) — COMPLETED y APROBADA por el Humano
+
+- **Objetivo:** cablear DIP con composition root. Único cambio funcional permitido: OptIn obtiene métodos vía `listBiometricMethods` del contexto (mismo resultado que `getSupportedBiometricMethods`). Cero cambio visual/funcional vs 1.5a.
+- **Hecho (secuencia TASK-04):**
+  - `src/app/compositionRoot.ts` (nuevo) → `createAuthUseCases()`: instancia los 4 adapters de infrastructure (tokenHolder, sessionRepository, biometricGateway, authApi) y arma los 7 use cases de application con las factories del plan §7.1. **Único importador de `infrastructure`** (DIP).
+  - `src/features/auth/AuthProvider.tsx` → props `{ children, useCases: AuthUseCases }`; estado React idéntico + `applySnapshot()`; bootstrap con `active` flag; acciones delegan a los use cases; `unlockWithBiometrics` **re-lanza** el `Error` del use case (UnlockScreen depende) y no lanza si el use case retorna `unauthenticated` por sesión vencida. **CERO imports de `api`/`tokenStore`/`biometricService`/`axiosClient`/`dto`/`infrastructure`**. Conserva `enableBiometricAfterLogin` y demás nombres públicos; reexporta `AuthStatus`/`BiometricUnlockMode`.
+  - `src/features/auth/useAuth.ts` → misma fachada + `listBiometricMethods`; tipos desde `domain` (`User`, `AuthStatus`, `BiometricUnlockMode`, `BiometricMethodKind`) y reexport para no forzar rutas de domain a las pantallas.
+  - `App.tsx` → `const authUseCases = createAuthUseCases()` a nivel de módulo; `<AuthProvider useCases={authUseCases}>`; fonts/Splash/QueryClient/StatusBar/global.css intactos.
+  - `src/screens/auth/BiometricOptInScreen.tsx` → quitado import de `biometricService`; usa `listBiometricMethods` de `useAuth` en el `useEffect` de montaje; **CERO cambios de JSX/estilos**.
+  - Shims de TASK-03 intactos (se borran en TASK-06). Máquina §5.2 intacta (delegada a `application`).
+- **Arnés:** `npx tsc --noEmit` → **exit 0** (verde). ESLint de fences + repo completo sigue reservado a TASK-06. NO se ejecutó `npx expo start`.
+- **Validación humana:** el Tester Visual Humano compiló y validó TASK-04 en **Android e iOS**; builds sin problema y sin pérdida de características. TASK-04 marcada `- [x]` / `Status: COMPLETED` en `spec/features/core-arch-refactor/task.md`.
+- **PARADA CONTROLADA:** `progress/current-task.json` → `active_task: TASK-05`, `status: TODO` (no IN_PROGRESS), `harness_status` con bundling Android/iOS `OK`. El puntero **no** se ejecuta: TASK-05 se autoriza en nueva sesión. Fase 2 sigue bloqueada.
+- **SIGUIENTE:** TASK-05 (Relocate presentation / shared / navigation / home, plan §2–§3/§7.4) en **NUEVA SESIÓN**, solo al autorizarlo el Humano.
+
 ### Pendiente
 
 - [x] TASK-01 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
@@ -337,6 +352,6 @@
 - [x] Fase 1.5b TASK-01 — Domain kernel (Trabajador; COMPLETED y APROBADA por el Humano 2026-09-10)
 - [x] Fase 1.5b TASK-02 — Application use cases (Trabajador; COMPLETED y APROBADA por el Humano 2026-09-10)
 - [x] Fase 1.5b TASK-03 — Infrastructure + shims (Trabajador; COMPLETED y APROBADA por el Humano 2026-09-10; build Android/iOS OK, login funcional)
-- [ ] Fase 1.5b TASK-04 — Composition root + AuthProvider DIP
+- [x] Fase 1.5b TASK-04 — Composition root + AuthProvider DIP (Trabajador; COMPLETED y APROBADA por el Humano 2026-09-10; build Android/iOS OK, sin pérdida de características)
 - [ ] Fase 1.5b TASK-05 — Relocate presentation/shared/nav/home
 - [ ] Fase 1.5b TASK-06 — Delete shims + ESLint fences + arnés
