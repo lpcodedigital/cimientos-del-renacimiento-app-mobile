@@ -86,7 +86,7 @@ En esta nueva sesion asume tu rol de trabajador segun @AGENTS.md . Sincroniza tu
 ## Actualizar el history.md
 la TASK-06 fue complepletada con exito, se valido en los dispositivos Android y iOS unicamente ahora actualiza el @progress/history.md 
 
-## FASE 1.5b ##
+## FASE 1.5a ##
 
 ## Instrucciones lead planner Kimi K3 Fase1.5a
 

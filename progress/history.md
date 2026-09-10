@@ -245,7 +245,21 @@
 ### 2026-09-05 — TASK-06 APROBADA por el Humano — Fase 1.5a CERRADA
 
 - **Validación:** el Humano dio por completada la TASK-06 y cerró la **Fase 1.5a `auth-ui-polish`**. Revalidó el arnés (ESLint + TypeCheck en verde) y las invariantes por diff, y confirmó en dispositivo el comportamiento de los cambios de asset (módulo `src/assets/images.ts` + import tipado del escudo). Aprobación formal en `spec/features/auth-ui-polish/task.md`, `progress/current-task.json` (TASK-06 `APPROVED`, `harness_status` actualizado) y esta bitácora.
-- **Siguiente fase (gobernanza):** la **Fase 1.5b `core-arch-refactor`** (Clean Architecture + SOLID) NO ha sido abierta ni planificada. Conforme a `roadmap.md`, se redactará y arrancará cuando el Humano la autorice en una nueva instancia. El puntero de `current-task.json` queda detenido en TASK-06 `APPROVED`.
+- **Siguiente fase (gobernanza):** la **Fase 1.5b `core-arch-refactor`** quedó autorizada para **Paso 0 SDD** el 2026-09-10 (ver bloque abajo). El código de TASK-01 no arranca en esta instancia.
+
+## Fase 1.5b — Refactor arquitectónico (core-arch-refactor)
+
+### 2026-09-10 — Orquestación Paso 0 (Lead Planner) — SDD escrito; CERO código
+
+- Constitución leída: `AGENTS.md`, `mission.md`, `tech-stack.md` §5, `roadmap.md` Fase 1.5b.
+- Baseline 1.5a congelada: `auth-ui-polish` spec/plan + inventario real de `/src`. Fase 1 y 1.5a no reabiertas.
+- Decisiones humanas (2026-09-10): árbol nested por feature; `src/app/compositionRoot.ts` + `AuthProvider` en presentation con use cases por props; DIP `presentation → application+domain`; DTOs en infra / `User`+`Session` en domain; puerto `AuthTokenHolder`; use case `ListBiometricMethods`; factories (closures) no clases; shims TASK-03 y delete TASK-06; `features/home` para el placeholder; fences ESLint sin paquete nuevo.
+- Artefactos SDD:
+  - `spec/features/core-arch-refactor/spec.md`
+  - `spec/features/core-arch-refactor/plan.md`
+  - `spec/features/core-arch-refactor/task.md` (TASK-01…06; TASK-01 Status TODO)
+- `progress/current-task.json` → feature `core-arch-refactor`, TASK-01 `TODO`, `assigned_role: Trabajador`. **No IN_PROGRESS.**
+- **PARADA CONTROLADA:** no se inició TASK-01 ni se pasó el batón al Trabajador. Fase 2 sigue bloqueada.
 
 ### Pendiente
 
@@ -261,4 +275,10 @@
 - [x] Fase 1.5a TASK-04 — Máquina de estados + BiometricOptInScreen (Agente Trabajador, APROBADA 2026-09-05; ver bloque de cierre abajo)
 - [x] Fase 1.5a TASK-05 — BiometricUnlockScreen pixel-perfect (Agente Trabajador, APROBADA 2026-09-05; ver bloque de cierre abajo)
 - [x] Fase 1.5a TASK-06 — Arnés (APROBADA por el Humano 2026-09-05; Fase 1.5a CERRADA)
-- [ ] Fase 1.5b `core-arch-refactor` — spec/plan/task se redactan al autorizarla el Humano en nueva instancia (Orquestador; NO abierta)
+- [x] Fase 1.5b Paso 0 SDD — Orquestador (2026-09-10): spec/plan/task escritos; TASK-01 en TODO
+- [ ] Fase 1.5b TASK-01 — Domain kernel (Trabajador; NO iniciada; requiere autorización humana en nueva sesión)
+- [ ] Fase 1.5b TASK-02 — Application use cases
+- [ ] Fase 1.5b TASK-03 — Infrastructure + shims
+- [ ] Fase 1.5b TASK-04 — Composition root + AuthProvider DIP
+- [ ] Fase 1.5b TASK-05 — Relocate presentation/shared/nav/home
+- [ ] Fase 1.5b TASK-06 — Delete shims + ESLint fences + arnés

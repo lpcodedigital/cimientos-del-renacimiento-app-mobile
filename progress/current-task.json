@@ -1,34 +1,40 @@
 {
   "project_name": "Cimientos del Renacimiento - Gabinete Móvil",
-  "current_roadmap_phase": "Fase 1.5a: Pulido UI/UX de Autenticación (auth-ui-polish)",
-  "active_feature": "auth-ui-polish",
+  "current_roadmap_phase": "Fase 1.5b: Refactor arquitectónico (core-arch-refactor)",
+  "active_feature": "core-arch-refactor",
   "context_pointers": {
-    "spec_file": "spec/features/auth-ui-polish/spec.md",
-    "plan_file": "spec/features/auth-ui-polish/plan.md",
-    "task_file": "spec/features/auth-ui-polish/task.md"
+    "spec_file": "spec/features/core-arch-refactor/spec.md",
+    "plan_file": "spec/features/core-arch-refactor/plan.md",
+    "task_file": "spec/features/core-arch-refactor/task.md",
+    "baseline_feature": "spec/features/auth-ui-polish/spec.md"
   },
   "active_task": {
-    "id": "TASK-06",
-    "description": "Arnés de control (Fase 1.5a): npx eslint . + npx tsc --noEmit en verde, corrección del patrón require() público de asset en LoginScreen/TASK-03 y BiometricUnlockScreen/TASK-05 mediante módulo compartido @/assets/images, bans (any/TouchableOpacity/FlatList/expo-router/emojis/StyleSheet.create injustificado) a cero, invariantes por diff (api.ts/dto.ts/tokenStore.ts/app.json intactos; única dependencia nueva expo-linear-gradient + @expo/vector-icons autorizado) verificadas. Cierre de Fase 1.5a listo para el Revisor y el Tester Visual Humano.",
-    "status": "APPROVED",
-    "assigned_role": "Agente Trabajador + Revisor (auditoría de arnés) + Tester Visual Humano",
-    "validation": "APROBADA y Fase 1.5a CERRADA por el Humano (2026-09-05). El Humano revalidó el arnés (eslint + tsc en verde), el diff de invariantes y confirmó visualmente el comportamiento de los cambios de asset en dispositivo. No se abre Fase 1.5b en esta instancia.",
+    "id": "TASK-01",
+    "description": "Domain kernel auth: User, Session, AuthError, sessionLifecycle, puertos SessionRepository / BiometricGateway / AuthApi / AuthTokenHolder. Cero consumidores. Cero UI. Cero moves.",
+    "status": "TODO",
+    "assigned_role": "Agente Trabajador",
+    "validation": "NO iniciada. El Humano autoriza TASK-01 en nueva sesión. TypeCheck verde; domain sin react/expo/axios. No IN_PROGRESS de código en esta instancia de orquestación.",
     "allowed_files_to_edit": [
-      "Archivos de TASK-01..05 para correcciones de lint/tipos (TextField, AuthProvider, LoginScreen, BiometricUnlockScreen)",
-      "src/assets/images.ts (módulo compartido de asset estilo @/assets, TASK-06)",
-      "nativewind-env.d.ts (declaración de módulo *.png para asset tipado, TASK-06)",
+      "src/features/auth/domain/entities/User.ts",
+      "src/features/auth/domain/entities/Session.ts",
+      "src/features/auth/domain/errors/AuthError.ts",
+      "src/features/auth/domain/sessionLifecycle.ts",
+      "src/features/auth/domain/ports/SessionRepository.ts",
+      "src/features/auth/domain/ports/BiometricGateway.ts",
+      "src/features/auth/domain/ports/AuthApi.ts",
+      "src/features/auth/domain/ports/AuthTokenHolder.ts",
       "progress/current-task.json",
       "progress/history.md"
     ]
   },
   "harness_status": {
-    "last_run": "2026-09-05 (Fase 1.5a CERRADA por el Humano)",
+    "last_run": "2026-09-05 (Fase 1.5a CERRADA; 1.5b aún sin código)",
     "linter_passed": true,
     "typecheck_passed": true,
-    "typecheck_detail": "npx tsc --noEmit → exit 0 sin errores. npx eslint . → exit 0 sin errores ni warnings. NO se ejecutó npx expo start (prohibido a agentes; el bundling en físico es del Humano).",
-    "bundling_passed_android": "PENDIENTE - asumido OK por el Humano al cerrar la Fase 1.5a",
-    "bundling_passed_ios": "PENDIENTE - asumido OK por el Humano al cerrar la Fase 1.5a",
-    "blockers_or_errors": "Cero bloqueantes — Fase 1.5a (auth-ui-polish) CERRADA y APROBADA por el Humano (2026-09-05). Correcciones de TASK-06 consolidadas: (1) TextField.tsx — jsx-no-leaked-render resuelto con const isSecureActive. (2) AuthProvider.tsx — prefer-const nextMode. (3) LoginScreen.tsx y BiometricUnlockScreen.tsx — require() público del escudo reemplazado por import tipado vía módulo compartido src/assets/images.ts (imageAssets.escudoYucatan) + declaración de módulo '*.png' en nativewind-env.d.ts; fuentes de asset intactas. Bans a cero. Invariantes por diff vs HEAD: api.ts/dto.ts/tokenStore.ts/app.json sin cambios; dependencia nueva de Fase 1.5a = expo-linear-gradient (~57.0.1) + @expo/vector-icons (^15.0.2, autorizado). Fase 1.5b NO abierta (queda para nueva instancia cuando el Humano la autorice tras la revisión del Orquestador)."
+    "typecheck_detail": "Último arnés verde es el de 1.5a. 1.5b no ejecuta arnés hasta TASK-06. NO se ejecutó npx expo start.",
+    "bundling_passed_android": "N/A — 1.5b Paso 0 SDD only",
+    "bundling_passed_ios": "N/A — 1.5b Paso 0 SDD only",
+    "blockers_or_errors": "Cero bloqueantes de SDD. TASK-01 en TODO. Trabajador no arranca hasta autorización humana de TASK-01. Fase 2 bloqueada."
   },
-  "agent_notes": "Fase 1.5a (auth-ui-polish) COMPLETA y CERRADA por el Humano (2026-09-05). TASK-06 APPROVED. Según la gobernanza del proyecto (roadmap.md), la Fase 1.5b core-arch-refactor NO se planifica ni arranca hasta que el Humano la autorice en una nueva instancia. El puntero se detiene aquí: próxima fase declarada pero NO iniciada."
+  "agent_notes": "Paso 0 de orquestación 1.5b COMPLETO (2026-09-10). SDD escrito y autorizado por el Humano. Decisiones: nested por feature; compositionRoot.ts + AuthProvider presentation con use cases por props; DIP presentation→application+domain; DTOs en infra / User+Session en domain; AuthTokenHolder; ListBiometricMethods; factories no clases; shims TASK-03→delete TASK-06; features/home placeholder. Cero código de producto en esta sesión. PARAR. Siguiente: sesión Trabajador TASK-01."
 }
