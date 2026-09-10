@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 
-import { AuthScaffold } from "@/components/ui/AuthScaffold";
-import { GoldButton, GoldButtonText } from "@/components/ui/GoldButton";
-import { imageAssets } from "@/assets/images";
-import { useAuth } from "@/features/auth/useAuth";
-import { fontFamily as font } from "@/theme/tokens";
+import { AuthScaffold } from "@/shared/ui/AuthScaffold";
+import { GoldButton, GoldButtonText } from "@/shared/ui/GoldButton";
+import { imageAssets } from "@/shared/assets/images";
+import { useAuth } from "@/features/auth/presentation/useAuth";
+import { fontFamily as font } from "@/shared/theme/tokens";
 
 const COLOR = {
   crema: "#EDD6A8",

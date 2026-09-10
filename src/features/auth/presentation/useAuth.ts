@@ -1,7 +1,7 @@
 import { useAuth as useAuthFromProvider } from "./AuthProvider";
-import type { AuthStatus, BiometricUnlockMode } from "./domain/sessionLifecycle";
-import type { BiometricMethodKind } from "./domain/ports/BiometricGateway";
-import type { User } from "./domain/entities/User";
+import type { AuthStatus, BiometricUnlockMode } from "../domain/sessionLifecycle";
+import type { BiometricMethodKind } from "../domain/ports/BiometricGateway";
+import type { User } from "../domain/entities/User";
 
 export type { AuthStatus, BiometricUnlockMode, BiometricMethodKind };
 

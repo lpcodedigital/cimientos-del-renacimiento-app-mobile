@@ -2,17 +2,17 @@ import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { useAuth, type AuthStatus } from "@/features/auth/useAuth";
-import { palette, fontFamily } from "@/theme/tokens";
+import { useAuth, type AuthStatus } from "@/features/auth/presentation/useAuth";
+import { palette, fontFamily } from "@/shared/theme/tokens";
 import type {
   AppStackParamList,
   AuthStackParamList,
-} from "@/navigation/types";
+} from "@/app/navigation/types";
 
-import { LoginScreen } from "@/screens/auth/LoginScreen";
-import { BiometricOptInScreen } from "@/screens/auth/BiometricOptInScreen";
-import { BiometricUnlockScreen } from "@/screens/auth/BiometricUnlockScreen";
-import { HomePlaceholderScreen } from "@/screens/app/HomePlaceholderScreen";
+import { LoginScreen } from "@/features/auth/presentation/screens/LoginScreen";
+import { BiometricOptInScreen } from "@/features/auth/presentation/screens/BiometricOptInScreen";
+import { BiometricUnlockScreen } from "@/features/auth/presentation/screens/BiometricUnlockScreen";
+import { HomePlaceholderScreen } from "@/features/home/presentation/HomePlaceholderScreen";
 
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 const AppStack = createNativeStackNavigator<AppStackParamList>();

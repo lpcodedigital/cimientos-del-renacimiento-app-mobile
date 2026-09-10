@@ -8,10 +8,10 @@ import {
   useState,
   type PropsWithChildren,
 } from "react";
-import type { AuthUseCases, SessionSnapshot } from "./application/types";
-import type { BiometricMethodKind } from "./domain/ports/BiometricGateway";
-import type { User } from "./domain/entities/User";
-import type { AuthStatus, BiometricUnlockMode } from "./domain/sessionLifecycle";
+import type { AuthUseCases, SessionSnapshot } from "../application/types";
+import type { BiometricMethodKind } from "../domain/ports/BiometricGateway";
+import type { User } from "../domain/entities/User";
+import type { AuthStatus, BiometricUnlockMode } from "../domain/sessionLifecycle";
 
 export type { AuthStatus, BiometricUnlockMode };
 

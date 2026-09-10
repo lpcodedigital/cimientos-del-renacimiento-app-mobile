@@ -246,22 +246,23 @@ Reglas absolutas del Trabajador:
 
 ## TASK-06 — Borrar shims + fences ESLint + arnés
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador + Revisor (auditoría de arnés)
+**validation:** COMPLETED y APROBADA por el Humano (2026-09-10): compilada y probada con éxito en dispositivos Android e iOS; tsc y eslint en verde (exit 0); bans y DIP verificados.
 
 **Objetivo:** Eliminar paths 1.5a residuales, imponer DIP por linter, dejar Fase 1.5b lista para el Humano. Cero UI.
 
 **Pasos**
 
-- [ ] Borrar shims y dirs vacíos: `src/features/auth/{api,dto,tokenStore,biometricService,AuthProvider,useAuth}.ts` si aún son shims; `src/lib/http/axiosClient.ts`; `src/screens/**`; `src/components/**`; `src/navigation/**`; `src/theme/**`; `src/assets/**` (el de `src/`, no `assets/` raíz).
-- [ ] Confirmar que no queda import a esos paths (`grep`).
-- [ ] `eslint.config.js`: tres bloques `no-restricted-imports` del plan §9. Sin paquetes nuevos.
-- [ ] `npx tsc --noEmit` → exit 0.
-- [ ] `npx eslint .` → exit 0 (cero warnings).
-- [ ] Grep bans en `.ts`/`.tsx`: cero `any`, `TouchableOpacity`, `FlatList`, `expo-router`.
-- [ ] Grep DIP: cero imports de `infrastructure` desde `domain`/`application`/`presentation` (excepto `compositionRoot.ts`).
-- [ ] `package.json` / `app.json` sin cambios de esta feature (verificar diff).
-- [ ] NO ejecutar `npx expo start`.
+- [x] Borrar shims y dirs vacíos: `src/features/auth/{api,dto,tokenStore,biometricService,AuthProvider,useAuth}.ts` si aún son shims; `src/lib/http/axiosClient.ts`; `src/screens/**`; `src/components/**`; `src/navigation/**`; `src/theme/**`; `src/assets/**` (el de `src/`, no `assets/` raíz).
+- [x] Confirmar que no queda import a esos paths (`grep`).
+- [x] `eslint.config.js`: tres bloques `no-restricted-imports` del plan §9. Sin paquetes nuevos.
+- [x] `npx tsc --noEmit` → exit 0.
+- [x] `npx eslint .` → exit 0 (cero warnings).
+- [x] Grep bans en `.ts`/`.tsx`: cero `any`, `TouchableOpacity`, `FlatList`, `expo-router`.
+- [x] Grep DIP: cero imports de `infrastructure` desde `domain`/`application`/`presentation` (excepto `compositionRoot.ts`).
+- [x] `package.json` / `app.json` sin cambios de esta feature (verificar diff).
+- [x] NO ejecutar `npx expo start`.
 
 **allowed_files**
 

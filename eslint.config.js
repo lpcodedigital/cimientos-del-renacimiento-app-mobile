@@ -70,6 +70,75 @@ const config = [
       "@typescript-eslint/no-non-null-assertion": "warn",
     },
   },
+  {
+    files: ["src/features/*/domain/**"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            "react",
+            "react-native",
+            "axios",
+            "@tanstack/*",
+            "expo-secure-store",
+            "expo-local-authentication",
+            "expo-font",
+            "expo-linear-gradient",
+            "@/features/*/application/**",
+            "@/features/*/infrastructure/**",
+            "@/features/*/presentation/**",
+            "@/shared/**",
+            "@/app/**",
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ["src/features/*/application/**"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            "react",
+            "react-native",
+            "axios",
+            "expo-secure-store",
+            "expo-local-authentication",
+            "expo-font",
+            "expo-linear-gradient",
+            "@/features/*/infrastructure/**",
+            "@/features/*/presentation/**",
+            "@/shared/infrastructure/**",
+            "@/app/**",
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: [
+      "src/features/*/presentation/**",
+      "src/app/navigation/**",
+      "src/shared/ui/**",
+    ],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            "@/features/*/infrastructure/**",
+            "@/shared/infrastructure/**",
+            "expo-secure-store",
+            "expo-local-authentication",
+            "axios",
+          ],
+        },
+      ],
+    },
+  },
 ];
 
 module.exports = config;

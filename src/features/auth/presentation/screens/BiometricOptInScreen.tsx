@@ -9,10 +9,10 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-import { useAuth, type BiometricMethodKind } from "@/features/auth/useAuth";
-import { AuthScaffold } from "@/components/ui/AuthScaffold";
-import { GoldButton, GoldButtonText } from "@/components/ui/GoldButton";
-import { fontFamily as font } from "@/theme/tokens";
+import { useAuth, type BiometricMethodKind } from "@/features/auth/presentation/useAuth";
+import { AuthScaffold } from "@/shared/ui/AuthScaffold";
+import { GoldButton, GoldButtonText } from "@/shared/ui/GoldButton";
+import { fontFamily as font } from "@/shared/theme/tokens";
 
 const COLOR = {
   crema: "#EDD6A8",

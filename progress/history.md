@@ -334,6 +334,24 @@
 - **PARADA CONTROLADA:** `progress/current-task.json` → `active_task: TASK-05`, `status: TODO` (no IN_PROGRESS), `harness_status` con bundling Android/iOS `OK`. El puntero **no** se ejecuta: TASK-05 se autoriza en nueva sesión. Fase 2 sigue bloqueada.
 - **SIGUIENTE:** TASK-05 (Relocate presentation / shared / navigation / home, plan §2–§3/§7.4) en **NUEVA SESIÓN**, solo al autorizarlo el Humano.
 
+### 2026-09-10 — TASK-05 (Relocate presentation / shared / navigation / home) — COMPLETED y APROBADA por el Humano
+
+- **Objetivo:** mover presentation/shared/navigation/home al árbol destino de Clean Architecture. Diff permitido = **solo rutas de import y reloc**. Cero cambios de JSX, estilos, copy o keys de navegación.
+- **Hecho (secuencia TASK-05):** movimientos con `git mv` (historial preservado):
+  - `src/features/auth/{AuthProvider.tsx,useAuth.ts}` → `src/features/auth/presentation/` (imports relativos a `../application` y `../domain`).
+  - `src/screens/auth/{Login,BiometricOptIn,BiometricUnlock}Screen.tsx` → `src/features/auth/presentation/screens/`.
+  - `src/screens/app/HomePlaceholderScreen.tsx` → `src/features/home/presentation/`.
+  - `src/navigation/{types.ts,RootNavigator.tsx}` → `src/app/navigation/`.
+  - `src/components/ui/*` (6 componentes) → `src/shared/ui/`.
+  - `src/theme/tokens.ts` → `src/shared/theme/tokens.ts`.
+  - `src/assets/images.ts` → `src/shared/assets/images.ts` (relative path del PNG ajustado a `../../../assets/images/escudo-yucatan.png`).
+- **Imports actualizados:** `App.tsx` (AuthProvider → `presentation/`, RootNavigator → `app/navigation/`), `RootNavigator` (useAuth/presentation, theme → shared/theme, screens → presentation/screens, home → features/home), pantallas (useAuth → presentation, UI → shared/ui, tokens → shared/theme, images → shared/assets, types → app/navigation), `shared/ui/AuthScaffold` y `GoldButton` (tokens → shared/theme). Total: 11 archivos modificados, 35 líneas cambiadas, todas de import.
+- **Invariantes conservadas:** `NavigationContainer key={status}`, header nativo «INICIO», `AuthScaffold`/`GoldButton` con estilos inline, máquina de estados §5.2 y contratos. Cero shims de presentation nuevos (ningún import apunta a los paths viejos); shims TASK-03 (`api`/`dto`/`tokenStore`/`biometricService`/`lib/http/axiosClient`) intactos. Cero barrels `index.ts`.
+- **Arnés:** `npx tsc --noEmit` → **exit 0** (verde). ESLint de fences + repo completo sigue reservado a TASK-06. NO se ejecutó `npx expo start`/`export`.
+- **Validación humana:** el Tester Visual Humano compiló y validó TASK-05 en **Android e iOS**; todo se ejecutó correctamente y sin errores. TASK-05 marcada `- [x]` / `Status: COMPLETED` en `spec/features/core-arch-refactor/task.md`.
+- **PARADA CONTROLADA:** `progress/current-task.json` → `active_task: TASK-06`, `status: TODO` (no IN_PROGRESS), `harness_status` con bundling Android/iOS `OK`. El puntero **no** se ejecuta: TASK-06 se autoriza en nueva sesión. Fase 2 sigue bloqueada.
+- **SIGUIENTE:** TASK-06 (Borrar shims + fences ESLint + arnés, plan §9) en **NUEVA SESIÓN**, solo al autorizarlo el Humano. TASK-06 es la última de la Fase 1.5b; tras ella, Revisor audita y el Tester Visual Humano valida CA-01…08 en dispositivo.
+
 ### Pendiente
 
 - [x] TASK-01 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
@@ -353,5 +371,37 @@
 - [x] Fase 1.5b TASK-02 — Application use cases (Trabajador; COMPLETED y APROBADA por el Humano 2026-09-10)
 - [x] Fase 1.5b TASK-03 — Infrastructure + shims (Trabajador; COMPLETED y APROBADA por el Humano 2026-09-10; build Android/iOS OK, login funcional)
 - [x] Fase 1.5b TASK-04 — Composition root + AuthProvider DIP (Trabajador; COMPLETED y APROBADA por el Humano 2026-09-10; build Android/iOS OK, sin pérdida de características)
-- [ ] Fase 1.5b TASK-05 — Relocate presentation/shared/nav/home
-- [ ] Fase 1.5b TASK-06 — Delete shims + ESLint fences + arnés
+- [x] Fase 1.5b TASK-05 — Relocate presentation/shared/nav/home (Trabajador; COMPLETED y APROBADA por el Humano 2026-09-10; build Android/iOS OK, sin errores)
+- [x] Fase 1.5b TASK-06 — Delete shims + ESLint fences + arnés (Trabajador; COMPLETED y APROBADA por el Humano 2026-09-10; compilada y probada en Android/iOS)
+
+### 2026-09-10 — TASK-06 (Delete shims + ESLint fences + arnés) — READY_FOR_REVIEW
+
+- **Objetivo:** eliminar los paths 1.5a residuales, imponer el DIP por linter (sin paquete nuevo) y dejar la Fase 1.5b lista para el Revisor y el Tester Visual Humano. Cero UI, cero cambios visuales/funcionales, cero dependencias.
+- **Hecho (secuencia TASK-06):**
+  - **Shims borrados (5):** `git rm src/features/auth/api.ts`, `src/features/auth/dto.ts`, `src/features/auth/tokenStore.ts`, `src/features/auth/biometricService.ts` y `src/lib/http/axiosClient.ts`; `rmdir src/lib/http` + `src/lib` (dirs vacíos). Ya no existían `src/features/auth/AuthProvider.tsx` ni `src/features/auth/useAuth.ts` en la raíz (TASK-05 los movió a `presentation/`).
+  - **Dirs 1.5a ya vaciados en TASK-05:** `src/screens`, `src/components`, `src/navigation`, `src/theme`, `src/assets` no existían. El asset raíz `assets/images/escudo-yucatan.png` permanece intacto.
+  - **Confirmación de imports:** grep en `*.ts`/`*.tsx`/`*.js`: cero referencias a `@/screens`, `@/components`, `@/navigation`, `@/theme`, `@/assets`, `features/auth/{api,dto,tokenStore,biometricService}`, `lib/http`, `features/auth/{AuthProvider,useAuth}`.
+  - **`eslint.config.js` — tres bloques `no-restricted-imports` (plan §9, regla core, sin paquete nuevo):**
+    1. `src/features/*/domain/**` — prohíbe `react`, `react-native`, `axios`, `@tanstack/*`, `expo-secure-store`, `expo-local-authentication`, `expo-font`, `expo-linear-gradient`, `@/features/*/application/**`, `@/features/*/infrastructure/**`, `@/features/*/presentation/**`, `@/shared/**`, `@/app/**`.
+    2. `src/features/*/application/**` — prohíbe `react`, `react-native`, `axios`, los `expo-*` listados, `@/features/*/infrastructure/**`, `@/features/*/presentation/**`, `@/shared/infrastructure/**`, `@/app/**`.
+    3. `src/features/*/presentation/**`, `src/app/navigation/**`, `src/shared/ui/**` — prohíbe `@/features/*/infrastructure/**`, `@/shared/infrastructure/**`, `expo-secure-store`, `expo-local-authentication`, `axios`.
+    - `src/app/compositionRoot.ts` y `App.tsx` quedan **fuera** de los globs (pueden importar infra).
+- **Arnés (verde):**
+  - `npx tsc --noEmit` → **exit 0**.
+  - `npx eslint .` → **exit 0** (cero errores, cero warnings) con los tres fences activos.
+  - Bans en `.ts`/`.tsx`: **cero** `any`, `TouchableOpacity`, `FlatList`, `expo-router`.
+  - DIP: únicos imports de `infrastructure` = dentro de `src/features/auth/infrastructure/*` (legal) y `src/app/compositionRoot.ts` (único importador autorizado). `domain`/`application`/`presentation` limpios.
+  - `git diff HEAD -- package.json app.json` → **sin cambios** (cero dependencias nuevas; cero cambios nativos).
+  - NO se ejecutó `npx expo start` (reservado al Humano).
+- **Árbol final:** `src/app/{compositionRoot.ts,navigation/}`, `src/features/auth/{domain,application,infrastructure,presentation}`, `src/features/home/presentation/`, `src/shared/{ui,theme,assets,infrastructure/http}`.
+- `spec/features/core-arch-refactor/task.md`: TASK-06 marcada `- [x]` / `Status: READY_FOR_REVIEW`.
+- `progress/current-task.json` → `active_task: TASK-06`, `status: READY_FOR_REVIEW`, `harness_status.linter_passed: true`, `typecheck_passed: true`, bans/DIP verificados, bundling Android/iOS `PENDIENTE (Humano)`.
+- **PARADA CONTROLADA:** TASK-06 **READY_FOR_REVIEW**. Siguientes actores: el **Revisor** audita el arnés y las invariantes por diff; después el **Tester Visual Humano** valida CA-01…08 en dispositivo (iOS + Android) y la biometría física. **Fase 2 sigue bloqueada.**
+
+### 2026-09-10 — TASK-06 APROBADA por el Humano — Fase 1.5b CERRADA
+
+- **Validación:** el Humano confirmó que la **TASK-06 se completó con éxito**: compilada y probada en dispositivos **Android e iOS**. Arnés revalidado (ESLint + TypeCheck en verde), bans (any/TouchableOpacity/FlatList/expo-router) y DIP verificados, y `package.json`/`app.json` sin cambios.
+- Cierre: **Fase 1.5b `core-arch-refactor` CERRADA y APROBADA por el Humano** (2026-09-10). Árbol Clean Architecture por features operativo: `src/app/{compositionRoot.ts,navigation/}`, `src/features/auth/{domain,application,infrastructure,presentation}`, `src/features/home/presentation/`, `src/shared/{ui,theme,assets,infrastructure/http}`. Paths 1.5a residuales eliminados y DIP impuesto por linter.
+- `spec/features/core-arch-refactor/task.md`: TASK-06 marcada `- [x]` / `Status: COMPLETED`.
+- `progress/current-task.json` → `active_task: TASK-06`, `status: COMPLETED`, `harness_status` con linter/typecheck `true`, bans/DIP verificados y bundling Android/iOS `OK (Humano)`.
+- **Fase 2 NO iniciada.** Queda bloqueada hasta autorización explícita del Humano en nueva sesión. PARADA CONTROLADA.
