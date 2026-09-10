@@ -4,7 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { authPalette } from "@/theme/tokens";
+import { authPalette } from "@/shared/theme/tokens";
 
 type AuthScaffoldProps = {
   children: ReactNode;

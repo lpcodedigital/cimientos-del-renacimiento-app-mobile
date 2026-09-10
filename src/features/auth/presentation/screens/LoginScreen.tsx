@@ -12,12 +12,12 @@ import {
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Ionicons } from "@expo/vector-icons";
 
-import { useAuth } from "@/features/auth/useAuth";
-import { AuthScaffold } from "@/components/ui/AuthScaffold";
-import { GoldButton, GoldButtonText } from "@/components/ui/GoldButton";
-import { TextField } from "@/components/ui/TextField";
-import { imageAssets } from "@/assets/images";
-import type { AuthStackParamList } from "@/navigation/types";
+import { useAuth } from "@/features/auth/presentation/useAuth";
+import { AuthScaffold } from "@/shared/ui/AuthScaffold";
+import { GoldButton, GoldButtonText } from "@/shared/ui/GoldButton";
+import { TextField } from "@/shared/ui/TextField";
+import { imageAssets } from "@/shared/assets/images";
+import type { AuthStackParamList } from "@/app/navigation/types";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

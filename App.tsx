@@ -7,8 +7,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./global.css";
 
 import { createAuthUseCases } from "@/app/compositionRoot";
-import { AuthProvider } from "@/features/auth/AuthProvider";
-import { RootNavigator } from "@/navigation/RootNavigator";
+import { AuthProvider } from "@/features/auth/presentation/AuthProvider";
+import { RootNavigator } from "@/app/navigation/RootNavigator";
 
 SplashScreen.preventAutoHideAsync();
 
