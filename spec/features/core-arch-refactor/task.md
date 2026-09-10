@@ -104,28 +104,29 @@ Reglas absolutas del Trabajador:
 
 ## TASK-03 — Infrastructure adapters + shims 1.5a
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
+**validation:** COMPLETED y APROBADA por el Humano (build Android/iOS sin problemas, login funcional; typecheck verde)
 
 **Objetivo:** Adapters canónicos que implementan los puertos. Paths viejos quedan como reexport para no romper 1.5a hasta TASK-04/06. Cero cambio de comportamiento HTTP/SecureStore/biometría.
 
 **Pasos**
 
-- [ ] Mover lógica (no “reescribir semántica”) a:
+- [x] Mover lógica (no “reescribir semántica”) a:
   - `src/features/auth/infrastructure/dto.ts` (verbatim 1.5a)
   - `src/features/auth/infrastructure/AxiosAuthApi.ts` (`createAxiosAuthApi`)
   - `src/features/auth/infrastructure/SecureStoreSessionRepository.ts` (`createSecureStoreSessionRepository`)
   - `src/features/auth/infrastructure/ExpoBiometricGateway.ts` (`createExpoBiometricGateway`)
   - `src/features/auth/infrastructure/AxiosAuthTokenHolder.ts` (`createAxiosAuthTokenHolder`)
   - `src/shared/infrastructure/http/axiosClient.ts` (contenido actual de `src/lib/http/axiosClient.ts`)
-- [ ] Convertir los paths 1.5a en shims de reexport **sin lógica**:
+- [x] Convertir los paths 1.5a en shims de reexport **sin lógica**:
   - `src/features/auth/dto.ts`
   - `src/features/auth/api.ts` (`loginRequest` debe seguir exportándose: wrapper fino sobre `createAxiosAuthApi().login` **o** reexport de una función `loginRequest` exportada por `AxiosAuthApi` para no romper `AuthProvider` 1.5a)
   - `src/features/auth/tokenStore.ts` (exportar las mismas funciones: `saveSession`, `loadSession`, `clearSession`, `setBiometricEnabled`, `getBiometricEnabled`, tipo `PersistedSession`)
   - `src/features/auth/biometricService.ts` (mismos nombres de función 1.5a: `getBiometricAvailability`, `authenticateWithResult`, `confirmBiometricOptIn`, `getSupportedBiometricMethods`, tipos)
   - `src/lib/http/axiosClient.ts` → reexport de `@/shared/infrastructure/http/axiosClient`
-- [ ] Demo login, claves SecureStore, prompts biométricos y opciones `WHEN_UNLOCKED_THIS_DEVICE_ONLY` intactos.
-- [ ] `npx tsc --noEmit` debe pasar. App 1.5a sigue compilando contra shims.
+- [x] Demo login, claves SecureStore, prompts biométricos y opciones `WHEN_UNLOCKED_THIS_DEVICE_ONLY` intactos.
+- [x] `npx tsc --noEmit` debe pasar. App 1.5a sigue compilando contra shims.
 
 **allowed_files**
 

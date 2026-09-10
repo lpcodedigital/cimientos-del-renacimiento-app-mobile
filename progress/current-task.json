@@ -9,32 +9,29 @@
     "baseline_feature": "spec/features/auth-ui-polish/spec.md"
   },
   "active_task": {
-    "id": "TASK-02",
-    "description": "Application use cases: types.ts (SessionSnapshot, EMPTY_UNAUTHENTICATED, AuthUseCases) + 7 factories (bootstrapSession, signIn, unlockWithBiometrics, enableBiometric, declineBiometricOptIn, signOut, listBiometricMethods). Cero React. Cero infra concreta. Cero wiring en App.",
-    "status": "COMPLETED",
+    "id": "TASK-04",
+    "description": "Composition root + AuthProvider DIP + OptIn. Crear src/app/compositionRoot.ts (createAuthUseCases), reescribir AuthProvider para recibir useCases por props sin imports de infra, actualizar useAuth (+listBiometricMethods), cablear App.tsx a nivel módulo, y quitar import de biometricService en BiometricOptInScreen usando listBiometricMethods del contexto. Único cambio funcional permitido: OptIn obtiene métodos vía use case con mismo resultado que getSupportedBiometricMethods.",
+    "status": "TODO",
     "assigned_role": "Agente Trabajador",
-    "validation": "COMPLETED y aprobada. TypeCheck verde; application solo importa ../domain. Humano puede autorizar TASK-03 en nueva sesión.",
+    "validation": "NO INICIADA. TASK-03 COMPLETED y aprobada por el Humano el 2026-09-10 (build Android/iOS OK, login funcional). TASK-04 se autoriza en nueva sesión. El puntero queda en TODO; no IN_PROGRESS.",
     "allowed_files_to_edit": [
-      "src/features/auth/application/types.ts",
-      "src/features/auth/application/bootstrapSession.ts",
-      "src/features/auth/application/signIn.ts",
-      "src/features/auth/application/unlockWithBiometrics.ts",
-      "src/features/auth/application/enableBiometric.ts",
-      "src/features/auth/application/declineBiometricOptIn.ts",
-      "src/features/auth/application/signOut.ts",
-      "src/features/auth/application/listBiometricMethods.ts",
+      "src/app/compositionRoot.ts",
+      "src/features/auth/AuthProvider.tsx",
+      "src/features/auth/useAuth.ts",
+      "App.tsx",
+      "src/screens/auth/BiometricOptInScreen.tsx",
       "progress/current-task.json",
       "progress/history.md"
     ]
   },
   "harness_status": {
-    "last_run": "2026-09-10 (TASK-02 application; typecheck en verde; linter completo sigue reservado a TASK-06)",
+    "last_run": "2026-09-10 (TASK-03 COMPLETED y aprobada por el Humano; typecheck en verde; bundling Android/iOS validado por el Humano. TASK-04 aún no iniciada)",
     "linter_passed": true,
     "typecheck_passed": true,
-    "typecheck_detail": "TASK-02: npx tsc --noEmit → exit 0. Application sin imports de react/react-native/expo-*/axios/infrastructure/presentation/@/shared/@/app (solo ../domain y ./types). Grep de any/TouchableOpacity/FlatList/expo-router en application → 0 coincidencias. ESLint de fences + repo completo = TASK-06. NO se ejecutó npx expo start.",
-    "bundling_passed_android": "N/A — 1.5b TASK-02 solo application (nadie lo consume aún)",
-    "bundling_passed_ios": "N/A — 1.5b TASK-02 solo application (nadie lo consume aún)",
-    "blockers_or_errors": "Cero bloqueantes. TASK-02 COMPLETED y aprobada por el Humano. El puntero NO avanza a TASK-03 hasta que el Humano la autorice en nueva sesión. Fase 2 bloqueada."
+    "typecheck_detail": "TASK-03: npx tsc --noEmit → exit 0. Adapters canónicos de infrastructure con factories y shims 1.5a sin lógica; app 1.5a compila contra shims. ESLint completo (fences + repo) sigue reservado a TASK-06.",
+    "bundling_passed_android": "OK (Humano, 2026-09-10) — build Android generado sin problemas y login funcional",
+    "bundling_passed_ios": "OK (Humano, 2026-09-10) — build iOS generado sin problemas y login funcional",
+    "blockers_or_errors": "Cero bloqueantes. TASK-03 COMPLETED y aprobada por el Humano. El puntero queda en TASK-04 TODO; se autoriza en nueva sesión. Fase 2 bloqueada."
   },
-  "agent_notes": "TASK-02 (application use cases de auth) COMPLETED y aprobada por el Humano el 2026-09-10. Creados los 8 archivos con firmas verbatim de plan.md §5: types.ts (SessionSnapshot, EMPTY_UNAUTHENTICATED, AuthUseCases) y las 7 factories createBootstrapSession/createSignIn/createUnlockWithBiometrics/createEnableBiometric/createDeclineBiometricOptIn/createSignOut/createListBiometricMethods. Tabla §5.2 respetada (signIn siempre canUseBiometricLogin:false; unlock lanza new Error(reason) con los 3 mensajes exactos y no lanza si la sesión falta/expira; decline/enable reexponen token/user/expiresAt vigentes; signOut = setToken(null)+allSettled(clear,setBiometricEnabled(false))+EMPTY_UNAUTHENTICATED). Cero consumidores, cero UI, cero moves, cero deps. npx tsc --noEmit verde. PARAR. Siguiente: sesión Trabajador TASK-03 (infrastructure adapters + shims), solo si el Humano la autoriza."
+  "agent_notes": "TASK-03 (infrastructure adapters + shims 1.5a) COMPLETED y APROBADA por el Humano el 2026-09-10: build en dispositivos físicos Android/iOS sin problemas y login funcional. Entregables: (1) src/features/auth/infrastructure/dto.ts (verbatim); (2) AxiosAuthApi.ts → createAxiosAuthApi + loginRequest (demo, mapeo errores intactos, mapea AuthResponseDTO→Session); (3) SecureStoreSessionRepository.ts → createSecureStoreSessionRepository (claves y opciones verbatim, clear() NO borra biometric_enabled); (4) ExpoBiometricGateway.ts → createExpoBiometricGateway (prompts/branches verbatim); (5) AxiosAuthTokenHolder.ts → createAxiosAuthTokenHolder; (6) src/shared/infrastructure/http/axiosClient.ts. Shims sin lógica en features/auth/{dto,api,tokenStore,biometricService}.ts y lib/http/axiosClient.ts. npx tsc --noEmit → exit 0. PARAR. Siguiente: sesión Trabajador TASK-04 (composition root + AuthProvider DIP + OptIn), solo si el Humano la autoriza en nueva sesión."
 }

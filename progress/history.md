@@ -297,6 +297,28 @@
 - **Nota para TASK-03 (3 interpretaciones de §5.2 confirmadas):** (1) `unlockWithBiometrics` success → `canUseBiometricLogin: true`; (2) `enableBiometric` → `canUseBiometricLogin: false` en ambas ramas; (3) `decline`/`enable` usan `session?.token ?? null` para reexponer la sesión vigente sin limpiar el JWT.
 - **SIGUIENTE:** TASK-03 (Infrastructure adapters + shims 1.5a, plan §6) en **NUEVA SESIÓN**, solo al autorizarlo el Humano. Fase 2 sigue bloqueada.
 
+### 2026-09-10 — TASK-03 (Infrastructure adapters + shims 1.5a) — COMPLETED y APROBADA por el Humano
+
+- **Objetivo:** crear los adapters canónicos que implementan los puertos del `domain` y dejar los paths 1.5a de auth/http como **shims de reexport sin lógica**, para que la app 1.5a siga compilando hasta TASK-04/06. Cero UI nueva, cero movimientos de presentation, cero dependencias, cero código nativo.
+- **Hecho (secuencia TASK-03):** creados **6 archivos** de infraestructura canónica con factories (closures, no clases) y firmas de `plan.md` §6:
+  - `src/features/auth/infrastructure/dto.ts` (verbatim 1.5a: `AuthRequestDTO`, `AuthBasicUserResponseDTO`, `AuthResponseDTO`).
+  - `src/features/auth/infrastructure/AxiosAuthApi.ts` → `createAxiosAuthApi` + `loginRequest`. `demoLogin` idéntico (`demo@cdr.mx` / `demo1234`, token `demo-token-${Date.now()}`, expires +8h, user Juan Pérez). `POST /api/auth/login` con `AuthRequestDTO`. Mapeo intacto: `mfaRequired` → `mfa_required`; `user.active===false` → `account_inactive`; Axios 400/401/403 → `invalid_credentials`; else → `server_unreachable`. Usa `authError()` de domain. `Session` mapeado 1:1 (`token`, `expiresAt`, `user`).
+  - `src/features/auth/infrastructure/SecureStoreSessionRepository.ts` → `createSecureStoreSessionRepository`. Claves `jwt`, `expires_at`, `user_snapshot`, `biometric_enabled`; opciones `{ keychainAccessible: WHEN_UNLOCKED_THIS_DEVICE_ONLY }`; parse fallido de `user_snapshot` → `clear()` + `null`; `clear()` **no** borra `biometric_enabled`.
+  - `src/features/auth/infrastructure/ExpoBiometricGateway.ts` → `createExpoBiometricGateway`. Cuatro métodos del puerto (`getAvailability`, `authenticate`, `confirmOptIn`, `getSupportedMethods`) con prompts iOS/Android, `Platform.OS` branches, Android `getEnrolledLevelAsync` y iOS `disableDeviceFallback`/`fallbackLabel` **verbatim**.
+  - `src/features/auth/infrastructure/AxiosAuthTokenHolder.ts` → `createAxiosAuthTokenHolder` (`return { setToken: setAuthToken }`).
+  - `src/shared/infrastructure/http/axiosClient.ts` (move fiel: `baseURL: EXPO_PUBLIC_API_URL`, timeout 15000, interceptor Bearer, `setAuthToken`/`getAuthToken`).
+- **Shims de reexport sin lógica (paths 1.5a):**
+  - `src/features/auth/dto.ts` → reexport de los 3 tipos de `./infrastructure/dto`.
+  - `src/features/auth/api.ts` → reexport de `loginRequest` + tipos `AuthDomainError`/`AuthErrorKind` de domain (compatibilidad de superficie).
+  - `src/features/auth/tokenStore.ts` → singleton de `createSecureStoreSessionRepository()` + `PersistedSession = Session` + `saveSession`/`loadSession`/`clearSession`/`setBiometricEnabled`/`getBiometricEnabled`.
+  - `src/features/auth/biometricService.ts` → singleton de `createExpoBiometricGateway()` + los 4 nombres 1.5a + reexport de tipos biométricos de domain.
+  - `src/lib/http/axiosClient.ts` → reexport de `@/shared/infrastructure/http/axiosClient`.
+- **Reglas respetadas:** adapters = closures; infrastructure solo implementa puertos de domain e importa axios/expo (cero imports de `application`/`presentation`); shims sin lógica; semántica intacta (demo login, mapeo de errores, claves SecureStore, `clear()` no borra `biometric_enabled`, prompts biométricos, `WHEN_UNLOCKED_THIS_DEVICE_ONLY`). Cero `any`, cero barrels `index.ts`, cero comentarios. No se tocó pantalla, Provider, compositionRoot, `api`/`tokenStore`/`biometricService` originales (quedaron como shims), `App.tsx` ni `app.json`.
+- **Arnés:** `npx tsc --noEmit` → **exit 0** (verde). Grep de `any`/`TouchableOpacity`/`FlatList`/`expo-router` en lo tocado → 0. NO se ejecutó `npx expo start`.
+- **Validación humana:** el Tester Visual Humano compiló y validó TASK-03 en **Android e iOS** (build sin problemas, login funcional). TASK-03 marcada `- [x]` / `Status: COMPLETED` en `spec/features/core-arch-refactor/task.md`.
+- **PARADA CONTROLADA:** `progress/current-task.json` → `active_task: TASK-04`, `status: TODO` (no IN_PROGRESS), `harness_status` con bundling Android/iOS `OK`. El puntero **no** se ejecuta: TASK-04 se autoriza en nueva sesión. Fase 2 sigue bloqueada.
+- **SIGUIENTE:** TASK-04 (Composition root + AuthProvider DIP + OptIn, plan §7) en **NUEVA SESIÓN**, solo al autorizarlo el Humano.
+
 ### Pendiente
 
 - [x] TASK-01 — Agente Trabajador ✅ (validada por el Humano en Android + iOS)
@@ -314,7 +336,7 @@
 - [x] Fase 1.5b Paso 0 SDD — Orquestador (2026-09-10): spec/plan/task escritos; TASK-01 en TODO
 - [x] Fase 1.5b TASK-01 — Domain kernel (Trabajador; COMPLETED y APROBADA por el Humano 2026-09-10)
 - [x] Fase 1.5b TASK-02 — Application use cases (Trabajador; COMPLETED y APROBADA por el Humano 2026-09-10)
-- [ ] Fase 1.5b TASK-03 — Infrastructure + shims
+- [x] Fase 1.5b TASK-03 — Infrastructure + shims (Trabajador; COMPLETED y APROBADA por el Humano 2026-09-10; build Android/iOS OK, login funcional)
 - [ ] Fase 1.5b TASK-04 — Composition root + AuthProvider DIP
 - [ ] Fase 1.5b TASK-05 — Relocate presentation/shared/nav/home
 - [ ] Fase 1.5b TASK-06 — Delete shims + ESLint fences + arnés

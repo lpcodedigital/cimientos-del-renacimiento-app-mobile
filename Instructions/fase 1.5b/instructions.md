@@ -121,3 +121,63 @@ CIERRE:
 3. No actualices current-task.json a TASK-02 COMPLETED ni avances el puntero a TASK-03 hasta aprobación humana.
 4. No añadas entrada en history.md hasta aprobación humana.
 5. DETENTE. No inicies TASK-03. Reporta: (1) archivos creados / archivos modificados (2) salida del tsc, (3) qué debo validar yo como Humano
+
+## Prompt correcto para TASK-03 (nueva sesión)
+
+Rol: Agente Trabajador. Proyecto: Cimientos del Renacimiento — Gabinete Móvil.
+Feature: core-arch-refactor (Fase 1.5b).
+MODO: EJECUCIÓN. Solo TASK-03. Cero TASK-04+. Cero UI nueva. Cero movimientos de
+presentation. Cero dependencias. Cero npx expo start. Cero npm i / npx expo install.
+Cero nativo (app.json, Info.plist, .swift, .kt, .pbxproj).
+
+CONTEXTO: TASK-02 (application use cases) ya fue EJECUTADA por el Trabajador y ha
+sido aprobada por el humana (COMPLETED). Antes
+de iniciar TASK-03. Verifica en progress/current-task.json y progress/history.md.
+
+ANTES DE ESCRIBIR:
+1. Lee /AGENTS.md
+2. Lee /spec/constitution/tech-stack.md §5 (arquitectura de capas)
+3. Lee /spec/features/core-arch-refactor/spec.md
+4. Lee /spec/features/core-arch-refactor/plan.md §2 (árbol), §3 (mapping origen→destino),
+   §6 (infrastructure, firmas verbatim) y §8 (orden anti-rompimiento)
+5. Lee /spec/features/core-arch-refactor/task.md TASK-03 (pasos y allowed_files)
+6. Lee /progress/current-task.json y /progress/history.md
+
+OBJETIVO TASK-03: crear los adapters canónicos que implementan los puertos del domain,
+y convertir los paths 1.5a de auth/http en SHIMS de reexport sin lógica, para que la app
+1.5a siga compilando hasta TASK-04/06. No toques pantallas, Provider, ni compositionRoot.
+Crea EXACTAMENTE estos archivos (firmas/factories verbatim de plan.md §6):
+- src/features/auth/infrastructure/dto.ts (verbatim de src/features/auth/dto.ts)
+- src/features/auth/infrastructure/AxiosAuthApi.ts → createAxiosAuthApi
+- src/features/auth/infrastructure/SecureStoreSessionRepository.ts → createSecureStoreSessionRepository
+- src/features/auth/infrastructure/ExpoBiometricGateway.ts → createExpoBiometricGateway
+- src/features/auth/infrastructure/AxiosAuthTokenHolder.ts → createAxiosAuthTokenHolder
+- src/shared/infrastructure/http/axiosClient.ts (contenido actual de src/lib/http/axiosClient.ts)
+Y convierte en shims de reexport SIN lógica:
+- src/features/auth/dto.ts
+- src/features/auth/api.ts (loginRequest debe seguir exportándose)
+- src/features/auth/tokenStore.ts (mismos nombres: saveSession, loadSession, clearSession,
+  setBiometricEnabled, getBiometricEnabled, tipo PersistedSession)
+- src/features/auth/biometricService.ts (mismos nombres: getBiometricAvailability,
+  authenticateWithResult, confirmBiometricOptIn, getSupportedBiometricMethods, tipos)
+- src/lib/http/axiosClient.ts → reexport de @/shared/infrastructure/http/axiosClient
+
+REGLAS:
+- SOLO allowed_files de TASK-03 (+ progress/current-task.json, progress/history.md).
+- Adapters = factories (closures), no clases. Cero any. Cero barrels index.ts. Cero comentarios
+  salvo que el plan los exija.
+- NO cambies semántica: demo login (demo@cdr.mx / demo1234), mapeo de errores 400/401/403/
+  5xx/MFA/inactive, claves SecureStore (jwt, expires_at, user_snapshot, biometric_enabled),
+  opciones { keychainAccessible: WHEN_UNLOCKED_THIS_DEVICE_ONLY }, prompts biométricos iOS/
+  Android y branches Platform.OS = intactos.
+- clear() NO borra biometric_enabled. No "mejores" el dominio ni inventes puertos/factories.
+- Infrastructure implementa los puertos de domain; no importa application/presentation.
+
+CIERRE:
+1. npx tsc --noEmit debe pasar (exit 0). La app 1.5a debe seguir compilando contra los shims.
+2. No marques checkboxes TASK-03 ni Status COMPLETED hasta que el humano la dé por completada.
+3. No actualices current-task.json a TASK-03 COMPLETED ni avances el puntero a TASK-04.
+4. No añadas entrada en history.md hasta aprobación humana (sí actualiza current-task.json
+   a READY_FOR_HUMAN_REVIEW y registra la ejecución, sin COMPLETED).
+5. DETENTE. No inicies TASK-04. Reporta: (1) archivos creados / modificados
+   (2) salida del tsc, (3) qué debo validar yo como Humano.

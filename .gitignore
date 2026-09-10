@@ -40,6 +40,9 @@ generated_code/
 /build/
 /dist/
 
+# React Native / Expo
+.expo/
+
 # Directorios nativos generados y caché de iOS
 /ios/Pods/
 /ios/build/
