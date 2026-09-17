@@ -405,3 +405,22 @@
 - `spec/features/core-arch-refactor/task.md`: TASK-06 marcada `- [x]` / `Status: COMPLETED`.
 - `progress/current-task.json` → `active_task: TASK-06`, `status: COMPLETED`, `harness_status` con linter/typecheck `true`, bans/DIP verificados y bundling Android/iOS `OK (Humano)`.
 - **Fase 2 NO iniciada.** Queda bloqueada hasta autorización explícita del Humano en nueva sesión. PARADA CONTROLADA.
+
+### 2026-09-15 — Orquestación Fase 2 (reescritura constitucional + spec 2a)
+
+- **Decisión del Humano:** no implementar el párrafo original de Fase 2 ni crear un 2.5 de pulido. Reescribir Fase 2 **antes** de código. Menú = sub-fase **2a** anterior e independiente del radar. Clean Architecture + SOLID de 1.5b aplican desde la primera línea (2a sin dominio vacío; 2b abrirá capas de `home`).
+- **Enmiendas constitucionales:**
+  - `spec/constitution/roadmap.md`: Fase 2 = 2a `app-shell-menu` + 2b `radar-home` (contratos mapa/callout/KPI preparado; ficha = Fase 4). Bottom Tabs superseded. `AGENTS.md` y `mission.md` **sin cambios**.
+  - `spec/constitution/tech-stack.md`: navegación = Native Stack + drawer overlay custom (prohibido `@react-navigation/drawer` / zeego / tabs en Fase 2); §2.2 paleta `app-*` muestreada de los PNG; §2.3 mapas/location solo 2b con `npx expo install` + API key Android autorizada por el Humano.
+- **Mockups:** `menu.png` → `spec/features/app-shell-menu/mockups/menu.png`. `inicio.png` permanece en `spec/features/radar-home/mockups/` (chrome 2a + mapa 2b).
+- **Artefactos SDD 2a (cero código RN):** `spec/features/app-shell-menu/{spec,plan,task}.md`. Spec estado **PENDIENTE DE APROBACIÓN HUMANA**. TASK-01…04 definidas; TASK-01 **TODO**, no IN_PROGRESS.
+- **Muestreo 2026-09-15 (mockup @2x):** header crema `#F2EDE6`, franja/cabecera `#5C1120`, wordmark `#F0DDB3`, drawer ~72% + overlay, ítems `#333333` / iconos `#89535B`, logout pie `#B03132`. Copy de ítems: transcripción del PNG en TASK-02 (esta sesión no tuvo OCR).
+- **2b no planificada.** Contratos congelados en el roadmap (obra/curso mapa + callout; `detail` de curso path `/api/v1/public/curso/detail/{id}`; localidad de curso ausente en DTO).
+- `progress/current-task.json` → feature `app-shell-menu`, TASK-01 TODO, PARADA CONTROLADA.
+- **Siguiente:** Humano aprueba `spec.md` (y confirma copy de menú al ver el PNG) y autoriza TASK-01 en **nueva sesión**. Prohibido al Trabajador arrancar solo.
+
+### 2026-09-15 — Enmienda de árbol 2a (Humano)
+
+- El chrome no vive en `src/app/navigation/` (quedaba suelto). Destino: `src/features/app-shell/presentation/{menuItems,AppHeader,AppBrandBar,AppDrawer,AppShell}`. Cero `domain`/`application`/`infrastructure` (no hay puertos). `RootNavigator` solo importa y envuelve.
+- Enmendados: `roadmap.md` (arquitectura 2a), `spec/features/app-shell-menu/{spec,plan,task}.md`. TASK-01 (tokens) no cambia. TASK-02 `allowed_files` apuntan al nuevo path.
+- Cero código RN. TASK-01 sigue TODO. PARADA CONTROLADA.

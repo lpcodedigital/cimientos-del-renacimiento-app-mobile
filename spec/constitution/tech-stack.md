@@ -6,7 +6,7 @@
 - **Framework:** React Native + Expo (SDK 57).
 - **Lenguaje:** TypeScript (Estricto). 
   - *Regla Absoluta:* Prohibido el uso del tipo `any`. Todos los DTOs y props deben coincidir con los contratos del backend.
-- **Navegación:** React Navigation (Stack Navigator + Bottom Tabs). 
+- **Navegación:** React Navigation Native Stack. El chrome autenticado (Fase 2a) es un **drawer overlay custom** (`Pressable` + capa absoluta); **prohibido** `@react-navigation/drawer`, `zeego` y Bottom Tabs en Fase 2 (los tabs aplazados en Fase 1 quedan superseded por el mockup de menú hamburguesa). 
 
 ## 2. UI, Design System y Rendimiento
 - **Styling Engine:** NativeWind (Tailwind CSS adaptado a React Native). 
@@ -41,12 +41,32 @@ Los tokens de Fase 1 (`guinda #6B142E`, `dorado #C4A35A`, `fondo #F7F4F0`, etc.)
 | `auth-gold-grad-end` | `#D9B563` | Fin del gradiente horizontal del botón primario. |
 | `auth-btn-text` | `#2D0A14` | Texto del botón primario dorado (guinda casi negro). |
 
-*Regla Absoluta:* la paleta oscura `auth-*` está prohibida fuera de las pantallas de autenticación; la paleta clara de Fase 1 está prohibida dentro de ellas.
+*Regla Absoluta:* la paleta oscura `auth-*` está prohibida fuera de las pantallas de autenticación; la paleta clara de Fase 1 / `app-*` está prohibida dentro de ellas.
+
+## 2.2 Paleta del chrome autenticado (Fase 2a — muestreo 2026-09-15)
+Los tokens de Fase 1 (`guinda #6B142E`, `dorado #C4A35A`, `fondo #F7F4F0`, `texto #1A1A1A`) siguen disponibles. El header, la franja de marca y el drawer de Inicio/Menú usan **exclusivamente** los tokens `app-*` extraídos de `inicio.png` / `menu.png` (mockup @2x, 796–804 px de ancho):
+
+| Token | Hex | Uso |
+| --- | --- | --- |
+| `app-crema` | `#F2EDE6` | Fondo del header custom y cuerpo del drawer. |
+| `app-guinda` | `#5C1120` | Franja de marca (Inicio) y cabecera del drawer. |
+| `app-gold-wordmark` | `#F0DDB3` | Título de marca sobre `app-guinda`. |
+| `app-item` | `#333333` | Labels de ítems del menú. |
+| `app-item-icon` | `#89535B` | Iconos de ítems del menú. |
+| `app-logout` | `#B03132` | Copy/acción «Cerrar sesión» al pie del drawer. |
+| `app-overlay` | `#000000` @ 45% | Oscurece el resto de la pantalla a la derecha del drawer. |
+
+*Regla Absoluta:* no usar paleta `auth-*` en el chrome autenticado. No sustituir `app-guinda` por `guinda #6B142E` en header/drawer (el mockup manda). Tipografía: **Lato / Lato Bold** exclusivamente (si el mockup usa serif en el wordmark, desviación igual que 1.5a: Lato Bold).
+
+## 2.3 Mapas y ubicación (Fase 2b — no instalar en 2a)
+- **Mapas:** `react-native-maps` vía `npx expo install` **solo** en Fase 2b. iOS: MapKit. Android: Google Maps requiere API key en `app.json` **autorizada por el Humano**; agentes no la inventan ni tocan nativo a mano.
+- **Geolocalización:** `expo-location` vía `npx expo install` **solo** en Fase 2b, con config plugin de Expo (permisos When-In-Use). El Humano autoriza el diff de `app.json`.
+- **Drawer / menús nativos extra:** prohibido añadir paquetes. Overlay custom.
 
 ## 3. Biometría & Hardware APIs (Exclusivo Expo)
 > *Nota para Agentes: Todo puente de hardware se resuelve mediante APIs de Expo. Cero código nativo escrito a mano.*
 - **Autenticación Biométrica:** `expo-local-authentication` (Implementada como fallback o acceso rápido post-login tradicional).
-- **Geolocalización:** `expo-location` (Manejo estricto de permisos para el Radar Territorial).
+- **Geolocalización:** `expo-location` (Fase 2b; manejo estricto de permisos When-In-Use para centrar el Radar Territorial). Prohibido instalarlo o declarar el plugin en Fase 2a.
 - **Almacenamiento Seguro:** `expo-secure-store` (Obligatorio para la persistencia del JWT y preferencias de usuario).
 
 ## 4. Backend & API Integration (Solo Lectura)

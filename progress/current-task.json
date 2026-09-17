@@ -1,41 +1,40 @@
 {
   "project_name": "Cimientos del Renacimiento - Gabinete Móvil",
-  "current_roadmap_phase": "Fase 1.5b: Refactor arquitectónico (core-arch-refactor)",
-  "active_feature": "core-arch-refactor",
+  "current_roadmap_phase": "Fase 2a: Chrome autenticado (app-shell-menu)",
+  "active_feature": "app-shell-menu",
   "context_pointers": {
-    "spec_file": "spec/features/core-arch-refactor/spec.md",
-    "plan_file": "spec/features/core-arch-refactor/plan.md",
-    "task_file": "spec/features/core-arch-refactor/task.md",
-    "baseline_feature": "spec/features/auth-ui-polish/spec.md"
+    "spec_file": "spec/features/app-shell-menu/spec.md",
+    "plan_file": "spec/features/app-shell-menu/plan.md",
+    "task_file": "spec/features/app-shell-menu/task.md",
+    "mockup_menu": "spec/features/app-shell-menu/mockups/menu.png",
+    "mockup_inicio_chrome": "spec/features/radar-home/mockups/inicio.png",
+    "baseline_feature": "spec/features/core-arch-refactor/spec.md"
   },
   "active_task": {
-    "id": "TASK-06",
-    "description": "Borrar shims + fences ESLint + arnés. Eliminar paths 1.5a residuales (src/features/auth/{api,dto,tokenStore,biometricService}.ts, src/lib/http/axiosClient.ts, src/screens/**, src/components/**, src/navigation/**, src/theme/**, src/assets/**), confirmar que no queda import a esos paths, añadir tres bloques no-restricted-imports en eslint.config.js (plan §9, sin paquete nuevo), correr npx tsc --noEmit y npx eslint . en verde, verificar bans (any/TouchableOpacity/FlatList/expo-router) y DIP. Cero UI.",
-    "status": "COMPLETED",
-    "assigned_role": "Agente Trabajador + Revisor (auditoría de arnés)",
-    "validation": "COMPLETED y APROBADA por el Humano el 2026-09-10: TASK-06 compilada y probada con éxito en dispositivos Android e iOS. tsc y eslint en verde (exit 0); bans y DIP verificados. Fase 1.5b cerrada. Fase 2 NO iniciada (bloqueada).",
+    "id": "TASK-01",
+    "description": "Tokens app-* en global.css y src/shared/theme/tokens.ts (appPalette). Cero componentes. Cero dependencias. Cero app.json.",
+    "status": "TODO",
+    "assigned_role": "Agente Trabajador",
+    "validation": "NO INICIADA. Spec 2a PENDIENTE DE APROBACIÓN HUMANA. TASK-01 no arranca hasta autorización explícita en nueva sesión.",
     "allowed_files_to_edit": [
-      "eslint.config.js",
-      "spec/features/core-arch-refactor/task.md",
+      "global.css",
+      "src/shared/theme/tokens.ts",
+      "spec/features/app-shell-menu/task.md",
       "progress/current-task.json",
       "progress/history.md"
     ]
   },
   "harness_status": {
-    "last_run": "2026-09-10 (TASK-06 COMPLETED y APROBADA por el Humano; compilada y probada con éxito en Android e iOS; tsc --noEmit exit 0; eslint . exit 0 sin errores ni warnings)",
+    "last_run": "2026-09-10 (Fase 1.5b TASK-06; no se re-ejecutó en 2026-09-15 — sesión de spec)",
     "linter_passed": true,
     "typecheck_passed": true,
-    "typecheck_detail": "TASK-06: npx tsc --noEmit → exit 0. Shims 1.5a borrados: src/features/auth/{api,dto,tokenStore,biometricService}.ts y src/lib/http/axiosClient.ts. Los dirs src/screens, src/components, src/navigation, src/theme y src/assets ya no existían (TASK-05 los vació). Cero imports a paths viejos. eslint.config.js con tres bloques no-restricted-imports (plan §9): domain, application, presentation/navigation/shared-ui; compositionRoot.ts y App.tsx fuera de los globs. Sin paquetes nuevos.",
-    "linter_detail": "TASK-06: npx eslint . → exit 0 (cero errores, cero warnings) con los tres fences no-restricted-imports activos.",
     "bans_verificado": true,
-    "bans_detail": "Grep en src/**.ts|tsx (y App.tsx): 0 `any`, 0 `TouchableOpacity`, 0 `FlatList`, 0 `expo-router`.",
     "dip_verificado": true,
-    "dip_detail": "Unicos imports de infrastructure: (a) dentro de src/features/auth/infrastructure/* (legal) y (b) src/app/compositionRoot.ts (unico importador autorizado). domain/application/presentation sin imports de infrastructure.",
     "package_json_sin_cambios": true,
     "app_json_sin_cambios": true,
-    "bundling_passed_android": "OK (Humano, 2026-09-10) — compilada y probada con éxito en dispositivo Android",
-    "bundling_passed_ios": "OK (Humano, 2026-09-10) — compilada y probada con éxito en dispositivo iOS",
-    "blockers_or_errors": "Cero bloqueantes. TASK-06 COMPLETED y APROBADA por el Humano; Fase 1.5b cerrada. NO se ejecutó npx expo start por agentes. Fase 2 NO iniciada (bloqueada)."
+    "bundling_passed_android": "OK (Humano, 2026-09-10) — baseline 1.5b",
+    "bundling_passed_ios": "OK (Humano, 2026-09-10) — baseline 1.5b",
+    "blockers_or_errors": "Cero código RN de Fase 2. Spec 2a escrita. Humano debe aprobar spec.md (copy de ítems del menú al transcribir el PNG) y autorizar TASK-01. Fase 2b bloqueada."
   },
-  "agent_notes": "TASK-06 (borrar shims + fences ESLint + arnés) COMPLETED y APROBADA por el Humano el 2026-09-10: compilada y probada con éxito en dispositivos Android e iOS. Hecho: (1) borrados los 5 shims residuales — git rm src/features/auth/{api.ts,dto.ts,tokenStore.ts,biometricService.ts} y src/lib/http/axiosClient.ts; rmdir src/lib/http y src/lib (dirs vacíos). (2) Los dirs 1.5a src/screens, src/components, src/navigation, src/theme y src/assets ya no existían (vaciados en TASK-05); el assets raíz assets/images/escudo-yucatan.png intacto. (3) Verificado con grep: cero imports a @/screens, @/components, @/navigation, @/theme, @/assets, features/auth/{api,dto,tokenStore,biometricService}, lib/http, features/auth/{AuthProvider,useAuth}. (4) eslint.config.js: añadidos los TRES bloques no-restricted-imports del plan §9 (1. src/features/*/domain/**; 2. src/features/*/application/**; 3. src/features/*/presentation/**, src/app/navigation/**, src/shared/ui/**), sin paquete nuevo. compositionRoot.ts y App.tsx quedan fuera de los globs. (5) npx tsc --noEmit → exit 0. (6) npx eslint . → exit 0 (cero warnings). (7) Bans en .ts/.tsx: cero any/TouchableOpacity/FlatList/expo-router. (8) DIP: único importador de infrastructure = src/app/compositionRoot.ts. (9) git diff package.json/app.json → sin cambios. NO se ejecutó npx expo start. Árbol final: src/app, src/features/{auth/{domain,application,infrastructure,presentation},home/presentation}, src/shared/{ui,theme,assets,infrastructure/http}. CIERRE: TASK-06 COMPLETED y APROBADA por el Humano (build y prueba OK en Android e iOS). Fase 1.5b cerrada. Fase 2 NO iniciada (bloqueada)."
+  "agent_notes": "2026-09-15 Orquestador: Fase 2 reescrita (2a/2b). Chrome 2a en src/features/app-shell/presentation/ (sin domain/application/infrastructure). RootNavigator solo importa AppShell. TASK-01 TODO. Cero código RN. PARADA CONTROLADA."
 }

@@ -17,14 +17,16 @@
 * **Sub-fases (estrictamente secuenciales):**
   - **Fase 1.5a — `auth-ui-polish`:** Rediseño pixel-perfect de las pantallas de autenticación (Login, nuevo Opt-In biométrico, Unlock biométrico) contra los mockups versionados en `spec/features/auth-ui-polish/mockups/`, más el ajuste del flujo de interacción (opt-in a pantalla completa, primer uso biométrico manual obligatorio, auto-prompt con reintento en arranques posteriores). Prohibido tocar arquitectura, contratos de API ni claves de SecureStore.
   - **Fase 1.5b — `core-arch-refactor`:** Refactor a Clean Architecture (capas `domain` / `application` / `infrastructure` / `presentation`) + principios SOLID en todo `/src`. **Invariante estricta:** cero cambio visual y cero cambio funcional respecto a la Fase 1.5a aprobada por el Humano.
-* **Regla de bloqueo:** La Fase 2 permanece bloqueada hasta que el Agente Revisor audite y el Tester Visual Humano apruebe en dispositivo físico **ambas** sub-fases (1.5a y 1.5b).
+* **Regla de bloqueo:** La Fase 2 permaneció bloqueada hasta que el Agente Revisor auditó y el Tester Visual Humano aprobó en dispositivo físico **ambas** sub-fases (1.5a el 2026-09-04/05 y 1.5b el 2026-09-10). **Desbloqueo:** 2026-09-15.
 
-## Fase 2: Radar Territorial (Home Passive - GPS)
-* **Objetivo:** Renderizado geoespacial de ultra-baja latencia (Carga inicial < 30s).
-* **Alcance:**
-  - Integración de `expo-location` para obtención de `latitude` y `longitude`[cite: 1].
-  - Pantalla 2: Interfaz de Inicio con Mapa de fondo, Header con menú hamburguesa e `INICIO`[cite: 1].
-  - Card flotante con KPIs del municipio detectado: Inversión Total (`ObraModel`), Obras Activas/Concluidas y Capacitaciones (`CursoModel`)[cite: 1].
+## Fase 2: Chrome de App (Menú) + Radar Territorial
+* **Objetivo:** Entregar el cascarón autenticado pixel-perfect (header + drawer) y después el radar geoespacial, **sin repetir el parche 1.5**. Clean Architecture + SOLID de 1.5b aplican desde la primera línea. Mockups versionados son la fuente de verdad visual.
+* **Contexto:** El párrafo original de Fase 2 (GPS + mapa + KPIs en un solo golpe, sin mockups) se **reescribe** el 2026-09-15 por decisión del Humano. No es una Fase 2.5 posterior al código: se especifica **antes** de implementar. Auth 1.5b queda congelada. Bottom Tabs aplazados en Fase 1 quedan **superseded** por el menú hamburguesa.
+* **Sub-fases (estrictamente secuenciales):**
+  - **Fase 2a — `app-shell-menu`:** Chrome autenticado pixel-perfect contra `spec/features/app-shell-menu/mockups/menu.png` y la franja de header de `spec/features/radar-home/mockups/inicio.png`. Header custom (hamburguesa + `INICIO`) + drawer overlay. Logout vive en el menú. Ítems de Fases 3–4 visibles si el mockup los trae, **sin navegar**. Home sigue siendo placeholder (sin mapa/GPS/HTTP de obras-cursos). Cero dependencias nuevas.
+  - **Fase 2b — `radar-home`:** Mapa (`react-native-maps`) + `expo-location` (centrar cámara) + pines de `GET /api/v1/obra/mapa` y `GET /api/v1/public/curso/mapa`. Callout básico al tap (obra: nombre, municipio, localidad, invertido vía `GET /api/v1/obra/detail/{id}` mapeado a VM de 4 campos; curso: título, municipio; localidad de curso **no existe** en DTO). Slot KPI de inversión **preparado** (`—`) hasta que exista endpoint de agregado. **Invariante:** cero cambio de píxel del chrome 2a. Ficha completa / Cloudflare gallery = Fase 4.
+* **Arquitectura:** 2a es feature `app-shell` **solo presentation** (`src/features/app-shell/presentation/`). No se inventa `domain`/`application`/`infrastructure` vacío. `RootNavigator` solo importa `AppShell` y envuelve el stack. 2b abre `src/features/home/{domain,application,infrastructure,presentation}` con puertos, use cases (closures), DTOs de wire y `compositionRoot`. DIP/fences ESLint de 1.5b intactos.
+* **Regla de bloqueo:** El Orquestador no genera el `plan.md` de 2b si 2a no está auditada por el Revisor y aprobada por el Tester Visual Humano en dispositivo. Fase 3 permanece bloqueada hasta cerrar 2b.
 
 ## Fase 3: Búsqueda Predictiva y Explorador
 * **Objetivo:** Búsqueda en tiempo real sin degradación de rendimiento.
