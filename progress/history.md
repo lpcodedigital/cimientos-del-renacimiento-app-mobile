@@ -424,3 +424,15 @@
 - El chrome no vive en `src/app/navigation/` (quedaba suelto). Destino: `src/features/app-shell/presentation/{menuItems,AppHeader,AppBrandBar,AppDrawer,AppShell}`. Cero `domain`/`application`/`infrastructure` (no hay puertos). `RootNavigator` solo importa y envuelve.
 - Enmendados: `roadmap.md` (arquitectura 2a), `spec/features/app-shell-menu/{spec,plan,task}.md`. TASK-01 (tokens) no cambia. TASK-02 `allowed_files` apuntan al nuevo path.
 - Cero código RN. TASK-01 sigue TODO. PARADA CONTROLADA.
+
+### 2026-09-17 — TASK-01 (Tokens `app-*`) — COMPLETED y APROBADA por el Humano
+
+- **Hecho (secuencia TASK-01):** solo tokens, cero componentes, cero dependencias, cero nativo.
+  - `global.css`: añadidos los 6 tokens `--color-app-*` del plan §3.1 dentro del `@theme` existente — `--color-app-crema: #f2ede6`, `--color-app-guinda: #5c1120`, `--color-app-gold-wordmark: #f0ddb3`, `--color-app-item: #333333`, `--color-app-item-icon: #89535b`, `--color-app-logout: #b03132`. Tokens Fase 1 y `auth-*` intactos; `--font-lato` / `--font-lato-bold` intactos. Overlay **no** se registró como color sólido (plan §3.1: valor dinámico de opacidad en estilo inline).
+  - `src/shared/theme/tokens.ts`: añadido `appPalette` (`crema`, `guinda`, `goldWordmark`, `item`, `itemIcon`, `logout`, `overlay: "rgba(0,0,0,0.45)"`) `as const`, verbatim del plan §3.2. `palette`, `fontFamily` y `authPalette` sin modificar.
+- **Reglas respetadas:** cero `any` / `TouchableOpacity` / `FlatList` / `expo-router` / paleta `auth-*` / comentarios. Sin UI, sin navigator, sin GPS/mapas/HTTP. No se adelantó TASK-02 (AppHeader/AppDrawer).
+- **Arnés:** `npx tsc --noEmit` → **exit 0** (verde). `git diff -- package.json app.json` → **vacío**. NO se ejecutó `npx expo start`. ESLint de repo se reserva a TASK-04.
+- **Validación:** el Humano dio TASK-01 por completada el 2026-09-17 (solo diff de tokens revisado).
+- `spec/features/app-shell-menu/task.md`: TASK-01 marcada `- [x]` / `Status: COMPLETED`.
+- `progress/current-task.json` → `active_task: TASK-02`, `status: TODO` (el puntero NO avanza a IN_PROGRESS; lo autoriza el Humano en nueva sesión), `harness_status.typecheck_passed: true`, `package_json_sin_cambios: true`, `app_json_sin_cambios: true`.
+- **SIGUIENTE:** TASK-02 (componentes del chrome bajo `src/features/app-shell/presentation/`, plan §4–§5) en **NUEVA SESIÓN**, solo al autorizarlo el Humano. `RootNavigator` no se toca hasta TASK-03. Fase 2b sigue bloqueada.

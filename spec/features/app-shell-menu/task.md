@@ -28,18 +28,18 @@ Reglas absolutas del Trabajador:
 
 ## TASK-01 — Tokens `app-*`
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
-**validation:** pendiente
+**validation:** APROBADA por el Humano (2026-09-17)
 
 **Objetivo:** Registrar paleta del chrome. Sin componentes.
 
 **Pasos**
 
-- [ ] `global.css`: añadir los 6 `--color-app-*` del plan §3.1 dentro de `@theme`. No tocar tokens Fase 1 ni `auth-*`.
-- [ ] `src/shared/theme/tokens.ts`: añadir `appPalette` (plan §3.2). No modificar `palette`, `fontFamily`, `authPalette`.
-- [ ] `npx tsc --noEmit` debe pasar.
-- [ ] Verificar `git diff -- package.json app.json` vacío.
+- [x] `global.css`: añadir los 6 `--color-app-*` del plan §3.1 dentro de `@theme`. No tocar tokens Fase 1 ni `auth-*`.
+- [x] `src/shared/theme/tokens.ts`: añadir `appPalette` (plan §3.2). No modificar `palette`, `fontFamily`, `authPalette`.
+- [x] `npx tsc --noEmit` debe pasar.
+- [x] Verificar `git diff -- package.json app.json` vacío.
 
 **allowed_files**
 

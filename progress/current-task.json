@@ -11,30 +11,33 @@
     "baseline_feature": "spec/features/core-arch-refactor/spec.md"
   },
   "active_task": {
-    "id": "TASK-01",
-    "description": "Tokens app-* en global.css y src/shared/theme/tokens.ts (appPalette). Cero componentes. Cero dependencias. Cero app.json.",
+    "id": "TASK-02",
+    "description": "Componentes del chrome (menuItems + AppHeader + AppBrandBar + AppDrawer + AppShell) bajo src/features/app-shell/presentation/. Sin wire al navigator. Cero dependencias. Cero app.json.",
     "status": "TODO",
     "assigned_role": "Agente Trabajador",
-    "validation": "NO INICIADA. Spec 2a PENDIENTE DE APROBACIÓN HUMANA. TASK-01 no arranca hasta autorización explícita en nueva sesión.",
+    "validation": "NO INICIADA. TASK-01 COMPLETED y aprobada por el Humano (2026-09-17). TASK-02 no arranca hasta autorización explícita en nueva sesión.",
     "allowed_files_to_edit": [
-      "global.css",
-      "src/shared/theme/tokens.ts",
+      "src/features/app-shell/presentation/menuItems.ts",
+      "src/features/app-shell/presentation/AppHeader.tsx",
+      "src/features/app-shell/presentation/AppBrandBar.tsx",
+      "src/features/app-shell/presentation/AppDrawer.tsx",
+      "src/features/app-shell/presentation/AppShell.tsx",
       "spec/features/app-shell-menu/task.md",
       "progress/current-task.json",
       "progress/history.md"
     ]
   },
   "harness_status": {
-    "last_run": "2026-09-10 (Fase 1.5b TASK-06; no se re-ejecutó en 2026-09-15 — sesión de spec)",
-    "linter_passed": true,
+    "last_run": "2026-09-17 (Fase 2a TASK-01; typecheck verde, diff package.json/app.json vacío; linter de repo se reserva a TASK-04)",
+    "linter_passed": null,
     "typecheck_passed": true,
     "bans_verificado": true,
     "dip_verificado": true,
     "package_json_sin_cambios": true,
     "app_json_sin_cambios": true,
-    "bundling_passed_android": "OK (Humano, 2026-09-10) — baseline 1.5b",
-    "bundling_passed_ios": "OK (Humano, 2026-09-10) — baseline 1.5b",
-    "blockers_or_errors": "Cero código RN de Fase 2. Spec 2a escrita. Humano debe aprobar spec.md (copy de ítems del menú al transcribir el PNG) y autorizar TASK-01. Fase 2b bloqueada."
+    "bundling_passed_android": "PENDIENTE (Humano)",
+    "bundling_passed_ios": "PENDIENTE (Humano)",
+    "blockers_or_errors": "TASK-01 COMPLETED. Cero código RN de componentes aún. TASK-02 (componentes del chrome) TODO, pendiente de autorización humana en nueva sesión. Fase 2b bloqueada."
   },
-  "agent_notes": "2026-09-15 Orquestador: Fase 2 reescrita (2a/2b). Chrome 2a en src/features/app-shell/presentation/ (sin domain/application/infrastructure). RootNavigator solo importa AppShell. TASK-01 TODO. Cero código RN. PARADA CONTROLADA."
+  "agent_notes": "2026-09-17 Trabajador: TASK-01 cerrada. global.css +6 tokens --color-app-* en @theme (Fase 1/auth-* intactos); tokens.ts +appPalette (palette/fontFamily/authPalette intactos). npx tsc --noEmit exit 0. git diff package.json app.json vacío. PARADA CONTROLADA: no se inició TASK-02."
 }
