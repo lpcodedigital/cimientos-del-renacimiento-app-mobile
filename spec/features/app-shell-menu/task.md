@@ -105,18 +105,24 @@ Reglas absolutas del Trabajador:
 
 ## TASK-03 — Wire navigator + quitar logout del placeholder
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
-**validation:** pendiente
+**validation:** APROBADA por el Humano (2026-09-18) — validada en dispositivos físicos Android/iOS
 
 **Objetivo:** Chrome visible en la raíz autenticada. Logout solo en el menú.
 
 **Pasos**
 
-- [ ] `RootNavigator.tsx`: `headerShown: false`; importar `AppShell` desde `@/features/app-shell/presentation/AppShell`; envolver `AppStack.Navigator` (plan §6). Conservar `NavigationContainer key={status}` y el Auth stack intacto.
-- [ ] `HomePlaceholderScreen.tsx`: eliminar `Pressable` «Cerrar sesión» y el import de `signOut` si queda huérfano. Conservar saludo. Fondo `bg-app-crema`.
-- [ ] `types.ts` sin rutas nuevas (no editar salvo que tsc lo exija; si no hace falta, no tocarlo).
-- [ ] `npx tsc --noEmit` debe pasar.
+- [x] `RootNavigator.tsx`: `headerShown: false`; importar `AppShell` desde `@/features/app-shell/presentation/AppShell`; envolver `AppStack.Navigator` (plan §6). Conservar `NavigationContainer key={status}` y el Auth stack intacto.
+- [x] `HomePlaceholderScreen.tsx`: eliminar `Pressable` «Cerrar sesión» y el import de `signOut` si queda huérfano. Conservar saludo. Fondo `bg-app-crema`.
+- [x] `types.ts` sin rutas nuevas (no editado; tsc no lo exigió).
+- [x] `npx tsc --noEmit` debe pasar.
+
+**Notas de implementación (Trabajador 2026-09-18):**
+
+- `RootNavigator.tsx`: eliminados `headerStyle` / `headerTintColor` / `headerTitleStyle` guinda; ahora `screenOptions={{ headerShown: false }}`. `<AppStack.Navigator>` envuelto en `<AppShell>`. Se retiró `fontFamily` del import de tokens (quedó huérfano); `palette` se conserva para `appTheme.background`. `NavigationContainer key={status}` y `AuthStackNavigator` intactos.
+- `HomePlaceholderScreen.tsx`: sin `Pressable` de logout ni `signOut`; solo `useAuth().user` para el saludo. Fondo `bg-app-crema`. Cero otros cambios.
+- `types.ts`: sin tocar.
 
 **allowed_files**
 

@@ -467,3 +467,22 @@
 - Cierre: `spec/features/app-shell-menu/task.md` → TASK-02 `Status: COMPLETED`.
 - `progress/current-task.json` → `active_task: TASK-03` (`TODO`, sin IN_PROGRESS), `harness_status.typecheck_passed: true`, `package_json_sin_cambios: true`, `app_json_sin_cambios: true`, bundling pendiente del Humano (se verá al cerrar TASK-03).
 - **SIGUIENTE:** TASK-03 (wire `RootNavigator` + quitar logout de `HomePlaceholderScreen`) en **NUEVA SESIÓN**, solo al autorizarlo el Humano. Fase 2b sigue bloqueada.
+
+### 2026-09-18 — TASK-03 (Wire navigator + quitar logout del placeholder) — READY_FOR_REVIEW
+
+- **Hecho (secuencia TASK-03):** el chrome quedó cableado a la raíz autenticada. Solo 2 archivos tocados:
+  - `src/app/navigation/RootNavigator.tsx`: import de `AppShell` desde `@/features/app-shell/presentation/AppShell`; `<AppStack.Navigator screenOptions={{ headerShown: false }}>` (eliminados `headerStyle` / `headerTintColor` / `headerTitleStyle` guinda); `<AppStack.Navigator>` **envuelto** en `<AppShell>`. Retirado `fontFamily` del import de `@/shared/theme/tokens` por quedar huérfano (`palette` se conserva para `appTheme.background`). `NavigationContainer key={status}` y `AuthStackNavigator` (headerShown:false + initialRoute por status) **intactos**.
+  - `src/features/home/presentation/HomePlaceholderScreen.tsx`: eliminados el `Pressable` «Cerrar sesión» y el `signOut` huérfano (`useAuth().user` se conserva para el saludo). Fondo `bg-fondo` → `bg-app-crema`. Cero otros cambios.
+  - `src/app/navigation/types.ts`: **sin tocar** (tsc no lo exigió; sin rutas nuevas).
+- **Reglas respetadas:** cero `any` / `TouchableOpacity` / `FlatList` / `expo-router` / paleta `auth-*` / comentarios; cero deps; cero nativo; cero `src/features/auth/**`, `compositionRoot.ts`, `App.tsx`; cero barrels; solo `Pressable` (los componentes ya venían de TASK-02).
+- **Arnés:** `npx tsc --noEmit` → **exit 0**. `git diff -- package.json app.json` → **vacío**. NO se ejecutó `npx expo start` (reservado al Humano). ESLint se reserva a TASK-04.
+- `spec/features/app-shell-menu/task.md`: TASK-03 pasos `- [x]` / `Status: READY_FOR_REVIEW` (NO COMPLETED; lo cierra el Humano). Notas de implementación añadidas.
+- `progress/current-task.json` → `active_task: TASK-03`, `status: READY_FOR_REVIEW` (el puntero NO avanza a TASK-04), `harness_status.typecheck_passed: true`.
+- **PARADA CONTROLADA:** TASK-03 pendiente de validación visual Humana en dispositivo. NO se inició TASK-04. Fase 2b sigue bloqueada.
+
+### 2026-09-18 — TASK-03 APROBADA por el Humano (dispositivos físicos)
+
+- **Validación:** el Humano validó TASK-03 en dispositivos físicos **Android e iOS** y la dio por **COMPLETED**. Chrome visible y funcional: header crema + `INICIO` + hamburguesa + franja guinda; drawer 72% (cabecera de perfil, 5 ítems, logout rojo) con overlay; Inicio/overlay/back cierran; stubs no navegan; `Cerrar sesión` → Login. Regresión auth OK.
+- Cierre: `spec/features/app-shell-menu/task.md` → TASK-03 `Status: COMPLETED`.
+- `progress/current-task.json` → `active_task: TASK-04` (`TODO`, sin IN_PROGRESS; cronograma de arnés: Trabajador + Revisor), `harness_status` con `bundling_passed_android`/`ios` APROBADOS, `typecheck_passed: true`, `package_json_sin_cambios: true`, `app_json_sin_cambios: true`.
+- **SIGUIENTE:** TASK-04 (arnés: `npx tsc --noEmit`, `npx eslint .`, grep bans, DIP, diff deps) en **NUEVA SESIÓN**, solo al autorizarlo el Humano. Fase 2b sigue bloqueada.

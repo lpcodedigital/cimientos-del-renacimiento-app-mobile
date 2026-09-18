@@ -3,12 +3,13 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { useAuth, type AuthStatus } from "@/features/auth/presentation/useAuth";
-import { palette, fontFamily } from "@/shared/theme/tokens";
+import { palette } from "@/shared/theme/tokens";
 import type {
   AppStackParamList,
   AuthStackParamList,
 } from "@/app/navigation/types";
 
+import { AppShell } from "@/features/app-shell/presentation/AppShell";
 import { LoginScreen } from "@/features/auth/presentation/screens/LoginScreen";
 import { BiometricOptInScreen } from "@/features/auth/presentation/screens/BiometricOptInScreen";
 import { BiometricUnlockScreen } from "@/features/auth/presentation/screens/BiometricUnlockScreen";
@@ -62,22 +63,14 @@ function AuthStackNavigator({ status }: { status: AuthStatus }) {
 
 function AppStackNavigator() {
   return (
-    <AppStack.Navigator
-      screenOptions={{
-        headerStyle: { backgroundColor: palette.guinda },
-        headerTintColor: palette.superficie,
-        headerTitleStyle: {
-          fontFamily: fontFamily["lato-bold"],
-          fontSize: 18,
-        },
-      }}
-    >
-      <AppStack.Screen
-        name="HomePlaceholder"
-        component={HomePlaceholderScreen}
-        options={{ title: "INICIO" }}
-      />
-    </AppStack.Navigator>
+    <AppShell>
+      <AppStack.Navigator screenOptions={{ headerShown: false }}>
+        <AppStack.Screen
+          name="HomePlaceholder"
+          component={HomePlaceholderScreen}
+        />
+      </AppStack.Navigator>
+    </AppShell>
   );
 }
 

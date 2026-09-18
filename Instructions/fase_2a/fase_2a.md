@@ -99,3 +99,37 @@ CIERRE:
 2. NO marques TASK-02 COMPLETED ni actualices progress a TASK-03 hasta que yo (Humano) dé la task por completada.
 3. DETENTE. No inicies TASK-03. Reporta: archivos creados + resultado de tsc + diff package.json/app.json.
 4. Dime qué debo validar.
+
+## Prompt para nueva sesión (Worker TASK-03):
+
+Rol: Agente Trabajador. Proyecto: Cimientos del Renacimiento — Gabinete Móvil. Feature: app-shell-menu (Fase 2a).
+
+MODO: EJECUCIÓN. Solo TASK-03. Cero TASK-04+. Cero dependencias. Cero npx expo start. Cero npm i / npx expo install. Cero nativo (app.json, .swift, .kt, .pbxproj). Cero auth-*. Cero GPS/mapas/HTTP de obras.
+
+ANTES DE ESCRIBIR (en este orden; evita node_modules, android, ios, build):
+1. /AGENTS.md
+2. /spec/constitution/tech-stack.md §2.2 y §5
+3. /spec/features/app-shell-menu/spec.md (§5 flujo, §8 arquitectura, §9 límites)
+4. /spec/features/app-shell-menu/plan.md §6 y §7
+5. /spec/features/app-shell-menu/task.md TASK-03
+6. /progress/current-task.json
+
+CONTEXTO: TASK-01 (tokens app-*) y TASK-02 (menuItems.ts, AppHeader.tsx, AppBrandBar.tsx, AppDrawer.tsx, AppShell.tsx bajo src/features/app-shell/presentation/) están COMPLETED y aprobadas por el Humano. El chrome NO se ve todavía porque RootNavigator no está cableado — eso es exactamente TASK-03.
+
+OBJETIVO TASK-03: chrome visible en la raíz autenticada. Logout solo en el menú.
+- RootNavigator.tsx: poner headerShown:false en el AppStack (eliminar headerStyle/headerTintColor/headerTitleStyle guinda). Importar AppShell desde @/features/app-shell/presentation/AppShell y ENVOLVER <AppStack.Navigator> con <AppShell>. CONSERVAR NavigationContainer key={status} y el Auth stack intacto (headerShown:false, initialRouteName por status).
+- HomePlaceholderScreen.tsx: eliminar el Pressable «Cerrar sesión» y el import de signOut si queda huérfano. Conservar el saludo. Fondo app-crema (inline con appPalette.crema, precedente NativeWind v5 iOS) para no contrastar con el header.
+- types.ts: sin rutas nuevas (no editar salvo que tsc lo exija).
+- npx tsc --noEmit debe pasar.
+
+REGLAS:
+- SOLO allowed_files de TASK-03 (+ progress/current-task.json, progress/history.md, spec/features/app-shell-menu/task.md).
+- Cero any / TouchableOpacity / FlatList / expo-router. Cero auth-*. Cero barrels index.ts. Cero comentarios. Solo Pressable.
+- No tocar src/features/auth/**, compositionRoot.ts, App.tsx, ni los archivos de TASK-01/02 salvo que el wire lo exija (no debería).
+- No “mejorar” nada. No adelantar TASK-04 (arnés eslint).
+
+CIERRE:
+1. tsc en verde.
+2. NO marques TASK-03 COMPLETED ni actualices progress a TASK-04 hasta que yo (Humano) dé la task por completada.
+3. DETENTE. No inicies TASK-04. Reporta: archivos tocados + resultado de tsc + diff package.json/app.json.
+4. Dime qué debo validar en dispositivo (el chrome ya debería verse: header crema + INICIO + hamburguesa + franja guinda; tap hamburguesa abre drawer 72%; Inicio/overlay/back cierran; stubs no navegan; Cerrar sesión → Login).

@@ -11,31 +11,28 @@
     "baseline_feature": "spec/features/core-arch-refactor/spec.md"
   },
   "active_task": {
-    "id": "TASK-03",
-    "description": "Wire navigator + quitar logout del placeholder: RootNavigator con headerShown:false e importando AppShell (envolver AppStack.Navigator conservando NavigationContainer key={status} y Auth stack intacto); HomePlaceholderScreen sin Pressable de logout ni signOut huérfano, fondo bg-app-crema/app-crema. types.ts sin rutas nuevas.",
+    "id": "TASK-04",
+    "description": "Arnés: npx tsc --noEmit exit 0; npx eslint . exit 0 (cero warnings); grep bans (any/TouchableOpacity/FlatList/expo-router) en src/**/*.ts(x) + App.tsx; DIP (presentation/navigation/shared-ui sin imports de infrastructure; único importador de infra = compositionRoot.ts); git diff package.json app.json vacío; cero imports a paths 1.5a residuales.",
     "status": "TODO",
-    "assigned_role": "Agente Trabajador",
-    "validation": "NO INICIADA. TASK-02 COMPLETED y aprobada por el Humano (2026-09-18). TASK-03 no arranca hasta autorización explícita del Humano en nueva sesión.",
+    "assigned_role": "Agente Trabajador + Revisor",
+    "validation": "NO INICIADA. TASK-03 COMPLETED y aprobada por el Humano (2026-09-18) tras validación en dispositivos físicos Android/iOS. TASK-04 no arranca hasta autorización explícita del Humano en nueva sesión.",
     "allowed_files_to_edit": [
-      "src/app/navigation/RootNavigator.tsx",
-      "src/features/home/presentation/HomePlaceholderScreen.tsx",
-      "src/app/navigation/types.ts",
       "spec/features/app-shell-menu/task.md",
       "progress/current-task.json",
       "progress/history.md"
     ]
   },
   "harness_status": {
-    "last_run": "2026-09-18 (Fase 2a TASK-02 COMPLETED; npx tsc --noEmit exit 0; diff package.json/app.json vacío; bans app-shell verificados; linter de repo se reserva a TASK-04)",
+    "last_run": "2026-09-18 (Fase 2a TASK-03 COMPLETED; validada por el Humano en dispositivos físicos Android/iOS; npx tsc --noEmit exit 0; diff package.json/app.json vacío; eslint de repo se reserva a TASK-04)",
     "linter_passed": null,
     "typecheck_passed": true,
     "bans_verificado": true,
     "dip_verificado": true,
     "package_json_sin_cambios": true,
     "app_json_sin_cambios": true,
-    "bundling_passed_android": "PENDIENTE (Humano; el chrome aún no está cableado, se verá al cerrar TASK-03)",
-    "bundling_passed_ios": "PENDIENTE (Humano; el chrome aún no está cableado, se verá al cerrar TASK-03)",
-    "blockers_or_errors": "TASK-02 COMPLETED y aprobada por el Humano (2026-09-18). 5 archivos bajo src/features/app-shell/presentation/. Chrome aún NO visible en app (RootNavigator intacto; wire = TASK-03). TASK-03 TODO, pendiente de autorización humana en nueva sesión. Fase 2b bloqueada."
+    "bundling_passed_android": "APROBADO por el Humano (2026-09-18) — chrome visible y funcional en dispositivo Android",
+    "bundling_passed_ios": "APROBADO por el Humano (2026-09-18) — chrome visible y funcional en dispositivo iOS",
+    "blockers_or_errors": "TASK-03 COMPLETED y aprobada por el Humano (2026-09-18) tras validación en dispositivos físicos. Chrome visible: header crema + INICIO + hamburguesa + franja guinda; drawer 72% con cabecera de perfil, ítems y logout; Inicio/overlay/back cierran; stubs no navegan; Cerrar sesión → Login. TASK-04 TODO, pendiente de autorización humana en nueva sesión. Fase 2b bloqueada."
   },
-  "agent_notes": "2026-09-18 Humano aprobó TASK-02. Trabajador: menuItems.ts + AppHeader.tsx + AppBrandBar.tsx + AppDrawer.tsx + AppShell.tsx con copy verbatim spec §4.5. Estilos inline JS (appPalette/palette/fontFamily); StatusBar sin backgroundColor (no soportado en v57). npx tsc --noEmit exit 0. git diff package.json app.json vacío. Inicio/stubs no navegan; logout → signOut. PARADA CONTROLADA: NO se inició TASK-03."
+  "agent_notes": "2026-09-18 Humano validó TASK-03 en dispositivos físicos Android/iOS y la dio por completada. Trabajador (sesión previa): RootNavigator con headerShown:false + AppShell envolviendo AppStack.Navigator; HomePlaceholder sin logout y con fondo app-crema; types.ts sin tocar. npx tsc --noEmit exit 0. git diff package.json app.json vacío. PARADA CONTROLADA: NO se inició TASK-04."
 }
