@@ -133,3 +133,42 @@ CIERRE:
 2. NO marques TASK-03 COMPLETED ni actualices progress a TASK-04 hasta que yo (Humano) dé la task por completada.
 3. DETENTE. No inicies TASK-04. Reporta: archivos tocados + resultado de tsc + diff package.json/app.json.
 4. Dime qué debo validar en dispositivo (el chrome ya debería verse: header crema + INICIO + hamburguesa + franja guinda; tap hamburguesa abre drawer 72%; Inicio/overlay/back cierran; stubs no navegan; Cerrar sesión → Login).
+
+## Prompt para nueva sesión (Worker / TASK-04):
+Rol: Agente Trabajador + Revisor. Proyecto: Cimientos del Renacimiento — Gabinete Móvil.
+Feature: app-shell-menu (Fase 2a). MODO: EJECUCIÓN. Solo TASK-04. Cero TASK-05+/Fase 2b.
+Cero dependencias (nada de npx expo install / npm i). Cero npx expo start. Cero nativo
+(app.json, .swift, .kt, .pbxproj, Info.plist, AndroidManifest.xml). Cero cambios funcionales:
+TASK-04 es ARNÉS/VERIFICACIÓN, no feature.
+
+ANTES DE ESCRIBIR (en este orden; evita node_modules, android, ios, build):
+1. /AGENTS.md
+2. /spec/constitution/tech-stack.md §2.2 y §5
+3. /spec/features/app-shell-menu/spec.md §9 y §10 (CA-06/CA-07)
+4. /spec/features/app-shell-menu/plan.md §7 y §8
+5. /spec/features/app-shell-menu/task.md TASK-04
+6. /progress/current-task.json
+
+CONTEXTO: TASK-01/02/03 COMPLETED y aprobadas por el Humano (TASK-03 validada en Android e iOS:
+chrome visible, drawer 72%, logout → Login). El código de 2a está cerrado. TASK-04 solo audita.
+
+OBJETIVO TASK-04: correr el arnés y verificar CA-06/CA-07.
+- npx tsc --noEmit → exit 0.
+- npx eslint . → exit 0, cero warnings.
+- Grep en src/**/*.ts(x) + App.tsx: cero any, TouchableOpacity, FlatList, expo-router.
+- DIP: presentation/navigation/shared-ui sin imports de infrastructure; único importador de
+  infra = compositionRoot.ts.
+- git diff -- package.json app.json → vacío.
+- Cero imports a paths 1.5a residuales.
+
+REGLAS:
+- SOLO allowed_files de TASK-04 (spec/features/app-shell-menu/task.md,
+  progress/current-task.json, progress/history.md). Si el arnés falla, correcciones SOLO en
+  archivos de TASK-01…03 con allowed_files extra autorizado por el Humano/Revisor; no tocar auth.
+- Cero "mejoras" cosméticas, cero refactors, cero auth-*, cero barrels, cero comentarios.
+- No tocar src/features/auth/**, compositionRoot.ts, App.tsx ni deps.
+
+CIERRE:
+1. Reporta el resultado literal de cada comando del arnés + git diff deps.
+2. Si todo verde: deja TASK-04 READY_FOR_REVIEW (NO COMPLETED) y actualiza progress.
+3. DETENTE. No inicies Fase 2b (radar-home) ni nada tras TASK-04 hasta aprobación humana.

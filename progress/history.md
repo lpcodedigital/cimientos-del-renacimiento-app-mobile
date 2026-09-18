@@ -486,3 +486,26 @@
 - Cierre: `spec/features/app-shell-menu/task.md` → TASK-03 `Status: COMPLETED`.
 - `progress/current-task.json` → `active_task: TASK-04` (`TODO`, sin IN_PROGRESS; cronograma de arnés: Trabajador + Revisor), `harness_status` con `bundling_passed_android`/`ios` APROBADOS, `typecheck_passed: true`, `package_json_sin_cambios: true`, `app_json_sin_cambios: true`.
 - **SIGUIENTE:** TASK-04 (arnés: `npx tsc --noEmit`, `npx eslint .`, grep bans, DIP, diff deps) en **NUEVA SESIÓN**, solo al autorizarlo el Humano. Fase 2b sigue bloqueada.
+
+### 2026-09-18 — TASK-04 (Arnés / verificación CA-06 + CA-07) — READY_FOR_REVIEW
+
+- **Modo:** solo auditoría. Cero cambios funcionales, cero deps, cero nativo, cero `npx expo start`. No se tocó código de producto, auth, `compositionRoot.ts`, `App.tsx` ni deps.
+- **Resultados literales del arnés:**
+  - `npx tsc --noEmit` → **exit 0**.
+  - `npx eslint .` → **exit 0** (cero warnings).
+  - Bans (`git ls-files 'src/**/*.ts' 'src/**/*.tsx' App.tsx` × grep `\bany\b|TouchableOpacity|FlatList|expo-router`) → **cero coincidencias** (exit 1).
+  - DIP (grep `from '...infrastructure'` en código versionado): únicos imports = 4 en `src/app/compositionRoot.ts`. `AxiosAuthApi.ts` / `AxiosAuthTokenHolder.ts` importan `@/shared/infrastructure/http/axiosClient` desde dentro de `infrastructure` (no violan la regla). Cero imports de `infrastructure` desde presentation/application/navigation/shared-ui.
+  - `git diff -- package.json app.json` → **vacío**. `git status` de deps → sin cambios.
+  - Residuales `1.5a` / `legacy` / `_old` / `deprecated` en código versionado → **cero** (exit 1). Rutas `drawer`/`zeego`/`bottom-tabs` en navigator → cero.
+- **Diff de árbol no-code:** único `M Instructions/fase_2a/fase_2a.md` (artefacto de prompt del Humano, preexistente; fuera de `src` y de deps).
+- **CA-06 / CA-07:** listos. `spec/features/app-shell-menu/task.md` → TASK-04 `Status: READY_FOR_REVIEW` (NO COMPLETED).
+- `progress/current-task.json` → `active_task: TASK-04`, `status: READY_FOR_REVIEW`, `harness_status.linter_passed: true` (además de typecheck/bans/DIP/deps).
+- **PARADA CONTROLADA:** TASK-04 pendiente de aprobación del Revisor/Humano. **NO** se inició Fase 2b (`radar-home`).
+
+### 2026-09-18 — TASK-04 APROBADA por el Humano (Fase 2a cerrada)
+
+- **Validación:** el Humano dio TASK-04 por **COMPLETED**. Arnés de Fase 2a completo en verde: `npx tsc --noEmit` exit 0; `npx eslint .` exit 0 (cero warnings); bans (`any`/`TouchableOpacity`/`FlatList`/`expo-router`) a cero; DIP verificado (único importador de `infrastructure` = `compositionRoot.ts`); `git diff -- package.json app.json` vacío (CA-07); cero residuales `1.5a`.
+- Cierre: `spec/features/app-shell-menu/task.md` → TASK-04 `Status: COMPLETED`.
+- `progress/current-task.json` → `active_task: TASK-04`, `status: COMPLETED`, `harness_status` con `linter_passed`/`typecheck_passed`/`bans_verificado`/`dip_verificado`/`package_json_sin_cambios`/`app_json_sin_cambios` en `true`.
+- **Estado:** Fase 2a (`app-shell-menu`, CA-01…CA-07) **CERRADA**. No se ejecutó `npx expo start` por agentes.
+- **DETENIDO:** no se planifica ni escribe Fase 2b (`radar-home`). Siguiente paso solo bajo instrucción explícita del Humano.

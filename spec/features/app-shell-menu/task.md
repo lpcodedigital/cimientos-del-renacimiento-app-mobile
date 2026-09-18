@@ -139,18 +139,27 @@ Reglas absolutas del Trabajador:
 
 ## TASK-04 — Arnés
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador + Revisor
-**validation:** pendiente (Humano en dispositivo tras Revisor)
+**validation:** COMPLETED y aprobada por el Humano (2026-09-18). Arnés verde.
 
 **Pasos**
 
-- [ ] `npx tsc --noEmit` → exit 0.
-- [ ] `npx eslint .` → exit 0 (cero warnings).
-- [ ] Grep `src/**/*.ts(x)` + `App.tsx`: cero `any`, `TouchableOpacity`, `FlatList`, `expo-router`.
-- [ ] DIP: presentation/navigation/shared-ui sin imports de `infrastructure`; único importador de infra = `compositionRoot.ts`.
-- [ ] `git diff -- package.json app.json` vacío.
-- [ ] Cero imports a paths 1.5a residuales.
+- [x] `npx tsc --noEmit` → exit 0.
+- [x] `npx eslint .` → exit 0 (cero warnings).
+- [x] Grep `src/**/*.ts(x)` + `App.tsx`: cero `any`, `TouchableOpacity`, `FlatList`, `expo-router`.
+- [x] DIP: presentation/navigation/shared-ui sin imports de `infrastructure`; único importador de infra = `compositionRoot.ts`.
+- [x] `git diff -- package.json app.json` vacío.
+- [x] Cero imports a paths 1.5a residuales.
+
+**Notas de ejecución (Trabajador + Revisor 2026-09-18):**
+
+- `npx tsc --noEmit` → exit 0. `npx eslint .` → exit 0 (cero warnings).
+- Bans (`git ls-files 'src/**/*.ts' 'src/**/*.tsx' App.tsx` + grep): cero `any` / `TouchableOpacity` / `FlatList` / `expo-router`.
+- DIP: los únicos imports a `infrastructure` son los 4 de `compositionRoot.ts`; `AxiosAuthApi.ts` / `AxiosAuthTokenHolder.ts` importan `@/shared/infrastructure/http` desde dentro de `infrastructure` (no violan la regla).
+- `git diff -- package.json app.json` → vacío. Cero residuales `1.5a`/`legacy`/`deprecated` en código.
+- Único cambio de árbol previo a esta sesión: `Instructions/fase_2a/fase_2a.md` (artefacto de prompt del Humano, fuera del código de producto).
+- NO se ejecutó `npx expo start`. Fase 2b no iniciada.
 
 **allowed_files**
 
