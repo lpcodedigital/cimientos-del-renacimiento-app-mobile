@@ -85,7 +85,7 @@ Cero dependencias nuevas. `package.json` / `app.json` intactos.
 
 ## 4. `menuItems.ts` (TASK-02)
 
-Array constante. Labels e iconos **transcritos del PNG** (`menu.png`). Forma:
+Array constante. Labels e iconos **verbatim de spec §4.5**. Forma:
 
 ```ts
 export type AppMenuAction = "home" | "noop" | "sign-out";
@@ -93,17 +93,26 @@ export type AppMenuAction = "home" | "noop" | "sign-out";
 export type AppMenuItem = {
   id: string;
   label: string;
-  ionicon: string; // nombre Ionicons existente en @expo/vector-icons
+  ionicon: string;
   action: AppMenuAction;
 };
+
+export const menuItems: readonly AppMenuItem[] = [
+  { id: "home", label: "Inicio", ionicon: "home-outline", action: "home" },
+  { id: "search", label: "Búsqueda", ionicon: "search-outline", action: "noop" },
+  { id: "profile", label: "Mi perfil", ionicon: "person-outline", action: "noop" },
+  { id: "history", label: "Historial", ionicon: "time-outline", action: "noop" },
+  { id: "settings", label: "Configuración", ionicon: "open-outline", action: "noop" },
+] as const;
 ```
 
 Reglas:
 
-- El ítem que corresponda a Inicio: `action: "home"`.
-- El ítem de cierre de sesión: `action: "sign-out"` (puede vivir fuera del array y renderizarse fijo al pie; preferible pie fijo para empatar el mockup).
-- Cualquier otro: `action: "noop"`.
+- Inicio: `action: "home"`.
+- Logout **no** va en el array (pie fijo en `AppDrawer`: Ionicons `log-out-outline` + copy `Cerrar sesión`).
+- Resto: `action: "noop"`.
 - Prohibido `navigation.navigate` a rutas inexistentes.
+- Prohibido hardcodear `Juan Pérez López` / `juan.perez@yucatan.gob.mx`.
 
 ---
 
@@ -118,9 +127,9 @@ Reglas:
 
 ### 5.2 `AppBrandBar`
 
-- `View` fondo `app-guinda`, padding vertical que empate el PNG (~44–56 pt en Inicio; en el drawer la cabecera incluye esta franja + safe area si el drawer pinta su propio top).
-- `Text` wordmark transcrito, `font-lato-bold`, `color: appPalette.goldWordmark`, `textAlign: "center"`.
-- Usado en Inicio (debajo del header) **y** como cabecera del drawer.
+- `View` fondo `app-guinda`, padding vertical ~44–56 pt.
+- `Text` exactamente `Cimientos del Renacimiento`, `fontFamily: fontFamily["lato-bold"]`, `color: appPalette.goldWordmark`, `textAlign: "center"`.
+- **Solo** en Inicio (debajo de `AppHeader`). **No** es cabecera del drawer (spec §6.5).
 
 ### 5.3 `AppDrawer`
 
@@ -129,7 +138,10 @@ Props: `{ open: boolean; onClose: () => void; onSignOut: () => void }`.
 - Si `!open` → `return null`.
 - `View` `StyleSheet.absoluteFill` + `zIndex` alto (el overlay cubre header y cuerpo).
 - Overlay `Pressable` flex 1 con `appPalette.overlay` → `onClose`.
-- Panel izquierdo `width: "72%"` fondo `app-crema`, `AppBrandBar` arriba, lista de ítems (`Pressable` + Ionicons + Text), logout al pie con `SafeAreaView` edges bottom.
+- Panel izquierdo `width: "72%"` fondo `app-crema`.
+- Cabecera guinda (spec §4.5): `paddingTop` = `useSafeAreaInsets().top`. Fila: círculo avatar (`person-outline` / `app-gold-wordmark`) + columna `user.name` / `user.email` vía `useAuth()` (presentation → presentation de auth; cero `infrastructure`). Ternarios, no `&&` con strings.
+- Lista: `menuItems.map` (5 ítems; **prohibido** `FlatList`; no hace falta FlashList). `Pressable` + Ionicons `item.ionicon` color `appPalette.itemIcon` + `Text` `item.label` `fontFamily.lato` `appPalette.item`. `pressed` → `opacity: 0.8`.
+- Pie: divisor + `Pressable` `log-out-outline` + `Cerrar sesión` `appPalette.logout` `fontFamily["lato-bold"]` + `paddingBottom` inset.
 - Android: `BackHandler` en un `useEffect` si `open` → `onClose` y `return true`.
 
 Ítem:

@@ -55,21 +55,38 @@ Reglas absolutas del Trabajador:
 
 ## TASK-02 — Componentes del chrome (sin wire al navigator)
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
-**validation:** pendiente
+**validation:** APROBADA por el Humano (2026-09-18)
 
-**Objetivo:** Primitivas del shell según plan §4–§5. `RootNavigator` no se toca.
+**Objetivo:** Primitivas del shell según plan §4–§5 y spec §4.5. `RootNavigator` no se toca. **Prohibido releer/inventar copy de los PNG:** usar la transcripción de spec §4.5 / plan §4.
+
+**Copy e iconos (verbatim — no alterar acentos ni ionicon):**
+
+- Wordmark `AppBrandBar` (solo Inicio): `Cimientos del Renacimiento`
+- Header título: `INICIO` · hamburguesa Ionicons `menu`
+- `menuItems`: `Inicio`/`home-outline`/`home` · `Búsqueda`/`search-outline`/`noop` · `Mi perfil`/`person-outline`/`noop` · `Historial`/`time-outline`/`noop` · `Configuración`/`open-outline`/`noop`
+- Cabecera drawer: avatar `person-outline` + `useAuth().user.name` + `useAuth().user.email` (cero hardcode `Juan Pérez López`). No `AppBrandBar` en el drawer (desviación Humano 2026-09-18 / spec §6.5).
+- Pie: `log-out-outline` + `Cerrar sesión` (fuera del array).
+- Inicio del menú: outline + `font-lato` (el PNG no usa bold ni icono fill).
 
 **Pasos**
 
-- [ ] `src/features/app-shell/presentation/menuItems.ts` (plan §4): transcribir ítems del PNG; Inicio = `home`; resto = `noop`. Logout **no** va en este array (pie fijo).
-- [ ] `src/features/app-shell/presentation/AppHeader.tsx` (plan §5.1).
-- [ ] `src/features/app-shell/presentation/AppBrandBar.tsx` (plan §5.2). Wordmark transcrito del PNG.
-- [ ] `src/features/app-shell/presentation/AppDrawer.tsx` (plan §5.3): overlay 72% / BackHandler / pie «Cerrar sesión».
-- [ ] `src/features/app-shell/presentation/AppShell.tsx` (plan §5.4).
-- [ ] Solo `Pressable`. Cero `StyleSheet.create` salvo overlay/`absoluteFill`/ancho `%` justificados.
-- [ ] `npx tsc --noEmit` debe pasar.
+- [x] `src/features/app-shell/presentation/menuItems.ts` (plan §4): array verbatim de arriba; Inicio = `home`; resto = `noop`. Logout **no** va en este array (pie fijo).
+- [x] `src/features/app-shell/presentation/AppHeader.tsx` (plan §5.1).
+- [x] `src/features/app-shell/presentation/AppBrandBar.tsx` (plan §5.2). Wordmark `Cimientos del Renacimiento`. Solo Inicio.
+- [x] `src/features/app-shell/presentation/AppDrawer.tsx` (plan §5.3): overlay 72% / cabecera perfil / BackHandler / pie «Cerrar sesión».
+- [x] `src/features/app-shell/presentation/AppShell.tsx` (plan §5.4).
+- [x] Solo `Pressable`. Cero `StyleSheet.create` salvo overlay/`absoluteFill`/ancho `%` justificados.
+- [x] Estilos **inline JS** con `appPalette` / `palette` / `fontFamily` (precedente NativeWind v5 iOS 1.5a). Documentar en este `task.md` si se usa.
+- [x] `npx tsc --noEmit` debe pasar.
+
+**Notas de implementación (Trabajador 2026-09-18):**
+
+- Estilos **inline JS** en los 4 componentes (precedente NativeWind v5 iOS). `StyleSheet` solo para `absoluteFill` + `hairlineWidth`; ancho del panel `"72%"` inline justificado.
+- `StatusBar` de `expo-status-bar` v57 **no acepta** `backgroundColor` (error TS2322). Se usó `<StatusBar style="dark" />`; el fondo crema lo pinta el `View` del header.
+- `menuItems.map` para los 5 ítems (sin `FlatList`). Inicio y stubs usan el mismo estilo outline + `font-lato`; `noop` es no-op, `home` cierra.
+- Cabecera drawer: `useAuth().user.name` / `.email` con ternarios; sin hardcode. No se usa `AppBrandBar` en el drawer (spec §6.5).
 
 **allowed_files**
 

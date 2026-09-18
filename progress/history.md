@@ -436,3 +436,34 @@
 - `spec/features/app-shell-menu/task.md`: TASK-01 marcada `- [x]` / `Status: COMPLETED`.
 - `progress/current-task.json` → `active_task: TASK-02`, `status: TODO` (el puntero NO avanza a IN_PROGRESS; lo autoriza el Humano en nueva sesión), `harness_status.typecheck_passed: true`, `package_json_sin_cambios: true`, `app_json_sin_cambios: true`.
 - **SIGUIENTE:** TASK-02 (componentes del chrome bajo `src/features/app-shell/presentation/`, plan §4–§5) en **NUEVA SESIÓN**, solo al autorizarlo el Humano. `RootNavigator` no se toca hasta TASK-03. Fase 2b sigue bloqueada.
+
+### 2026-09-18 — Transcripción de mockups 2a (Orquestador) — CERO código RN
+
+- Bloqueo previo del Trabajador: el modelo no podía leer PNG y no debía inventar copy. El Humano pidió transcripción en spec/plan/task **sin ejecutar TASK-02**.
+- **`inicio.png` (chrome):** hamburguesa `menu`; título `INICIO`; wordmark `Cimientos del Renacimiento` (Lato Bold).
+- **`menu.png`:** ítems `Inicio` / `Búsqueda` / `Mi perfil` / `Historial` / `Configuración` con Ionicons `home-outline` / `search-outline` / `person-outline` / `time-outline` / `open-outline`. Logout pie `log-out-outline` + `Cerrar sesión` (fuera del array).
+- **Decisión Humano:** cabecera del drawer = avatar + `user.name` + `user.email` (`useAuth`), no `AppBrandBar`. Wordmark solo en Inicio. PNG de ejemplo (`Juan Pérez López`) no se hardcodea. Inicio del menú sin bold/fill.
+- Enmendados: `spec.md` §4.2–§4.5 + §6.5; `plan.md` §4–§5.3; `task.md` TASK-02 con copy verbatim. Cero archivos bajo `src/features/app-shell/`. TASK-02 sigue **TODO**.
+- **SIGUIENTE:** Trabajador ejecuta TASK-02 en nueva sesión copiando spec §4.5 / plan §4. No relee PNG.
+
+### 2026-09-18 — TASK-02 (Componentes del chrome) — IN_PROGRESS (pendiente Humano)
+
+- **Hecho (secuencia TASK-02):** creados los **5 archivos** bajo `src/features/app-shell/presentation/` (sin wire al navigator; `RootNavigator` y `HomePlaceholderScreen` intactos):
+  - `menuItems.ts`: tipos `AppMenuAction` / `AppMenuItem` + array `menuItems` verbatim de spec §4.5 (`Inicio`/`home-outline`/`home`, `Búsqueda`/`search-outline`, `Mi perfil`/`person-outline`, `Historial`/`time-outline`, `Configuración`/`open-outline`, los 4 últimos `noop`). Logout fuera del array.
+  - `AppHeader.tsx`: fondo `app-crema` + `paddingTop` insets; fila 48 pt; `Pressable` hamburguesa Ionicons `menu` (`palette.texto`, 28, hitSlop, `accessibilityLabel="Abrir menú"`); `INICIO` `lato-bold` centrado absoluto. `<StatusBar style="dark" />`.
+  - `AppBrandBar.tsx`: fondo `app-guinda`, wordmark `Cimientos del Renacimiento` `lato-bold` `goldWordmark` centrado. Solo Inicio.
+  - `AppDrawer.tsx`: props `{ open, onClose, onSignOut }`; `null` si cerrado; overlay `Pressable` `absoluteFill` `appPalette.overlay` → `onClose`; panel `"72%"` `app-crema`; cabecera `app-guinda` con avatar `person-outline` + `useAuth().user.name` / `.email` (ternarios, cero hardcode); 5 ítems vía `menuItems.map` (`home`→`onClose`, `noop` no-op); pie divisor + `log-out-outline` + `Cerrar sesión` `app-logout`; `BackHandler` Android en `useEffect` si `open`.
+  - `AppShell.tsx`: estado local `drawerOpen`; `useAuth().signOut`; `flex:1` `app-crema`; `AppHeader` abre; `AppBrandBar`; `{children}`; `AppDrawer`.
+- **Estilos:** inline JS con `appPalette` / `palette` / `fontFamily` (precedente NativeWind v5 iOS 1.5a). `StyleSheet` solo para `absoluteFill` + `hairlineWidth`; ancho `"72%"` inline justificado. Solo `Pressable`. Cero `auth-*`.
+- **Incidencia TS resuelta en la task:** `expo-status-bar` v57 **no** acepta `backgroundColor` (TS2322). Se usó `<StatusBar style="dark" />`; el crema lo pinta el `View` del header. Desviación documentada en `task.md` (plan §5.1 lo pedía).
+- **Arnés:** `npx tsc --noEmit` → **exit 0**. `git diff -- package.json app.json` → **vacío**. Grep bans en `app-shell/` → cero `any` / `TouchableOpacity` / `FlatList` / `expo-router` / `auth-`. Cero `infrastructure`, cero barrels. NO se ejecutó `npx expo start`.
+- `spec/features/app-shell-menu/task.md`: TASK-02 pasos `- [x]` / `Status: IN_PROGRESS` (NO COMPLETED; lo cierra el Humano). Notas de implementación añadidas.
+- `progress/current-task.json` → `active_task: TASK-02`, `status: IN_PROGRESS` (el puntero NO avanza a TASK-03), `harness_status.typecheck_passed: true`.
+- **PARADA CONTROLADA:** TASK-02 pendiente de validación Humana. No se inició TASK-03. `RootNavigator` sin tocar → el chrome aún no se ve en la app. Fase 2b sigue bloqueada.
+
+### 2026-09-18 — TASK-02 APROBADA por el Humano
+
+- **Validación:** el Humano dio por completada TASK-02 (revisión de código; el chrome aún no se pinta porque `RootNavigator` no se cablea hasta TASK-03).
+- Cierre: `spec/features/app-shell-menu/task.md` → TASK-02 `Status: COMPLETED`.
+- `progress/current-task.json` → `active_task: TASK-03` (`TODO`, sin IN_PROGRESS), `harness_status.typecheck_passed: true`, `package_json_sin_cambios: true`, `app_json_sin_cambios: true`, bundling pendiente del Humano (se verá al cerrar TASK-03).
+- **SIGUIENTE:** TASK-03 (wire `RootNavigator` + quitar logout de `HomePlaceholderScreen`) en **NUEVA SESIÓN**, solo al autorizarlo el Humano. Fase 2b sigue bloqueada.

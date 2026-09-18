@@ -37,7 +37,7 @@ Fase 2b (`radar-home`) está **bloqueada** hasta que el Revisor audite y el Test
 - `spec/features/app-shell-menu/mockups/menu.png` → drawer abierto (cabecera guinda + cuerpo crema + overlay).
 - `spec/features/radar-home/mockups/inicio.png` → **solo** el chrome superior (status + título `INICIO` + hamburguesa + franja de marca). El mapa, cards y pines son Fase 2b; en 2a el cuerpo sigue siendo el placeholder.
 
-> **DIRECTRIZ PARA EL TRABAJADOR (ANTI-ALUCINACIÓN):** Tokens = §4 (muestreo 2026-09-15). Copy de ítems = transcripción carácter por carácter del PNG. Prohibido inventar colores, fuentes o rutas de navegación.
+> **DIRECTRIZ PARA EL TRABAJADOR (ANTI-ALUCINACIÓN):** Tokens = §4. Copy, iconos y cabecera = **§4.5** (transcripción 2026-09-18). Prohibido re-interpretar los PNG ni inventar labels, rutas o un highlight de Inicio que el PNG no muestra.
 
 ---
 
@@ -55,18 +55,20 @@ Mockups ~800×1500 (≈ @2x de un frame ~400×750). El bezel oscuro del PNG **no
 - Título `INICIO`: `font-lato-bold`, color `texto #1A1A1A`, centrado en la barra.
 - Sin header nativo del Native Stack (`headerShown: false`).
 
-### 4.2 Franja de marca (ambas pantallas)
+### 4.2 Franja de marca (solo Inicio — `inicio.png`)
 
-- Fondo `app-guinda #5C1120`, alto ≈ 44–56 pt bajo el header (en el drawer es la cabecera completa, ≈ 100–110 pt con safe area).
-- Wordmark (copy exacto del PNG, transcribir): `font-lato-bold text-app-gold-wordmark`, centrado.
+- Fondo `app-guinda #5C1120`, alto ≈ 44–56 pt bajo el header.
+- Wordmark exacto: `Cimientos del Renacimiento` (`font-lato-bold`, `app-gold-wordmark`, centrado).
+- **No** se usa como cabecera del drawer (decisión Humano 2026-09-18; ver §4.5 y §6).
 
 ### 4.3 Drawer (`menu.png`)
 
 - Ancho ≈ **72%** del ancho de pantalla (panel x≈24–584 de 804). El **28% derecho** es la pantalla de Inicio visible y oscurecida.
 - Overlay: `Pressable` a pantalla completa detrás del panel, fondo `app-overlay` (`#000000` opacity 0.45). Tap en overlay **cierra** el drawer. Back nativo Android cierra el drawer si está abierto (no hace `signOut`).
+- Cabecera guinda: avatar + `user.name` + `user.email` (no wordmark). Detalle §4.5.
 - Cuerpo: `app-crema #F2EDE6`.
-- Ítem: icono `app-item-icon #89535B` + label `font-lato text-base text-app-item`. Estado `pressed`: `opacity-80`. Ítem activo (Inicio): el Trabajador replica el tratamiento visual del PNG (peso Bold y/o icono relleno); no inventar un highlight distinto.
-- «Cerrar sesión»: anclado al **pie** (safe area bottom), color `app-logout #B03132`, `font-lato-bold`.
+- Ítem: icono `app-item-icon #89535B` + label `font-lato text-base text-app-item`. Estado `pressed`: `opacity-80`. El PNG **no** muestra Inicio en bold ni icono relleno: todos los ítems `home-outline` / outline + `font-lato`.
+- «Cerrar sesión»: anclado al **pie** (safe area bottom), color `app-logout #B03132`, `font-lato-bold`, icono `log-out-outline`.
 
 ### 4.4 Tipografía (chrome)
 
@@ -74,9 +76,51 @@ Mockups ~800×1500 (≈ @2x de un frame ~400×750). El bezel oscuro del PNG **no
 | --- | --- |
 | `INICIO` | `font-lato-bold`, `texto #1A1A1A` |
 | Wordmark de marca | `font-lato-bold`, `app-gold-wordmark` |
-| Ítem de menú | `font-lato`, `app-item` |
-| Ítem activo (Inicio) | `font-lato-bold`, `app-item` (si el PNG lo muestra más fuerte) |
+| Ítem de menú (todos, incl. Inicio) | `font-lato`, `app-item` |
+| Nombre en cabecera del drawer | `font-lato-bold`, `app-gold-wordmark` |
+| Email en cabecera del drawer | `font-lato`, `app-gold-wordmark` (un punto más chico / más tenue que el nombre) |
 | Cerrar sesión | `font-lato-bold`, `app-logout` |
+
+### 4.5 Transcripción literal (2026-09-18) — el Trabajador copia esto, no relee el PNG
+
+#### `inicio.png` — solo chrome (ignorar mapa, search, chips, KPI, pines)
+
+1. Header crema: hamburguesa Ionicons `menu` a la izquierda (`palette.texto`, size 28, hit ≥ 44×44, `accessibilityLabel="Abrir menú"`).
+2. Título exactamente `INICIO` (mayúsculas, una palabra), `font-lato-bold`, `palette.texto`, centrado en la barra (posición absoluta horizontal).
+3. Franja de marca debajo: fondo `app-guinda`. Copy **exacto** del wordmark:
+
+```
+Cimientos del Renacimiento
+```
+
+(Title Case, no ALL CAPS, no «Gabinete Móvil».) `font-lato-bold`, `appPalette.goldWordmark`, `textAlign: "center"`. Desviación §6: el PNG es serif → Lato Bold.
+
+#### `menu.png` — drawer abierto
+
+**Cabecera del panel (guinda, ≈ 100–110 pt con safe area top). Decisión Humano 2026-09-18: perfil, no `AppBrandBar`.**
+
+- Círculo avatar a la izquierda: borde `app-gold-wordmark`, icono Ionicons `person-outline` color `app-gold-wordmark`. Cero foto de red / `expo-image` en 2a.
+- Nombre: `user.name` de `useAuth()` (`font-lato-bold`, `app-gold-wordmark`). El PNG muestra `Juan Pérez López` **solo como ejemplo** del usuario de sesión; **prohibido hardcodear** ese nombre.
+- Email: `user.email` de `useAuth()` (`font-lato`, `app-gold-wordmark`). El PNG muestra `juan.perez@yucatan.gob.mx` **solo como ejemplo**; **prohibido hardcodear**.
+- Si `user` es `null`: no renderizar string vacío con `&&`; usar ternario (`user?.name ? <Text>…` : null).
+
+**Cuerpo crema — array `menuItems` (logout NO va aquí):**
+
+| id | label (copy exacto) | ionicon | action |
+| --- | --- | --- | --- |
+| `home` | `Inicio` | `home-outline` | `home` |
+| `search` | `Búsqueda` | `search-outline` | `noop` |
+| `profile` | `Mi perfil` | `person-outline` | `noop` |
+| `history` | `Historial` | `time-outline` | `noop` |
+| `settings` | `Configuración` | `open-outline` | `noop` |
+
+Acentos exactos: `Búsqueda`, `Configuración`. No `Busqueda` / `Configuracion`. No añadir ítems (Radar, Obras, Cursos, etc.).
+
+**Pie (fuera del array):**
+
+- Línea divisoria sutil sobre el pie.
+- Ionicons `log-out-outline` color `app-logout` + copy exactamente `Cerrar sesión` (`font-lato-bold`, `app-logout`).
+- Safe area bottom.
 
 ---
 
@@ -98,6 +142,7 @@ Mockups ~800×1500 (≈ @2x de un frame ~400×750). El bezel oscuro del PNG **no
 2. Bezel / status bar del sistema del PNG no se pinta; se usa `SafeAreaView` + `StatusBar` nativa dark.
 3. Cuerpo de Inicio en 2a = placeholder institucional (sin mapa). El chrome sí empata el PNG.
 4. `guinda #6B142E` constitucional no se usa en header/drawer (el mockup es `app-guinda #5C1120`).
+5. **Cabecera del drawer (Humano 2026-09-18):** el plan original reutilizaba `AppBrandBar` (wordmark) en el drawer. El PNG muestra avatar + nombre + email. Manda el PNG: perfil vía `useAuth`. `AppBrandBar` **solo** en Inicio bajo el header.
 
 ---
 
@@ -117,8 +162,8 @@ Todo lo no listado permanece intacto (auth, SecureStore, `NavigationContainer ke
 
 - `src/features/app-shell/presentation/AppShell.tsx` — estado local `drawerOpen`; envuelve el stack autenticado.
 - `src/features/app-shell/presentation/AppHeader.tsx` — hamburguesa + `INICIO`.
-- `src/features/app-shell/presentation/AppBrandBar.tsx` — franja guinda + wordmark.
-- `src/features/app-shell/presentation/AppDrawer.tsx` — panel + overlay + lista de ítems.
+- `src/features/app-shell/presentation/AppBrandBar.tsx` — franja guinda + wordmark **solo en Inicio**.
+- `src/features/app-shell/presentation/AppDrawer.tsx` — overlay + panel 72% + cabecera perfil (`useAuth`) + ítems §4.5 + pie logout.
 - `src/features/app-shell/presentation/menuItems.ts` — constantes de presentation (id, label transcrito, icono, `action: 'home' \| 'noop' \| 'sign-out'`). Cero React Navigation routes nuevas.
 - `src/app/navigation/RootNavigator.tsx` — **solo** importa `AppShell` y pone `headerShown: false`. No aloja UI del menú.
 - `HomePlaceholderScreen` — quitar logout; no importar el drawer.
