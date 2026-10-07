@@ -63,6 +63,22 @@ Los tokens de Fase 1 (`guinda #6B142E`, `dorado #C4A35A`, `fondo #F7F4F0`, `text
 - **Geolocalización:** `expo-location` vía `npx expo install` **solo** en Fase 2b, con config plugin de Expo (permisos When-In-Use). El Humano autoriza el diff de `app.json`.
 - **Drawer / menús nativos extra:** prohibido añadir paquetes. Overlay custom.
 
+## 2.4 Paleta del radar territorial (Fase 2b — muestreo 2026-10-06 de `inicio.png`)
+Los tokens de Fase 1 (`guinda #6B142E`, `dorado #C4A35A`, `texto #1A1A1A`, `superficie #FFFFFF`) y los `app-*` de §2.2 siguen vigentes. El cuerpo del radar (búsqueda, chips, etiqueta de dispositivo, popup KPI) usa **exclusivamente** los tokens `radar-*` extraídos de `spec/features/radar-home/mockups/inicio.png` (mockup 704×1520, muestreo Python stdlib sobre fills sin texto):
+
+| Token | Hex | Uso |
+| --- | --- | --- |
+| `radar-surface` | `#FFFFFF` | Pill de búsqueda y etiqueta del municipio del dispositivo. |
+| `radar-chip` | `#C3CEC0` | Chip de municipio inactivo (gris-verdoso claro). |
+| `radar-chip-active` | `#C67E33` | Chip «MI UBICACIÓN» y chip de municipio seleccionado (dorado-naranja del mockup). |
+| `radar-popup-header` | `#D6DED1` | Cabecera de la card KPI del municipio. |
+| `radar-popup-body` | `#D8DAC9` | Cuerpo de la card KPI del municipio. |
+| `radar-pin` | `#6B142E` | Pin de municipio (guinda constitucional — decisión Humano 2026-10-06; supersede los pines morado/verde del generador de imágenes). |
+| `radar-pin-gps` | `#C4A35A` | Pin «MI UBICACIÓN» (dorado constitucional). |
+| `radar-ripple` | `#C4A35A` @ 35% | Anillos de la onda expansiva alrededor del pin seleccionado. |
+
+*Regla Absoluta:* textos del radar en `texto #1A1A1A` (sobre superficies claras) o `superficie #FFFFFF` (sobre `radar-chip-active`). Tipografía: **Lato / Lato Bold** exclusivamente. Paleta `auth-*` prohibida en el radar.
+
 ## 3. Biometría & Hardware APIs (Exclusivo Expo)
 > *Nota para Agentes: Todo puente de hardware se resuelve mediante APIs de Expo. Cero código nativo escrito a mano.*
 - **Autenticación Biométrica:** `expo-local-authentication` (Implementada como fallback o acceso rápido post-login tradicional).

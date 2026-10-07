@@ -509,3 +509,28 @@
 - `progress/current-task.json` → `active_task: TASK-04`, `status: COMPLETED`, `harness_status` con `linter_passed`/`typecheck_passed`/`bans_verificado`/`dip_verificado`/`package_json_sin_cambios`/`app_json_sin_cambios` en `true`.
 - **Estado:** Fase 2a (`app-shell-menu`, CA-01…CA-07) **CERRADA**. No se ejecutó `npx expo start` por agentes.
 - **DETENIDO:** no se planifica ni escribe Fase 2b (`radar-home`). Siguiente paso solo bajo instrucción explícita del Humano.
+
+## Fase 2b — Radar Territorial (radar-home)
+
+### 2026-10-06 — Orquestación Paso 0 (Lead Planner) — SDD escrito; CERO código RN
+
+- **Contexto:** Fase 2a cerrada y aprobada por el Humano (2026-09-18). El Humano autorizó la fase de plan de 2b con contrato real del backend ya disponible y pidió reescribir 2b contra `spec/features/radar-home/mockups/inicio.png` (el texto 2026-09-15 de pines por obra/curso con callout individual queda superseded).
+- **Contrato real (Humano, 2026-10-06):** `GET /api/v1/dashboard/mapa-home` → array de `MunicipioResumenDTO` (`municipio`, `totalObras`, `totalCursos`, `totalInversion`, `obrasFinalizadas`, `obrasEnProceso`, `latitude`, `longitude`) con JSON de ejemplo de 22 municipios (CHANKOM…PANABÁ). Un pin por municipio; popup KPI agregado municipal.
+- **Decisiones del Humano (12, en spec §2):** un pin por municipio guinda `#6B142E` + GPS dorado `#C4A35A`; popup KPI + `X` + `Ver más` no-op + ripple animado de 3 anillos; barra de búsqueda **solo visual** (Fase 3); chips del endpoint = centran cámara + estado seleccionado (no abren popup); «MI UBICACIÓN» centra GPS (pide permiso solo al tocarlo); etiqueta fija del municipio del dispositivo vía reverse geocode (`—` sin permiso); cámara inicial GPS-si-permiso / si-no `fitToCoordinates`; datos del DTO tal cual (sin reconciliar sumas); `VARIOS` se pinta; deps únicas `react-native-maps` + `expo-location`; copy de permiso **aprobado**: «El Gabinete Móvil usa tu ubicación para centrar el radar territorial y mostrar el municipio donde te encuentras.»
+- **Muestreo 2026-10-06 (Python stdlib, fills sin texto):** chip activo `#C67E33`, chip inactivo `#C3CEC0`, popup header `#D6DED1`, popup body `#D8DAC9`, superficies `#FFFFFF`. Pines morado `#6F337B`/verde `#2D7939` del generador → superseded por guinda/dorado. Artefactos del PNG declarados NO replicar (spec §4.7): labels gibberish de pines, `MI MV UBICACIÓN`, KPI de ejemplo, icono pin morado `#7044BD` de la etiqueta.
+- **Context7 (2026-10-06):** `react-native-maps` (`Marker pinColor`/`onPress`, `animateToRegion`, `fitToCoordinates`, `pointForCoordinate`) y `expo-location` (`get/requestForegroundPermissionsAsync`, `getCurrentPositionAsync`, `reverseGeocodeAsync`, config plugin `locationWhenInUsePermission`) verificados contra docs actuales.
+- **Enmiendas constitucionales:** `roadmap.md` §2b reescrito (contrato real + comportamiento chips/popup/búsqueda); `tech-stack.md` §2.4 nueva tabla `radar-*` (8 tokens + reglas de texto). `mission.md` y `AGENTS.md` sin cambios.
+- **Artefactos SDD escritos (cero código RN):** `spec/features/radar-home/spec.md` (12 decisiones, transcripción literal §4.5, contrato verbatim §4.6, artefactos §4.7, flujo §5, desviaciones §6, superseded §7, arquitectura 4 capas §8, CA-01…10), `plan.md` (árbol destino, firmas verbatim domain/application/infra, `HomeProvider`, wiring `compositionRoot`/`App.tsx`, fences ESLint para `expo-location`/`react-native-maps`, ripple Reanimated, formato MDP/Title Case, apéndice JSON de referencia), `task.md` (TASK-01…06 con allowed_files estrictos; TASK-01 = tokens + installs + `app.json` con **gate de API key del Humano**).
+- `progress/current-task.json` → feature `radar-home`, TASK-01 `TODO` (no IN_PROGRESS). PARADA CONTROLADA.
+- **SIGUIENTE:** el Humano aprueba `spec.md`, entrega la API key de Google Maps Android y autoriza TASK-01 en **nueva sesión**. Prohibido al Trabajador arrancar solo. Fase 3 sigue bloqueada.
+
+### 2026-10-06 — Micro-enmienda del plan 2b (Orquestador) — CERO código, CERO tasks ejecutadas
+
+- **Motivo:** el Humano pidió auditar el SDD de 2b contra las prácticas de `core-arch-refactor` (1.5b) antes de continuar. Auditoría favorable salvo 3 desviaciones de redacción.
+- **Ajustes aplicados SOLO a `spec/features/radar-home/plan.md`:**
+  1. **§7 (HomeProvider):** fachada única fijada — `useHomeRadar()` reexpone estado + acciones **y** `useCases` (calco de `useAuth` 1.5b). Los componentes nunca reciben use cases por otro camino.
+  2. **§8.8 (HomeScreen):** eliminada la ambigüedad "desde `useHomeRadar()` o prop directa" → los use cases llegan **solo** por `useHomeRadar()`; prohibido pasarlos por props al screen.
+  3. **§12 nueva tabla "Skills aplicables"** (patrón 1.5b plan §10): `ui-pressable`, `rendering-no-falsy-and`, `animation-gpu-properties`, `js-hoist-intl`, `react-state-minimize`, `navigation-native-navigators`, `ui-measure-views`.
+  4. **§13 nuevo "Criterio de hecho técnico"** (patrón 1.5b plan §11): arnés/deps/contrato verdes, árbol poblado + placeholder eliminado + chrome/auth diff vacío, firmas intactas, TASK-06 `READY_FOR_REVIEW`, Fase 3 no iniciada.
+- **Sin cambios:** spec.md, task.md, constitución, código de producto. TASK-01 sigue **TODO** con gate (spec aprobada + API key Android del Humano). Ninguna TASK fue ejecutada ni autorizada.
+- **Prácticas 1.5b verificadas como ya presentes en el SDD 2b:** closures no clases, puertos en domain, DTO espejo en infra, error `{kind,message}`+factory, `compositionRoot` único importador de infra, instanciación a nivel de módulo en `App.tsx`, provider con use cases por props, cero barrels, fences `no-restricted-imports` sin paquete nuevo, servidor solo TanStack Query, orden anti-rompimiento domain→application→infra→UI→wire→arnés, tsc verde por task.

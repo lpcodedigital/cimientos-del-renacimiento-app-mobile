@@ -1,23 +1,29 @@
 {
   "project_name": "Cimientos del Renacimiento - Gabinete Móvil",
-  "current_roadmap_phase": "Fase 2a: Chrome autenticado (app-shell-menu)",
-  "active_feature": "app-shell-menu",
+  "current_roadmap_phase": "Fase 2b: Radar Territorial (radar-home)",
+  "active_feature": "radar-home",
   "context_pointers": {
-    "spec_file": "spec/features/app-shell-menu/spec.md",
-    "plan_file": "spec/features/app-shell-menu/plan.md",
-    "task_file": "spec/features/app-shell-menu/task.md",
-    "mockup_menu": "spec/features/app-shell-menu/mockups/menu.png",
-    "mockup_inicio_chrome": "spec/features/radar-home/mockups/inicio.png",
+    "spec_file": "spec/features/radar-home/spec.md",
+    "plan_file": "spec/features/radar-home/plan.md",
+    "task_file": "spec/features/radar-home/task.md",
+    "mockup_inicio": "spec/features/radar-home/mockups/inicio.png",
+    "mockup_old_no_autoritativo": "spec/features/radar-home/mockups/old.png",
+    "chrome_feature_congelada": "spec/features/app-shell-menu/spec.md",
     "baseline_feature": "spec/features/core-arch-refactor/spec.md"
   },
   "active_task": {
-    "id": "TASK-04",
-    "description": "Arnés: npx tsc --noEmit exit 0; npx eslint . exit 0 (cero warnings); grep bans (any/TouchableOpacity/FlatList/expo-router) en src/**/*.ts(x) + App.tsx; DIP (presentation/navigation/shared-ui sin imports de infrastructure; único importador de infra = compositionRoot.ts); git diff package.json app.json vacío; cero imports a paths 1.5a residuales.",
-    "status": "COMPLETED",
-    "assigned_role": "Agente Trabajador + Revisor",
-    "validation": "COMPLETED y aprobada por el Humano (2026-09-18). Arnés verde: tsc exit 0; eslint exit 0 cero warnings; bans a cero; DIP verificado (único importador de infra = compositionRoot.ts); git diff package.json/app.json vacío; cero residuales 1.5a.",
+    "id": "TASK-01",
+    "description": "Tokens radar-* (global.css + tokens.ts radarPalette) + npx expo install react-native-maps expo-location + app.json (plugin expo-location con copy aprobado + android.config.googleMaps.apiKey del Humano). Cero componentes.",
+    "status": "TODO",
+    "assigned_role": "Agente Trabajador",
+    "validation": "PENDIENTE. Gate del Humano: aprobar spec.md y entregar la API key de Google Maps Android antes de autorizar TASK-01 en nueva sesión.",
     "allowed_files_to_edit": [
-      "spec/features/app-shell-menu/task.md",
+      "global.css",
+      "src/shared/theme/tokens.ts",
+      "package.json",
+      "package-lock.json",
+      "app.json",
+      "spec/features/radar-home/task.md",
       "progress/current-task.json",
       "progress/history.md"
     ]
@@ -30,9 +36,9 @@
     "dip_verificado": true,
     "package_json_sin_cambios": true,
     "app_json_sin_cambios": true,
-    "bundling_passed_android": "APROBADO por el Humano (2026-09-18) — chrome visible y funcional en dispositivo Android",
-    "bundling_passed_ios": "APROBADO por el Humano (2026-09-18) — chrome visible y funcional en dispositivo iOS",
-    "blockers_or_errors": "NINGUNO. TASK-04 COMPLETED y aprobada por el Humano (2026-09-18). Fase 2a (app-shell-menu) cerrada; arnés completo en verde. Fase 2b (radar-home) sigue bloqueada hasta nueva instrucción humana."
+    "bundling_passed_android": "APROBADO por el Humano (2026-09-18, Fase 2a)",
+    "bundling_passed_ios": "APROBADO por el Humano (2026-09-18, Fase 2a)",
+    "blockers_or_errors": "NINGUNO en el código. SDD de Fase 2b (radar-home) escrito el 2026-10-06: spec/plan/task + enmiendas roadmap §2b y tech-stack §2.4 + micro-enmienda del plan (fachada única useHomeRadar, tabla de skills §12, criterio de hecho §13) tras auditoría contra core-arch-refactor. TASK-01 en TODO con gate: el Humano aprueba spec.md y entrega la API key de Google Maps Android."
   },
-  "agent_notes": "2026-09-18 (Trabajador + Revisor): TASK-04 ejecutada en modo solo-auditoría y aprobada con éxito por el Humano. npx tsc --noEmit exit 0; npx eslint . exit 0 sin warnings; grep bans (any/TouchableOpacity/FlatList/expo-router) sobre git ls-files src/**/*.ts(x)+App.tsx = cero; DIP: único importador de infrastructure es compositionRoot.ts (los imports en AxiosAuthApi/AxiosAuthTokenHolder son intra-infrastructure hacia @/shared/infrastructure/http); git diff package.json/app.json vacío; cero paths 1.5a residuales. No se tocó código de producto, auth, compositionRoot, App.tsx ni deps. No se ejecutó npx expo start. TASK-04 marcada COMPLETED. DETENIDO sin iniciar Fase 2b (radar-home)."
+  "agent_notes": "2026-10-06 (Orquestador, Paso 0 SDD): Fase 2b reescrita contra inicio.png y contrato real GET /api/v1/dashboard/mapa-home (MunicipioResumenDTO). Decisiones Humanas (12): un pin por municipio guinda #6B142E / GPS dorado #C4A35A; popup KPI municipal + X + Ver más no-op + ripple animado 3 anillos; búsqueda solo visual (Fase 3); chips del endpoint centran cámara + selección (sin popup); MI UBICACIÓN centra GPS con prompt solo al tocar; etiqueta dispositivo vía reverse geocode (— sin permiso); cámara inicial GPS-si-permiso / si-no fitToCoordinates; DTO tal cual sin reconciliar sumas; deps únicas react-native-maps + expo-location; copy de permiso aprobado. Muestreo stdlib: chip-activo #C67E33, chip #C3CEC0, popup-header #D6DED1, popup-body #D8DAC9. Artefactos del PNG NO replicar: labels gibberish, MI MV UBICACIÓN, pines morado/verde, KPI ejemplo. Enmiendas: roadmap.md §2b + tech-stack.md §2.4 (radar-*). Escritos spec.md (CA-01…10), plan.md (4 capas, firmas verbatim, HomeProvider, fences, ripple Reanimated, apéndice JSON), task.md (TASK-01…06, TASK-01 TODO con gate de API key). CERO código RN. PARADA CONTROLADA: el Humano aprueba spec.md, entrega la API key y autoriza TASK-01 en nueva sesión. Fase 3 bloqueada."
 }
