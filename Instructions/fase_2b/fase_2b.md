@@ -193,3 +193,71 @@ AL TERMINAR (obligatorio):
 - NO commit. NO npx expo start.
 
 REPORTA: archivos creados/editados, resultado de tsc y eslint, verificación de DIP/fences, y qué debo validar yo como Humano antes de autorizar TASK-04.
+
+## TASK-04 no iniciada. Prompt listo para pegar en nueva sesión:
+
+MODO: EJECUCIÓN. Proyecto: Cimientos del Renacimiento — Gabinete Móvil.
+FASE 2b (radar-home). Ejecutar SOLO TASK-04. Cero TASK-05+. Cero wire al navigator. Cero dependencias nuevas. Cero código nativo. Cero commit. Cero `npx expo start`.
+
+LEER ANTES DE TOCAR CÓDIGO (obligatorio):
+- spec/features/radar-home/task.md  (TASK-04, allowed_files y reglas)
+- spec/features/radar-home/plan.md  (§8.1–§8.8, §7, §12 skills, §13)
+- spec/features/radar-home/spec.md  (§4.1–§4.5 copy/tokens, §4.7 artefactos prohibidos, §8)
+- spec/constitution/tech-stack.md   (§2.3, §2.4 radar-*, §5 Clean Architecture / DIP)
+- progress/current-task.json
+- AGENTS.md
+
+CONTEXTO: TASK-01/02/03 COMPLETED y APROBADAS. Ya existen y NO se modifican (usar sus firmas):
+- src/features/home/{domain/**, application/**} (10 archivos)
+- src/features/home/infrastructure/{dto,AxiosRadarMapApi,ExpoLocationGateway}.ts
+- src/features/home/presentation/{HomeProvider.tsx,useHomeRadar.ts}  (fachada única: useHomeRadar() reexpone estado + acciones + useCases)
+- src/app/compositionRoot.ts (createHomeUseCases) y App.tsx (HomeProvider dentro de AuthProvider)
+
+OBJETIVO TASK-04: crear la UI completa del radar SIN cablearla al navigator. El placeholder (`HomePlaceholderScreen.tsx`) sigue montado y NADIE importa aún `HomeScreen`. Firmas/layout verbatim de plan §8 y copy de spec §4.5.
+
+CREAR EXACTAMENTE estos archivos (verbatim plan §8):
+1) src/features/home/presentation/format.ts            (§8.7: mdpFormatter hoisted en module scope; formatMdp(totalInversion) => `${n} MDP` con Intl.NumberFormat("es-MX",{maximumFractionDigits:1}) sobre totalInversion/1e6; toTitleCase(nombre))
+2) src/features/home/presentation/RadarSearchBar.tsx   (§8.1: pill blanca View + Text NO interactiva (cero TextInput/Pressable), lupa Ionicons `search`, texto 2 líneas verbatim spec §4.5, lato-bold, mayúsculas; accessibilityLabel="Buscar (disponible en la siguiente fase)")
+3) src/features/home/presentation/RadarChipRow.tsx     (§8.2: ScrollView horizontal sin scrollbar; chip fijo «MI UBICACIÓN» primero (icono location blanco) + chips del array en orden con label Title Case; activo = radarPalette.chipActive + texto blanco bold; inactivo = radarPalette.chip + palette.texto; Pressable con pressed opacity 0.8; accessibilityRole="button")
+4) src/features/home/presentation/DeviceMunicipioLabel.tsx (§8.3: pill blanca + pin guinda + deviceMunicipio ?? "—", lato-bold)
+5) src/features/home/presentation/RadarMap.tsx         (§8.4: MapView ref flex:1, provider default, showsUserLocation={false}, showsCompass={false}, toolbarEnabled={false}; Marker nativo pinColor guinda por municipio con lat/lng != null y onMarkerPress(nombre), key=nombre; Marker GPS dorado zIndex alto sin onPress; efecto de cámara sobre cameraRequest ["fit"→fitToCoordinates, "gps"/"municipio"→animateToRegion delta 0.12 duración 600, "municipio" sin coords → no-op]; useImperativeHandle expone getPointForCoordinate(position) via pointForCoordinate con try/catch→null)
+6) src/features/home/presentation/RadarRipple.tsx      (§8.5: overlay absoluto pointerEvents="none", 3 Animated.View Reanimated, tamaños 48/88/128, borde radarPalette.ripple, scale 0.3→1 y opacity 0.9→0, withRepeat(withTiming(1,{duration:1400,easing:Easing.out(Easing.ease)}),-1,false), delays 0/220/440; SOLO transform/opacity; se monta solo con popup y point != null)
+7) src/features/home/presentation/MunicipioCallout.tsx (§8.6: card overlay top ~16 ancho ~88% máx 340; header radarPalette.popupHeader con location-outline + nombre en mayúsculas del DTO (lato-bold) + X (Ionicons close) Pressable hitSlop 12 accessibilityLabel="Cerrar"; cuerpo radarPalette.popupBody con 3 columnas flex 1 y hairlines (StyleSheet.hairlineWidth) — Col1 formatMdp(totalInversion)+"Inversión total", Col2 totalObras+"Obras (X en proceso, Y concluidas)", Col3 totalCursos+"Capacitaciones"; cola triangular abajo-centro (rotate 45deg, fondo popupBody); «Ver más» Pressable outline guinda NO-OP tipado accessibilityLabel="Ver más (disponible en la siguiente fase)"; recibe municipio: MunicipioRadar)
+8) src/features/home/presentation/HomeScreen.tsx       (§8.8: const { useCases, ...estado } = useHomeRadar(); useQuery({ queryKey:["radar","mapa-home"], queryFn:()=>useCases.loadRadarMap(), staleTime:60_000 }); layout View flex:1 fondo appPalette.crema → RadarMap flex:1 → overlay superior (RadarSearchBar + RadarChipRow + DeviceMunicipioLabel columna gap 10 padding horizontal 16) → MunicipioCallout si popupMunicipio (lookup por nombre en data) → RadarRipple si popup abierto; requestInitialCamera(data.length>0) UNA sola vez con ref guard cuando data llega; isLoading→mapa+ActivityIndicator guinda; isError→mapa+Text error.message (RadarError, fallback RADAR_ERROR_MESSAGES.radar_unavailable); data vacío→«Sin municipios con obras o capacitaciones.»; openPopup resuelve el punto de pantalla vía ref del mapa (si null, popup abre igual sin anillos))
+
+REGLAS DE CAPA (verificar por grep):
+- presentation puede importar react-native-maps (es UI). expo-location PROHIBIDO en presentation.
+- Los use cases llegan SOLO por useHomeRadar() (fachada). Prohibido pasarlos por props al screen.
+- No importar infrastructure ni "@/shared/infrastructure/**" desde presentation.
+- Estilos INLINE JS con radarPalette/appPalette/palette/fontFamily. StyleSheet solo para absoluteFill/hairline justificados. Cero className en archivos nuevos.
+- Solo Pressable. Ternarios/!! (nunca && con strings/números). Cero emojis. Cero labels de texto en pines.
+- Skills plan §12: ui-pressable, rendering-no-falsy-and, animation-gpu-properties, js-hoist-intl, react-state-minimize, ui-measure-views.
+- react-native-reanimated@4.5.1 ya instalado (peer NativeWind) — NO instalar nada.
+
+PROHIBIDO:
+- TASK-05+ (no tocar src/app/navigation/**, no borrar HomePlaceholderScreen, no wire al navigator).
+- Tocar auth/**, app-shell/**, src/features/home/{domain,application,infrastructure}/**, HomeProvider.tsx, useHomeRadar.ts, compositionRoot.ts, App.tsx, app.json, global.css, tokens.ts, package.json, eslint.config.js.
+- Instalar dependencias. `npx expo start`. Cualquier archivo fuera del allowed_files.
+
+ALLOWED_FILES (solo estos):
+- src/features/home/presentation/format.ts
+- src/features/home/presentation/RadarSearchBar.tsx
+- src/features/home/presentation/RadarChipRow.tsx
+- src/features/home/presentation/DeviceMunicipioLabel.tsx
+- src/features/home/presentation/RadarMap.tsx
+- src/features/home/presentation/RadarRipple.tsx
+- src/features/home/presentation/MunicipioCallout.tsx
+- src/features/home/presentation/HomeScreen.tsx
+- spec/features/radar-home/task.md
+- progress/current-task.json
+- progress/history.md
+
+ARNÉS: `npx tsc --noEmit` y `npx eslint .` deben pasar (exit 0, cero warnings). Verificar: Nadie importa HomeScreen (grep); expo-location ausente de presentation; react-native-maps solo en presentation; cero any/TouchableOpacity/FlatList/expo-router/className/barrels/comentarios/emojis; package.json/app.json sin cambios; auth/app-shell/navigation con diff vacío.
+
+AL TERMINAR (obligatorio):
+- Marcar [x] los pasos de TASK-04 en task.md y poner Status: READY_FOR_REVIEW (NO COMPLETED).
+- progress/current-task.json → active_task TASK-04 status READY_FOR_REVIEW; harness_status linter_passed true, typecheck_passed true; notas.
+- Añadir entrada en progress/history.md.
+- NO commit. NO npx expo start.
+
+REPORTA: archivos creados, resultado de tsc y eslint, verificación de fences/DIP (nadie importa HomeScreen aún), y qué debe validar el Humano antes de autorizar TASK-05.

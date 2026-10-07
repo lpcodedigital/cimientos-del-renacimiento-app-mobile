@@ -139,26 +139,32 @@ Reglas absolutas del Trabajador:
 
 ## TASK-04 — Componentes del radar (sin wire al navigator)
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
+
+**Aprobación del Humano:** validada y aprobada 2026-10-06 (8 archivos de UI con firmas/layout verbatim de plan §8 y copy de spec §4.5; estilos inline JS con `radar-*`/`app-*`/`palette`; solo `Pressable`; `tsc` + `eslint` exit 0; nadie importa `HomeScreen`, el placeholder sigue montado). Comportamiento verificado en dispositivo: la app se ve idéntica tras login, que es lo esperado al no estar cableada la pantalla. TASK-05 NO se inicia en esta sesión; la autoriza el Humano en nueva sesión.
 
 **Objetivo:** UI completa del radar según plan §8 y spec §4.5. `RootNavigator`/`types.ts` no se tocan; el placeholder sigue montado.
 
 **Pasos**
 
-- [ ] `presentation/format.ts` (plan §8.7): `formatMdp`, `toTitleCase`, formatter hoisted.
-- [ ] `RadarSearchBar.tsx` (plan §8.1): pill verbatim spec §4.5, **View + Text, no interactiva**.
-- [ ] `RadarChipRow.tsx` (plan §8.2): «MI UBICACIÓN» fijo primero + chips del array en orden; activo `chipActive`; `Pressable`.
-- [ ] `DeviceMunicipioLabel.tsx` (plan §8.3): pill blanca + pin guinda + `deviceMunicipio ?? "—"`.
-- [ ] `RadarMap.tsx` (plan §8.4): `MapView` + `Marker pinColor` (guinda municipios / dorado GPS), efecto de cámara por `cameraRequest`, `useImperativeHandle` con `getPointForCoordinate`.
-- [ ] `RadarRipple.tsx` (plan §8.5): 3 anillos Reanimated (`withRepeat`, scale+opacity, delays 0/220/440). Solo transform/opacity.
-- [ ] `MunicipioCallout.tsx` (plan §8.6): header + X, 3 columnas KPI, cola, `Ver más` no-op.
-- [ ] `HomeScreen.tsx` (plan §8.8): `useQuery(["radar","mapa-home"])`, layout overlay, loading/error/empty, `requestInitialCamera` una vez, ripple al abrir popup.
-- [ ] `npx tsc --noEmit` y `npx eslint .` deben pasar.
+- [x] `presentation/format.ts` (plan §8.7): `formatMdp`, `toTitleCase`, formatter hoisted.
+- [x] `RadarSearchBar.tsx` (plan §8.1): pill verbatim spec §4.5, **View + Text, no interactiva**.
+- [x] `RadarChipRow.tsx` (plan §8.2): «MI UBICACIÓN» fijo primero + chips del array en orden; activo `chipActive`; `Pressable`.
+- [x] `DeviceMunicipioLabel.tsx` (plan §8.3): pill blanca + pin guinda + `deviceMunicipio ?? "—"`.
+- [x] `RadarMap.tsx` (plan §8.4): `MapView` + `Marker pinColor` (guinda municipios / dorado GPS), efecto de cámara por `cameraRequest`, `useImperativeHandle` con `getPointForCoordinate`.
+- [x] `RadarRipple.tsx` (plan §8.5): 3 anillos Reanimated (`withRepeat`, scale+opacity, delays 0/220/440). Solo transform/opacity.
+- [x] `MunicipioCallout.tsx` (plan §8.6): header + X, 3 columnas KPI, cola, `Ver más` no-op.
+- [x] `HomeScreen.tsx` (plan §8.8): `useQuery(["radar","mapa-home"])`, layout overlay, loading/error/empty, `requestInitialCamera` una vez, ripple al abrir popup.
+- [x] `npx tsc --noEmit` y `npx eslint .` deben pasar.
 
-**Notas de implementación (el Trabajador documenta aquí desviaciones):**
+**Notas de implementación (desviaciones menores):**
 
-- _(pendiente)_
+- `format.ts` se creó como módulo propio (plan §8.7 lo permitía en `HomeScreen.tsx` o módulo aparte).
+- `MunicipioCallout` se compone dentro de la columna overlay superior, justo después de `DeviceMunicipioLabel`, para quedar ~16 px bajo la etiqueta de dispositivo (plan §8.6: «`top` ≈ 16 bajo la etiqueta»). El root del componente es `alignSelf: "center"` + `width: "88%"` + `maxWidth: 340` + `zIndex: 20` (no `position: absolute` propio, porque el anclaje es la etiqueta anterior). La cola es el último hijo del cuerpo con `marginBottom: -8` verbatim.
+- `RadarMap`: el efecto de cámara usa deps `[cameraRequest]` según plan §8.4; los municipios se leen del render vigente al cambiar la petición.
+- `HomeScreen`: `RadarChipRow` se envuelve en un `View` con `marginHorizontal: -16` para que el scroll lateral sea full-bleed mientras la columna overlay conserva `paddingHorizontal: 16` (plan §8.8) y el `contentContainerStyle` del chip row conserva su padding de 16 (plan §8.2).
+- Sin `any`, sin `TouchableOpacity`, sin `FlatList`, sin `expo-router`, sin `className`, sin comentarios, sin emojis. Nadie importa `HomeScreen` aún (placeholder sigue montado).
 
 **allowed_files**
 
