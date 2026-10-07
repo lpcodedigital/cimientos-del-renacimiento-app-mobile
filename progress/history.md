@@ -534,3 +534,30 @@
   4. **§13 nuevo "Criterio de hecho técnico"** (patrón 1.5b plan §11): arnés/deps/contrato verdes, árbol poblado + placeholder eliminado + chrome/auth diff vacío, firmas intactas, TASK-06 `READY_FOR_REVIEW`, Fase 3 no iniciada.
 - **Sin cambios:** spec.md, task.md, constitución, código de producto. TASK-01 sigue **TODO** con gate (spec aprobada + API key Android del Humano). Ninguna TASK fue ejecutada ni autorizada.
 - **Prácticas 1.5b verificadas como ya presentes en el SDD 2b:** closures no clases, puertos en domain, DTO espejo en infra, error `{kind,message}`+factory, `compositionRoot` único importador de infra, instanciación a nivel de módulo en `App.tsx`, provider con use cases por props, cero barrels, fences `no-restricted-imports` sin paquete nuevo, servidor solo TanStack Query, orden anti-rompimiento domain→application→infra→UI→wire→arnés, tsc verde por task.
+
+### 2026-10-06 — spec.md de radar-home APROBADA por el Humano
+
+- **Aprobación:** el Humano revisó y aprobó `spec/features/radar-home/spec.md` (fuente de verdad de producto de 2b). Header de la spec actualizado a **APROBADA (2026-10-06)**.
+- **Estado de gobernanza:** SDD completo y aprobado (spec + plan + task + enmiendas constitucionales + micro-enmienda del plan). TASK-01 permanece **TODO** (no IN_PROGRESS).
+- **Gate restante para el Worker (DeepSeek):** el Humano entrega la **API key de Google Maps Android** y autoriza TASK-01 en **nueva sesión** con el prompt de ejecución preparado por el Orquestador (2026-10-06). Tras ejecutar, TASK-01 queda `READY_FOR_REVIEW` (la cierra el Humano tras validar diff y rebuild nativo).
+- **Cero código RN.** Fase 3 sigue bloqueada hasta cerrar 2b.
+
+### 2026-10-06 — TASK-01 (Tokens radar-* + deps + plugins) — READY_FOR_REVIEW (Trabajador)
+
+- **Objetivo:** registrar la paleta `radar-*`, instalar mapas/ubicación y dejar `app.json` listo. Sin componentes, cero UI.
+- **Hecho:**
+  - `global.css`: añadidos los 5 tokens `--color-radar-*` dentro del `@theme` existente (plan §3.1) — `--color-radar-surface: #ffffff`, `--color-radar-chip: #c3cec0`, `--color-radar-chip-active: #c67e33`, `--color-radar-popup-header: #d6ded1`, `--color-radar-popup-body: #d8dac9`. Fase 1, `auth-*` y `app-*` intactos.
+  - `src/shared/theme/tokens.ts`: añadido `radarPalette` verbatim (plan §3.2) — `surface`, `chip`, `chipActive`, `popupHeader`, `popupBody`, `pin` (`#6B142E`), `pinGps` (`#C4A35A`), `ripple` (`rgba(196,163,90,0.35)`). `palette`, `fontFamily`, `authPalette`, `appPalette` sin tocar.
+  - **Dependencias instaladas con `npx expo install` (NUNCA `npm i`):** `expo-location@~57.0.20` y `react-native-maps@1.27.2`. `package.json` + `package-lock.json` actualizados.
+  - `app.json` — SOLO dos cambios (verificado con `git diff -- app.json`): (a) plugin `["expo-location", { "locationWhenInUsePermission": "El Gabinete Móvil usa tu ubicación para centrar el radar territorial y mostrar el municipio donde te encuentras." }]`; (b) `android.config.googleMaps.apiKey = "AIzaSyDK7sYtxqsifCz17bM2QMMv_ok93A900JQ"` (key entregada por el Humano). Cero `Info.plist`, `AndroidManifest.xml`, `.swift`/`.kt`/`.java`/`.pbxproj` tocados.
+- **Arnés:** `npx tsc --noEmit` → **exit 0** (verde). `git diff -- app.json` muestra exactamente los dos cambios. Cero componentes creados. NO se ejecutó `npx expo start` (reservado al Humano).
+- `spec/features/radar-home/task.md`: TASK-01 pasos `- [x]` / `Status: READY_FOR_REVIEW` (NO `COMPLETED`).
+- `progress/current-task.json` → `active_task: TASK-01`, `status: READY_FOR_REVIEW`, `harness_status.typecheck_passed: true`, `package_json_sin_cambios`/`app_json_sin_cambios: false` (esperado).
+- **PARADA CONTROLADA (validación Humana):** el Humano debe (1) revisar el diff de `app.json` (plugin location + key Android), (2) hacer rebuild nativo (nuevo módulo `react-native-maps` + permiso de ubicación) y validar en dispositivo, (3) autorizar TASK-02 en nueva sesión. Fase 3 sigue bloqueada.
+
+### 2026-10-06 — TASK-01 APROBADA por el Humano (Fase 2b)
+
+- **Validación:** el Humano revisó y aprobó los cambios: diff de `app.json` (SOLO plugin `expo-location` con copy §2.11 + `android.config.googleMaps.apiKey`) y `package.json` (solo `expo-location@~57.0.20` + `react-native-maps@1.27.2`), y validó el rebuild nativo. TASK-01 marcada **`COMPLETED`**.
+- `spec/features/radar-home/task.md`: TASK-01 `Status: COMPLETED` (pasos en `- [x]`).
+- `progress/current-task.json` → `active_task: TASK-01` `status: COMPLETED`, `harness_status.typecheck_passed: true`.
+- **PARADA CONTROLADA:** TASK-02 **NO** se inicia en esta sesión; la autoriza el Humano en nueva sesión. Fase 3 sigue bloqueada.

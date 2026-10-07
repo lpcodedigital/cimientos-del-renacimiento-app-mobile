@@ -4,7 +4,7 @@
 **Fase:** 2b — Radar Territorial (Home tras login)
 **Feature:** `radar-home`
 **Rol autor:** Orquestador (Lead Planner)
-**Estado:** PENDIENTE DE APROBACIÓN HUMANA — cero código RN hasta que el Humano apruebe esta spec
+**Estado:** APROBADA por el Humano (2026-10-06) — TASK-01 no inicia hasta autorización explícita en nueva sesión + entrega de la API key de Google Maps Android
 **Fecha:** 2026-10-06
 
 ---

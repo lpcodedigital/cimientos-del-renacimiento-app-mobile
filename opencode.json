@@ -19,7 +19,7 @@
       "type": "openai",
       "options": {
         "baseURL": "https://api.deepseek.com/v1",
-        "apiKey": "{env:DEEPSEEK_API_KEY}"
+        "apiKey": "{env:DEEPSEEK_API_KEY_CR_MOBILE}"
       },
       "models": {
         "deepseek-flash": {

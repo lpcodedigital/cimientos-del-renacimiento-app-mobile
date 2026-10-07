@@ -29,21 +29,23 @@ Reglas absolutas del Trabajador:
 
 ## TASK-01 — Tokens `radar-*` + dependencias + plugins
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
 
 **Objetivo:** Registrar paleta del radar e instalar mapas/ubicación con sus plugins. Sin componentes.
+
+**Aprobación del Humano:** validada y aprobada 2026-10-06 (diff de `app.json` y `package.json` revisados; rebuild nativo OK). TASK-02 NO se inicia en esta sesión.
 
 **Gate del Humano:** entregar la API key de Google Maps Android antes de ejecutar el paso de `app.json`.
 
 **Pasos**
 
-- [ ] `global.css`: añadir los 5 `--color-radar-*` del plan §3.1 dentro de `@theme`. No tocar tokens Fase 1, `auth-*` ni `app-*`.
-- [ ] `src/shared/theme/tokens.ts`: añadir `radarPalette` (plan §3.2, verbatim). No modificar `palette`, `fontFamily`, `authPalette`, `appPalette`.
-- [ ] `npx expo install react-native-maps expo-location` (documentar versiones instaladas en `history.md`).
-- [ ] `app.json`: añadir plugin `["expo-location", { "locationWhenInUsePermission": "El Gabinete Móvil usa tu ubicación para centrar el radar territorial y mostrar el municipio donde te encuentras." }]` y `android.config.googleMaps.apiKey` con la key del Humano. Cero otro cambio.
-- [ ] `npx tsc --noEmit` debe pasar.
-- [ ] `git diff -- app.json` muestra SOLO los dos cambios anteriores.
+- [x] `global.css`: añadir los 5 `--color-radar-*` del plan §3.1 dentro de `@theme`. No tocar tokens Fase 1, `auth-*` ni `app-*`.
+- [x] `src/shared/theme/tokens.ts`: añadir `radarPalette` (plan §3.2, verbatim). No modificar `palette`, `fontFamily`, `authPalette`, `appPalette`.
+- [x] `npx expo install react-native-maps expo-location` (documentar versiones instaladas en `history.md`).
+- [x] `app.json`: añadir plugin `["expo-location", { "locationWhenInUsePermission": "El Gabinete Móvil usa tu ubicación para centrar el radar territorial y mostrar el municipio donde te encuentras." }]` y `android.config.googleMaps.apiKey` con la key del Humano. Cero otro cambio.
+- [x] `npx tsc --noEmit` debe pasar.
+- [x] `git diff -- app.json` muestra SOLO los dos cambios anteriores.
 
 **allowed_files**
 

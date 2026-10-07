@@ -14,9 +14,9 @@
   "active_task": {
     "id": "TASK-01",
     "description": "Tokens radar-* (global.css + tokens.ts radarPalette) + npx expo install react-native-maps expo-location + app.json (plugin expo-location con copy aprobado + android.config.googleMaps.apiKey del Humano). Cero componentes.",
-    "status": "TODO",
+    "status": "COMPLETED",
     "assigned_role": "Agente Trabajador",
-    "validation": "PENDIENTE. Gate del Humano: aprobar spec.md y entregar la API key de Google Maps Android antes de autorizar TASK-01 en nueva sesión.",
+    "validation": "APROBADA por el Humano el 2026-10-06: revisó diff de app.json (SOLO plugin expo-location + android.config.googleMaps.apiKey) y de package.json (solo expo-location + react-native-maps), y validó rebuild nativo. TASK-02 NO se inicia en esta sesión: la autoriza el Humano en nueva sesión.",
     "allowed_files_to_edit": [
       "global.css",
       "src/shared/theme/tokens.ts",
@@ -29,16 +29,16 @@
     ]
   },
   "harness_status": {
-    "last_run": "2026-09-18 (Fase 2a TASK-04): npx tsc --noEmit exit 0; npx eslint . exit 0 (cero warnings); bans a cero; DIP verificado; git diff package.json/app.json vacío; cero residuales 1.5a.",
+    "last_run": "2026-10-06 (Fase 2b TASK-01): npx expo install react-native-maps expo-location → expo-location@~57.0.20 + react-native-maps@1.27.2; npx tsc --noEmit exit 0; git diff -- app.json = SOLO plugin expo-location + android.config.googleMaps.apiKey. TASK-01 APROBADA por el Humano (2026-10-06). TASK-02 pendiente en nueva sesión.",
     "linter_passed": true,
     "typecheck_passed": true,
     "bans_verificado": true,
     "dip_verificado": true,
-    "package_json_sin_cambios": true,
-    "app_json_sin_cambios": true,
+    "package_json_sin_cambios": false,
+    "app_json_sin_cambios": false,
     "bundling_passed_android": "APROBADO por el Humano (2026-09-18, Fase 2a)",
     "bundling_passed_ios": "APROBADO por el Humano (2026-09-18, Fase 2a)",
-    "blockers_or_errors": "NINGUNO en el código. SDD de Fase 2b (radar-home) escrito el 2026-10-06: spec/plan/task + enmiendas roadmap §2b y tech-stack §2.4 + micro-enmienda del plan (fachada única useHomeRadar, tabla de skills §12, criterio de hecho §13) tras auditoría contra core-arch-refactor. TASK-01 en TODO con gate: el Humano aprueba spec.md y entrega la API key de Google Maps Android."
+    "blockers_or_errors": "NINGUNO. Fase 2b TASK-01 COMPLETED y APROBADA por el Humano (2026-10-06). package.json/package-lock.json suman expo-location@~57.0.20 + react-native-maps@1.27.2; app.json suma SOLO plugin expo-location (copy §2.11) + android.config.googleMaps.apiKey. Siguiente: TASK-02 en nueva sesión (autorización del Humano)."
   },
-  "agent_notes": "2026-10-06 (Orquestador, Paso 0 SDD): Fase 2b reescrita contra inicio.png y contrato real GET /api/v1/dashboard/mapa-home (MunicipioResumenDTO). Decisiones Humanas (12): un pin por municipio guinda #6B142E / GPS dorado #C4A35A; popup KPI municipal + X + Ver más no-op + ripple animado 3 anillos; búsqueda solo visual (Fase 3); chips del endpoint centran cámara + selección (sin popup); MI UBICACIÓN centra GPS con prompt solo al tocar; etiqueta dispositivo vía reverse geocode (— sin permiso); cámara inicial GPS-si-permiso / si-no fitToCoordinates; DTO tal cual sin reconciliar sumas; deps únicas react-native-maps + expo-location; copy de permiso aprobado. Muestreo stdlib: chip-activo #C67E33, chip #C3CEC0, popup-header #D6DED1, popup-body #D8DAC9. Artefactos del PNG NO replicar: labels gibberish, MI MV UBICACIÓN, pines morado/verde, KPI ejemplo. Enmiendas: roadmap.md §2b + tech-stack.md §2.4 (radar-*). Escritos spec.md (CA-01…10), plan.md (4 capas, firmas verbatim, HomeProvider, fences, ripple Reanimated, apéndice JSON), task.md (TASK-01…06, TASK-01 TODO con gate de API key). CERO código RN. PARADA CONTROLADA: el Humano aprueba spec.md, entrega la API key y autoriza TASK-01 en nueva sesión. Fase 3 bloqueada."
+  "agent_notes": "2026-10-06 (Orquestador, Paso 0 SDD): Fase 2b reescrita contra inicio.png y contrato real GET /api/v1/dashboard/mapa-home (MunicipioResumenDTO). Decisiones Humanas (12): un pin por municipio guinda #6B142E / GPS dorado #C4A35A; popup KPI municipal + X + Ver más no-op + ripple animado 3 anillos; búsqueda solo visual (Fase 3); chips del endpoint centran cámara + selección (sin popup); MI UBICACIÓN centra GPS con prompt solo al tocar; etiqueta dispositivo vía reverse geocode (— sin permiso); cámara inicial GPS-si-permiso / si-no fitToCoordinates; DTO tal cual sin reconciliar sumas; deps únicas react-native-maps + expo-location; copy de permiso aprobado. Muestreo stdlib: chip-activo #C67E33, chip #C3CEC0, popup-header #D6DED1, popup-body #D8DAC9. Artefactos del PNG NO replicar: labels gibberish, MI MV UBICACIÓN, pines morado/verde, KPI ejemplo. Enmiendas: roadmap.md §2b + tech-stack.md §2.4 (radar-*). Escritos spec.md (CA-01…10), plan.md (4 capas, firmas verbatim, HomeProvider, fences, ripple Reanimated, apéndice JSON), task.md (TASK-01…06, TASK-01 TODO con gate de API key). CERO código RN. PARADA CONTROLADA: el Humano aprueba spec.md, entrega la API key y autoriza TASK-01 en nueva sesión. Fase 3 bloqueada. 2026-10-06 (Trabajador, TASK-01): tokens radar-* registrados en global.css (5) y tokens.ts (radarPalette); expo-location@~57.0.20 + react-native-maps@1.27.2 instalados con npx expo install; app.json con plugin expo-location + android.config.googleMaps.apiKey (SOLO esos dos cambios); npx tsc --noEmit exit 0; cero componentes. Status: READY_FOR_REVIEW (rebuild nativo = Humano). 2026-10-06 (Humano): TASK-01 APROBADA. TASK-02 no iniciada; se autoriza en nueva sesión."
 }

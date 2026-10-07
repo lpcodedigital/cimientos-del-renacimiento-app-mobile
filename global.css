@@ -36,6 +36,12 @@
   --color-app-item-icon: #89535b;
   --color-app-logout: #b03132;
 
+  --color-radar-surface: #ffffff;
+  --color-radar-chip: #c3cec0;
+  --color-radar-chip-active: #c67e33;
+  --color-radar-popup-header: #d6ded1;
+  --color-radar-popup-body: #d8dac9;
+
   --font-lato: "Lato";
   --font-lato-bold: "Lato-Bold";
 }

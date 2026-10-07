@@ -24,7 +24,12 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.lpcodedigital.cimientosdelrenacimiento"
+      "package": "com.lpcodedigital.cimientosdelrenacimiento",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDK7sYtxqsifCz17bM2QMMv_ok93A900JQ"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -44,6 +49,12 @@
         {
           "configureAndroidBackup": true,
           "faceIDPermission": "El Gabinete Móvil usa Face ID para proteger el acceso a tu sesión institucional."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "El Gabinete Móvil usa tu ubicación para centrar el radar territorial y mostrar el municipio donde te encuentras."
         }
       ]
     ]

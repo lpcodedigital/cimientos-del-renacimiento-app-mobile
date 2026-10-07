@@ -31,3 +31,14 @@ export const appPalette = {
   logout: "#B03132",
   overlay: "rgba(0,0,0,0.45)",
 } as const;
+
+export const radarPalette = {
+  surface: "#FFFFFF",
+  chip: "#C3CEC0",
+  chipActive: "#C67E33",
+  popupHeader: "#D6DED1",
+  popupBody: "#D8DAC9",
+  pin: "#6B142E",
+  pinGps: "#C4A35A",
+  ripple: "rgba(196,163,90,0.35)",
+} as const;
