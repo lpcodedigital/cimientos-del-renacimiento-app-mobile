@@ -64,3 +64,67 @@ AL TERMINAR (obligatorio):
 - NO ejecutes npx expo start.
 
 REPORTA al final: versiones instaladas, resultado de tsc, y el diff exacto de app.json y qué debo validar yo como Humano antes de autorizar TASK-01.
+
+## Prompt para la nueva sesión (TASK-02):
+
+MODO: EJECUCIÓN. Proyecto: Cimientos del Renacimiento — Gabinete Móvil.
+FASE 2b (radar-home). Ejecutar SOLO TASK-02. Cero TASK-03+. Cero UI. Cero infraestructura. Cero consumidores.
+
+LEER ANTES DE TOCAR CÓDIGO (obligatorio):
+- spec/features/radar-home/task.md  (TASK-02, allowed_files y reglas)
+- spec/features/radar-home/plan.md  (§4.1–§4.5, §5.1–§5.2)
+- spec/features/radar-home/spec.md  (§8)
+- spec/constitution/tech-stack.md   (§5 Clean Architecture / DIP)
+- progress/current-task.json
+- AGENTS.md
+
+OBJETIVO TASK-02: crear el kernel de `home` (domain + application) con firmas VERBATIM del plan. Sin consumidores, sin UI, sin infraestructura, sin dependencias nuevas.
+
+CREAR EXACTAMENTE 9 ARCHIVOS (verbatim plan §4–§5):
+1) src/features/home/domain/entities/GeoPosition.ts            (plan §4.1)
+2) src/features/home/domain/entities/MunicipioRadar.ts         (plan §4.2)
+3) src/features/home/domain/errors/RadarError.ts               (plan §4.3)
+4) src/features/home/domain/ports/RadarMapRepository.ts        (plan §4.4)
+5) src/features/home/domain/ports/LocationGateway.ts           (plan §4.5)
+6) src/features/home/application/types.ts                      (plan §5.1)
+7) src/features/home/application/loadRadarMap.ts               (plan §5.2 → createLoadRadarMap)
+8) src/features/home/application/getCurrentLocation.ts         (plan §5.2 → createGetCurrentLocation; SIN prompt: si getForegroundPermission() !== "granted" → null)
+9) src/features/home/application/requestLocationAccess.ts      (plan §5.2 → createRequestLocationAccess; CON prompt via requestForegroundPermission)
+   + src/features/home/application/resolveDeviceMunicipio.ts   (plan §5.2 → createResolveDeviceMunicipio)
+   (son 10 archivos en total: 5 domain + 5 application)
+NOTA: la TASK lista 5 domain + 5 application; respétalos todos, closures (no clases), cero comentarios.
+
+REGLAS DE CAPA (verificar por grep):
+- domain: CERO imports de react/react-native/expo-*/axios/@tanstack/react-native-maps/@/shared/@/app/capas hermanas. Solo imports relativos.
+- application: SOLO ../domain/... y ./types. Cero React/Expo/Axios/Query/infrastructure.
+- `loadRadarMap` deja subir `RadarError` sin catch. `signIn`-style: factories = closures.
+- Cero `any`, cero `TouchableOpacity`, cero `FlatList`, cero `expo-router`, cero barrels `index.ts`, cero emojis, cero comentarios.
+
+PROHIBIDO:
+- TASK-03+, tocar src/features/auth/**, src/features/app-shell/**, src/app/**, App.tsx, eslint.config.js, app.json, global.css, tokens.ts.
+- Crear infraestructura/UI/consumidores. Instalar dependencias. `npx expo start`. Cualquier archivo fuera del allowed_files.
+
+ALLOWED_FILES (solo estos):
+- src/features/home/domain/entities/GeoPosition.ts
+- src/features/home/domain/entities/MunicipioRadar.ts
+- src/features/home/domain/errors/RadarError.ts
+- src/features/home/domain/ports/RadarMapRepository.ts
+- src/features/home/domain/ports/LocationGateway.ts
+- src/features/home/application/types.ts
+- src/features/home/application/loadRadarMap.ts
+- src/features/home/application/getCurrentLocation.ts
+- src/features/home/application/requestLocationAccess.ts
+- src/features/home/application/resolveDeviceMunicipio.ts
+- spec/features/radar-home/task.md
+- progress/current-task.json
+- progress/history.md
+
+ARNÉS: npx tsc --noEmit debe pasar. Verificar con grep que domain/application no importan framework ni capas prohibidas.
+
+AL TERMINAR (obligatorio):
+- Marcar [x] los pasos de TASK-02 en task.md y poner Status: READY_FOR_REVIEW (NO COMPLETED).
+- progress/current-task.json → active_task TASK-02 status READY_FOR_REVIEW; harness_status.typecheck_passed true; notas.
+- Añadir entrada en progress/history.md.
+- NO commit. NO npx expo start.
+
+REPORTA: archivos creados, resultado de tsc, y verificación de imports de capa y qué debo validar yo como Humano antes de autorizar TASK-02.

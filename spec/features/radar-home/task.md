@@ -64,18 +64,20 @@ Reglas absolutas del Trabajador:
 
 ## TASK-02 — Domain + Application (cero UI)
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
+
+**Aprobación del Humano:** validada y aprobada 2026-10-06 (10 archivos, firmas verbatim de plan §4–§5, capas limpias; tsc exit 0). TASK-03 NO se inicia en esta sesión.
 
 **Objetivo:** Capas internas de `home` con firmas verbatim de plan §4–§5. Sin consumidores.
 
 **Pasos**
 
-- [ ] `domain/entities/GeoPosition.ts`, `domain/entities/MunicipioRadar.ts`, `domain/errors/RadarError.ts`, `domain/ports/RadarMapRepository.ts`, `domain/ports/LocationGateway.ts` (plan §4, verbatim).
-- [ ] `application/types.ts`, `application/loadRadarMap.ts`, `application/getCurrentLocation.ts`, `application/requestLocationAccess.ts`, `application/resolveDeviceMunicipio.ts` (plan §5, verbatim; closures, no clases).
-- [ ] Domain: cero imports de React/RN/Expo/Axios/Query/maps. Application: solo `../domain/...` + `./types`.
-- [ ] `getCurrentLocation` **sin prompt** (solo lee permiso); `requestLocationAccess` **con prompt**.
-- [ ] `npx tsc --noEmit` debe pasar.
+- [x] `domain/entities/GeoPosition.ts`, `domain/entities/MunicipioRadar.ts`, `domain/errors/RadarError.ts`, `domain/ports/RadarMapRepository.ts`, `domain/ports/LocationGateway.ts` (plan §4, verbatim).
+- [x] `application/types.ts`, `application/loadRadarMap.ts`, `application/getCurrentLocation.ts`, `application/requestLocationAccess.ts`, `application/resolveDeviceMunicipio.ts` (plan §5, verbatim; closures, no clases).
+- [x] Domain: cero imports de React/RN/Expo/Axios/Query/maps. Application: solo `../domain/...` + `./types`.
+- [x] `getCurrentLocation` **sin prompt** (solo lee permiso); `requestLocationAccess` **con prompt**.
+- [x] `npx tsc --noEmit` debe pasar.
 
 **allowed_files**
 

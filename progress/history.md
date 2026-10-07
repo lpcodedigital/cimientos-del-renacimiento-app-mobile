@@ -561,3 +561,34 @@
 - `spec/features/radar-home/task.md`: TASK-01 `Status: COMPLETED` (pasos en `- [x]`).
 - `progress/current-task.json` → `active_task: TASK-01` `status: COMPLETED`, `harness_status.typecheck_passed: true`.
 - **PARADA CONTROLADA:** TASK-02 **NO** se inicia en esta sesión; la autoriza el Humano en nueva sesión. Fase 3 sigue bloqueada.
+
+### 2026-10-06 — TASK-02 (Domain + Application de home) — READY_FOR_REVIEW (Trabajador)
+
+- **Modo:** EJECUCIÓN de TASK-02 únicamente. Cero UI, cero infraestructura, cero consumidores, cero dependencias nuevas, cero `npx expo start`, cero commit.
+- **Objetivo:** crear el kernel de `home` (domain + application) con firmas **verbatim** de `plan.md` §4–§5. Sin consumidores.
+- **Hecho (10 archivos: 5 domain + 5 application, closures, sin comentarios):**
+  - `src/features/home/domain/entities/GeoPosition.ts` (plan §4.1, verbatim).
+  - `src/features/home/domain/entities/MunicipioRadar.ts` (plan §4.2, verbatim).
+  - `src/features/home/domain/errors/RadarError.ts` (plan §4.3, verbatim: `RadarErrorKind`, `RadarError`, `RADAR_ERROR_MESSAGES`, `radarError()`).
+  - `src/features/home/domain/ports/RadarMapRepository.ts` (plan §4.4, verbatim: `listMunicipios(): Promise<MunicipioRadar[]>`).
+  - `src/features/home/domain/ports/LocationGateway.ts` (plan §4.5, verbatim: `getForegroundPermission`/`requestForegroundPermission`/`getCurrentPosition`/`reverseGeocodeMunicipio` + `LocationPermissionStatus`).
+  - `src/features/home/application/types.ts` (plan §5.1, verbatim: `HomeUseCases`).
+  - `src/features/home/application/loadRadarMap.ts` → `createLoadRadarMap` (plan §5.2): `return () => deps.radarMapRepository.listMunicipios();`, **deja subir `RadarError` sin `catch`**.
+  - `src/features/home/application/getCurrentLocation.ts` → `createGetCurrentLocation` (plan §5.2): **sin prompt** — si `getForegroundPermission() !== "granted"` → `null`; si granted → `getCurrentPosition()`.
+  - `src/features/home/application/requestLocationAccess.ts` → `createRequestLocationAccess` (plan §5.2): **con prompt** — `requestForegroundPermission()`; si `"granted"` → `getCurrentPosition()`; en otro caso → `null`.
+  - `src/features/home/application/resolveDeviceMunicipio.ts` → `createResolveDeviceMunicipio` (plan §5.2): `(position) => deps.locationGateway.reverseGeocodeMunicipio(position)`.
+- **Reglas de capa verificadas por grep:**
+  - `domain/`: imports exclusivamente relativos (`../entities/...`); **cero** `react`, `react-native`, `expo-*`, `axios`, `@tanstack/*`, `react-native-maps`, `@/shared`, `@/app` ni capas hermanas.
+  - `application/`: solo `../domain/...` + `./types`; **cero** React/Expo/Axios/Query/infrastructure.
+  - Cero `any`, cero `TouchableOpacity`, cero `FlatList`, cero `expo-router`, cero barrels `index.ts`, cero emojis, cero comentarios.
+- **Arnés:** `npx tsc --noEmit` → **exit 0** (verde). No se tocó `src/features/auth/**`, `src/features/app-shell/**`, `src/app/**`, `App.tsx`, `eslint.config.js`, `app.json`, `global.css` ni `tokens.ts`. `package.json`/`app.json` sin cambios. NO se ejecutó `npx expo start`. NO se hizo commit.
+- `spec/features/radar-home/task.md`: TASK-02 pasos `- [x]` / `Status: READY_FOR_REVIEW` (NO `COMPLETED`; lo cierra el Humano).
+- `progress/current-task.json` → `active_task: TASK-02`, `status: READY_FOR_REVIEW`, `harness_status.typecheck_passed: true`, `bans_verificado`/`dip_verificado: true`, `package_json_sin_cambios`/`app_json_sin_cambios: true`.
+- **PARADA CONTROLADA (validación Humana):** revisar los 10 archivos (firmas verbatim, capas limpias), autorizar TASK-03 (infrastructure + `compositionRoot` + `HomeProvider` + fences ESLint) en **nueva sesión**. **Cero TASK-03+ ejecutada.** Fase 3 sigue bloqueada.
+
+### 2026-10-06 — TASK-02 APROBADA por el Humano (Fase 2b)
+
+- **Validación:** el Humano revisó y aprobó la TASK-02: los 10 archivos (5 domain + 5 application) con firmas **verbatim** de `plan.md` §4–§5, capas limpias (domain sin framework; application solo `../domain/...` + `./types`) y `npx tsc --noEmit` en verde. TASK-02 marcada **`COMPLETED`**.
+- `spec/features/radar-home/task.md`: TASK-02 `Status: COMPLETED` (pasos en `- [x]`; nota de aprobación del Humano añadida).
+- `progress/current-task.json` → `active_task: TASK-02` `status: COMPLETED`, `harness_status.typecheck_passed: true`; notas de aprobación registradas.
+- **PARADA CONTROLADA:** TASK-03 (infrastructure + `compositionRoot` + `HomeProvider` + fences ESLint) **NO** se inicia en esta sesión; la autoriza el Humano en **nueva sesión**. **Cero TASK-03+ ejecutada.** Fase 3 sigue bloqueada.
