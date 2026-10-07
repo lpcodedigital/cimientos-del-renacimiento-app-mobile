@@ -128,3 +128,68 @@ AL TERMINAR (obligatorio):
 - NO commit. NO npx expo start.
 
 REPORTA: archivos creados, resultado de tsc, y verificación de imports de capa y qué debo validar yo como Humano antes de autorizar TASK-02.
+
+## TASK-03 no iniciada. Prompt listo para pegar en nueva sesión:
+
+MODO: EJECUCIÓN. Proyecto: Cimientos del Renacimiento — Gabinete Móvil.
+FASE 2b (radar-home). Ejecutar SOLO TASK-03. Cero TASK-04+. Cero componentes de mapa/UI. Cero dependencias nuevas. Cero código nativo.
+
+LEER ANTES DE TOCAR CÓDIGO (obligatorio):
+- spec/features/radar-home/task.md  (TASK-03, allowed_files y reglas)
+- spec/features/radar-home/plan.md  (§6.1–§6.6 y §7)
+- spec/features/radar-home/spec.md  (§4.6 contrato, §8 arquitectura)
+- spec/constitution/tech-stack.md   (§2.3, §2.4, §5 Clean Architecture / DIP)
+- progress/current-task.json
+- AGENTS.md
+
+CONTEXTO: TASK-02 (domain + application de home) COMPLETED y APROBADA. Existen ya:
+- src/features/home/domain/{entities/GeoPosition,entities/MunicipioRadar,errors/RadarError,ports/RadarMapRepository,ports/LocationGateway}.ts
+- src/features/home/application/{types,loadRadarMap,getCurrentLocation,requestLocationAccess,resolveDeviceMunicipio}.ts
+NO modificar esos 10 archivos salvo que el contrato de TASK-03 lo exija (no lo exige: usa sus firmas).
+
+OBJETIVO TASK-03: adapters concretos de infraestructura + wiring DIP + provider de presentation + fences ESLint. Sin componentes de mapa todavía. Firmas verbatim del plan §6–§7.
+
+CREAR/EDITAR EXACTAMENTE estos archivos (verbatim plan §6–§7):
+1) src/features/home/infrastructure/dto.ts                 (plan §6.1: MunicipioResumenDTO espejo 1:1)
+2) src/features/home/infrastructure/AxiosRadarMapApi.ts     (plan §6.2: createAxiosRadarMapApi → RadarMapRepository; GET /api/v1/dashboard/mapa-home; mapper nombre: dto.municipio; errores → radarError("radar_unavailable"))
+3) src/features/home/infrastructure/ExpoLocationGateway.ts  (plan §6.3: createExpoLocationGateway → LocationGateway; permisos, posición y reverseGeocode city ?? subregion ?? region ?? null; try/catch → null)
+4) src/app/compositionRoot.ts                               (plan §6.4: AÑADIR createHomeUseCases(); NO tocar createAuthUseCases)
+5) src/features/home/presentation/HomeProvider.tsx          (plan §7: estado UI del radar + nonce de cámara + requestInitialCamera con ref guard; useCases por props)
+6) src/features/home/presentation/useHomeRadar.ts           (plan §7: fachada única que reexpone estado + acciones + useCases)
+7) App.tsx                                                  (plan §6.6: createHomeUseCases() + <HomeProvider useCases={homeUseCases}> dentro de AuthProvider; conservar fuentes, QueryClient, StatusBar)
+8) eslint.config.js                                         (plan §6.5: + expo-location + react-native-maps a domain/application; + expo-location a presentation/navigation/shared-ui)
+
+REGLAS DE CAPA (verificar por grep):
+- infrastructure: implementa puertos de domain; puede importar axiosClient de @/shared/infrastructure/http y expo-location. Cero imports de application/presentation.
+- Único importador de home/infrastructure = src/app/compositionRoot.ts (DIP).
+- HomeProvider recibe HomeUseCases por props (mismo patrón que AuthProvider); los componentes nunca reciben use cases por otro camino.
+- react-native-maps permitido SOLO en presentation (es UI). expo-location prohibido en presentation.
+- Cero `any`, cero TouchableOpacity, cero FlatList, cero expo-router, cero barrels index.ts, cero emojis, cero comentarios.
+
+PROHIBIDO:
+- TASK-04+ (ningún componente de mapa/UI, nada de RadarMap/HomeScreen/etc.).
+- Tocar src/features/auth/**, src/features/app-shell/** (chrome congelado CA-07), src/app/navigation/**, src/shared/** (salvo nada), app.json, global.css, tokens.ts, package.json.
+- Instalar dependencias (ya están expo-location + react-native-maps desde TASK-01). `npx expo start`. Cualquier archivo fuera del allowed_files.
+
+ALLOWED_FILES (solo estos):
+- src/features/home/infrastructure/dto.ts
+- src/features/home/infrastructure/AxiosRadarMapApi.ts
+- src/features/home/infrastructure/ExpoLocationGateway.ts
+- src/app/compositionRoot.ts
+- src/features/home/presentation/HomeProvider.tsx
+- src/features/home/presentation/useHomeRadar.ts
+- App.tsx
+- eslint.config.js
+- spec/features/radar-home/task.md
+- progress/current-task.json
+- progress/history.md
+
+ARNÉS: `npx tsc --noEmit` y `npx eslint .` deben pasar. Verificar: único importador de home/infrastructure = compositionRoot; getForegroundPermission mapea PermissionStatus (GRANTED→granted, DENIED→denied, resto→undetermined); mapper 1:1 y error tipado; createAuthUseCases y chrome/auth con diff vacío; package.json/app.json sin cambios.
+
+AL TERMINAR (obligatorio):
+- Marcar [x] los pasos de TASK-03 en task.md y poner Status: READY_FOR_REVIEW (NO COMPLETED).
+- progress/current-task.json → active_task TASK-03 status READY_FOR_REVIEW; harness_status linter_passed true, typecheck_passed true; notas.
+- Añadir entrada en progress/history.md.
+- NO commit. NO npx expo start.
+
+REPORTA: archivos creados/editados, resultado de tsc y eslint, verificación de DIP/fences, y qué debo validar yo como Humano antes de autorizar TASK-04.

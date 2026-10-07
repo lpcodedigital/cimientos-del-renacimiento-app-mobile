@@ -592,3 +592,34 @@
 - `spec/features/radar-home/task.md`: TASK-02 `Status: COMPLETED` (pasos en `- [x]`; nota de aprobación del Humano añadida).
 - `progress/current-task.json` → `active_task: TASK-02` `status: COMPLETED`, `harness_status.typecheck_passed: true`; notas de aprobación registradas.
 - **PARADA CONTROLADA:** TASK-03 (infrastructure + `compositionRoot` + `HomeProvider` + fences ESLint) **NO** se inicia en esta sesión; la autoriza el Humano en **nueva sesión**. **Cero TASK-03+ ejecutada.** Fase 3 sigue bloqueada.
+
+### 2026-10-06 — TASK-03 (Infrastructure + compositionRoot + HomeProvider + fences) — READY_FOR_REVIEW (Trabajador)
+
+- **Modo:** EJECUCIÓN de TASK-03 únicamente. Cero componentes de mapa/UI (TASK-04+ no iniciada), cero dependencias nuevas, cero `npx expo start`, cero commit.
+- **Objetivo:** adapters concretos de infraestructura + wiring DIP en `compositionRoot` + provider de presentation + fences ESLint, con firmas verbatim de `plan.md` §6–§7.
+- **Creados (5 archivos):**
+  - `src/features/home/infrastructure/dto.ts` (plan §6.1, verbatim): `MunicipioResumenDTO` espejo 1:1 del wire (cero `any`).
+  - `src/features/home/infrastructure/AxiosRadarMapApi.ts` → `createAxiosRadarMapApi(): RadarMapRepository` (plan §6.2): `axiosClient.get<MunicipioResumenDTO[]>("/api/v1/dashboard/mapa-home")`; mapper 1:1 (`nombre: dto.municipio`, resto copia directa); `catch` → rethrow si ya es `RadarError`, si no `throw radarError("radar_unavailable")`. Sin logs de token/payload.
+  - `src/features/home/infrastructure/ExpoLocationGateway.ts` → `createExpoLocationGateway(): LocationGateway` (plan §6.3): `getForegroundPermission`/`requestForegroundPermission` mapean `Location.PermissionStatus` (`GRANTED`→`"granted"`, `DENIED`→`"denied"`, resto→`"undetermined"`); `getCurrentPosition` (`getCurrentPositionAsync({})` → `{latitude, longitude}`; `try/catch`→`null`); `reverseGeocodeMunicipio` (`reverseGeocodeAsync` → primer resultado `city ?? subregion ?? region ?? null`; `try/catch`→`null`).
+  - `src/features/home/presentation/HomeProvider.tsx` (plan §7): estado UI del radar (`selectedChip`, `popupMunicipio`, `cameraRequest`, `gpsPosition`, `deviceMunicipio`) + `nonce` incremental (`useRef`) + `requestInitialCamera` con guard `useRef` (una sola vez); `requestMyLocation` (prompt → chip `MI_UBICACION` + cámara GPS + `deviceMunicipio`); `selectMunicipioChip` (no toca popup); `openPopup`/`closePopup` (no tocan chips). Expone `HomeRadarState` (tipos verbatim) + `useCases` por props. Hook `useHomeRadar()`.
+  - `src/features/home/presentation/useHomeRadar.ts` (plan §7): fachada única que reexpone estado + acciones + `useCases` (calco de `useAuth` 1.5b).
+- **Editados (3 archivos):**
+  - `src/app/compositionRoot.ts` (plan §6.4): añadido `createHomeUseCases()` (instancia `createAxiosRadarMapApi` + `createExpoLocationGateway` y arma los 4 use cases). `createAuthUseCases` **intacto** (diff: solo adiciones).
+  - `App.tsx` (plan §6.6): `const homeUseCases = createHomeUseCases()` a nivel de módulo; `<HomeProvider useCases={homeUseCases}>` dentro de `<AuthProvider>` envolviendo `<RootNavigator />` + `<StatusBar style="light" />`. Fuentes, `QueryClient`, `StatusBar` y `global.css` intactos.
+  - `eslint.config.js` (plan §6.5): `expo-location` + `react-native-maps` añadidos a los bans de `domain/**` y `application/**`; `expo-location` añadido al ban de `presentation/**` + `navigation/**` + `shared/ui/**` (`react-native-maps` permitido en presentation por ser UI). Sin paquete nuevo.
+- **Reglas de capa verificadas por grep:**
+  - **DIP:** único importador de `home/infrastructure` = `src/app/compositionRoot.ts`. `domain/`/`application/`/`presentation/` sin imports de infra.
+  - `expo-location`/`react-native-maps` ausentes de `domain/` y `application/`; `expo-location` ausente de `presentation/`. `HomeProvider` recibe `HomeUseCases` por props (patrón `AuthProvider`).
+  - Cero `any`, ceros `TouchableOpacity`, `FlatList`, `expo-router`, barrels `index.ts`, emojis ni comentarios.
+- **Invariantes por diff:** `package.json`/`app.json`/`package-lock.json` **sin cambios**; `src/features/auth/**` y `src/features/app-shell/**` **diff vacío** (chrome congelado CA-07).
+- **Arnés (verde):** `npx tsc --noEmit` → **exit 0**; `npx eslint .` → **exit 0** (cero errores/warnings). NO se ejecutó `npx expo start`.
+- `spec/features/radar-home/task.md`: TASK-03 pasos `- [x]` / `Status: READY_FOR_REVIEW` (NO `COMPLETED`).
+- `progress/current-task.json` → `active_task: TASK-03`, `status: READY_FOR_REVIEW`, `harness_status.linter_passed`/`typecheck_passed: true`, `bans_verificado`/`dip_verificado: true`, `package_json_sin_cambios`/`app_json_sin_cambios: true`.
+- **PARADA CONTROLADA (validación Humana):** revisar los 8 archivos (firmas verbatim, mapper 1:1, mapeo de `PermissionStatus`, DIP), y autorizar TASK-04 (componentes del radar) en **nueva sesión**. **Cero TASK-04+ ejecutada.** Fase 3 sigue bloqueada.
+
+### 2026-10-06 — TASK-03 APROBADA por el Humano (Fase 2b)
+
+- **Validación:** el Humano revisó y aprobó la TASK-03: los 5 archivos nuevos (`dto.ts`, `AxiosRadarMapApi.ts`, `ExpoLocationGateway.ts`, `HomeProvider.tsx`, `useHomeRadar.ts`) y los 3 editados (`compositionRoot.ts`, `App.tsx`, `eslint.config.js`) con firmas **verbatim** de `plan.md` §6–§7; mapper 1:1 (`nombre: dto.municipio`); mapeo de `PermissionStatus` (`GRANTED`→`granted`, `DENIED`→`denied`, resto→`undetermined`); DIP verificado (único importador de `home/infrastructure` = `compositionRoot.ts`); `npx tsc --noEmit` y `npx eslint .` en verde. TASK-03 marcada **`COMPLETED`**.
+- `spec/features/radar-home/task.md`: TASK-03 `Status: COMPLETED` (pasos en `- [x]`; nota de aprobación del Humano añadida).
+- `progress/current-task.json` → `active_task: TASK-03` `status: COMPLETED`; `harness_status.linter_passed`/`typecheck_passed: true`, `bans_verificado`/`dip_verificado: true`, `package_json_sin_cambios`/`app_json_sin_cambios: true`; notas de aprobación registradas.
+- **PARADA CONTROLADA:** TASK-04 (componentes del radar, plan §8 / spec §4.5) **NO** se inicia en esta sesión; la autoriza el Humano en **nueva sesión** con el prompt de ejecución preparado por el Orquestador. **Cero TASK-04+ ejecutada.** Fase 3 sigue bloqueada.

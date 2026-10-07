@@ -6,14 +6,16 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import "./global.css";
 
-import { createAuthUseCases } from "@/app/compositionRoot";
+import { createAuthUseCases, createHomeUseCases } from "@/app/compositionRoot";
 import { AuthProvider } from "@/features/auth/presentation/AuthProvider";
+import { HomeProvider } from "@/features/home/presentation/HomeProvider";
 import { RootNavigator } from "@/app/navigation/RootNavigator";
 
 SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
 const authUseCases = createAuthUseCases();
+const homeUseCases = createHomeUseCases();
 
 export default function App() {
   const [loaded, error] = useFonts({
@@ -33,8 +35,10 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider useCases={authUseCases}>
-        <RootNavigator />
-        <StatusBar style="light" />
+        <HomeProvider useCases={homeUseCases}>
+          <RootNavigator />
+          <StatusBar style="light" />
+        </HomeProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

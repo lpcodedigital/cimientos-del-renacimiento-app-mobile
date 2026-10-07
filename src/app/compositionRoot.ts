@@ -10,6 +10,13 @@ import { createAxiosAuthApi } from "@/features/auth/infrastructure/AxiosAuthApi"
 import { createAxiosAuthTokenHolder } from "@/features/auth/infrastructure/AxiosAuthTokenHolder";
 import { createExpoBiometricGateway } from "@/features/auth/infrastructure/ExpoBiometricGateway";
 import { createSecureStoreSessionRepository } from "@/features/auth/infrastructure/SecureStoreSessionRepository";
+import { createGetCurrentLocation } from "@/features/home/application/getCurrentLocation";
+import { createLoadRadarMap } from "@/features/home/application/loadRadarMap";
+import { createRequestLocationAccess } from "@/features/home/application/requestLocationAccess";
+import { createResolveDeviceMunicipio } from "@/features/home/application/resolveDeviceMunicipio";
+import type { HomeUseCases } from "@/features/home/application/types";
+import { createAxiosRadarMapApi } from "@/features/home/infrastructure/AxiosRadarMapApi";
+import { createExpoLocationGateway } from "@/features/home/infrastructure/ExpoLocationGateway";
 
 export function createAuthUseCases(): AuthUseCases {
   const tokenHolder = createAxiosAuthTokenHolder();
@@ -40,5 +47,16 @@ export function createAuthUseCases(): AuthUseCases {
     declineBiometricOptIn: createDeclineBiometricOptIn({ sessionRepository }),
     signOut: createSignOut({ sessionRepository, tokenHolder }),
     listBiometricMethods: createListBiometricMethods({ biometricGateway }),
+  };
+}
+
+export function createHomeUseCases(): HomeUseCases {
+  const radarMapRepository = createAxiosRadarMapApi();
+  const locationGateway = createExpoLocationGateway();
+  return {
+    loadRadarMap: createLoadRadarMap({ radarMapRepository }),
+    getCurrentLocation: createGetCurrentLocation({ locationGateway }),
+    requestLocationAccess: createRequestLocationAccess({ locationGateway }),
+    resolveDeviceMunicipio: createResolveDeviceMunicipio({ locationGateway }),
   };
 }

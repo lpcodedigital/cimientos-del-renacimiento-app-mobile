@@ -101,21 +101,23 @@ Reglas absolutas del Trabajador:
 
 ## TASK-03 — Infrastructure + compositionRoot + HomeProvider + fences
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
+
+**Aprobación del Humano:** validada y aprobada 2026-10-06 (5 archivos nuevos + 3 editados; firmas verbatim de plan §6–§7; mapper 1:1; mapeo `PermissionStatus`; DIP verificado; `tsc` + `eslint` exit 0). TASK-04 NO se inicia en esta sesión.
 
 **Objetivo:** Adapters concretos + wiring DI + provider de presentation + fences ESLint. Sin componentes de mapa.
 
 **Pasos**
 
-- [ ] `infrastructure/dto.ts` (`MunicipioResumenDTO` espejo 1:1, plan §6.1).
-- [ ] `infrastructure/AxiosRadarMapApi.ts` → `createAxiosRadarMapApi` (plan §6.2): `GET /api/v1/dashboard/mapa-home`, mapper 1:1 (`nombre: dto.municipio`), errores → `radarError("radar_unavailable")`.
-- [ ] `infrastructure/ExpoLocationGateway.ts` → `createExpoLocationGateway` (plan §6.3): permisos, posición y reverse geocode (`city ?? subregion ?? region ?? null`), `try/catch` → `null`.
-- [ ] `src/app/compositionRoot.ts`: añadir `createHomeUseCases()` (plan §6.4) **sin tocar** `createAuthUseCases`.
-- [ ] `src/features/home/presentation/HomeProvider.tsx` + `src/features/home/presentation/useHomeRadar.ts` (plan §7): estado UI del radar + `nonce` de cámara + `requestInitialCamera` con ref guard.
-- [ ] `App.tsx`: `createHomeUseCases()` + `<HomeProvider useCases={homeUseCases}>` dentro de `AuthProvider` (plan §6.6). Conservar fuentes, QueryClient, StatusBar.
-- [ ] `eslint.config.js`: añadir `expo-location` + `react-native-maps` a los bans de domain/application; `expo-location` al ban de presentation/navigation/shared-ui (plan §6.5).
-- [ ] `npx tsc --noEmit` y `npx eslint .` deben pasar.
+- [x] `infrastructure/dto.ts` (`MunicipioResumenDTO` espejo 1:1, plan §6.1).
+- [x] `infrastructure/AxiosRadarMapApi.ts` → `createAxiosRadarMapApi` (plan §6.2): `GET /api/v1/dashboard/mapa-home`, mapper 1:1 (`nombre: dto.municipio`), errores → `radarError("radar_unavailable")`.
+- [x] `infrastructure/ExpoLocationGateway.ts` → `createExpoLocationGateway` (plan §6.3): permisos, posición y reverse geocode (`city ?? subregion ?? region ?? null`), `try/catch` → `null`.
+- [x] `src/app/compositionRoot.ts`: añadir `createHomeUseCases()` (plan §6.4) **sin tocar** `createAuthUseCases`.
+- [x] `src/features/home/presentation/HomeProvider.tsx` + `src/features/home/presentation/useHomeRadar.ts` (plan §7): estado UI del radar + `nonce` de cámara + `requestInitialCamera` con ref guard.
+- [x] `App.tsx`: `createHomeUseCases()` + `<HomeProvider useCases={homeUseCases}>` dentro de `AuthProvider` (plan §6.6). Conservar fuentes, QueryClient, StatusBar.
+- [x] `eslint.config.js`: añadir `expo-location` + `react-native-maps` a los bans de domain/application; `expo-location` al ban de presentation/navigation/shared-ui (plan §6.5).
+- [x] `npx tsc --noEmit` y `npx eslint .` deben pasar.
 
 **allowed_files**
 
