@@ -670,3 +670,14 @@
 - `spec/features/radar-home/task.md`: TASK-05 pasos `- [x]` / `Status: COMPLETED` + nota honesta (3 defectos → TASK-05R).
 - `progress/current-task.json` → `active_task: TASK-05`, `status: COMPLETED`; `harness_status.linter_passed`/`typecheck_passed: true`; `bundling_passed_android`/`ios: APROBADO por el Humano (2026-10-07)`; `blockers_or_errors` con los 3 defectos diferidos a TASK-05R.
 - **PARADA CONTROLADA:** TASK-06 (arnés) **NO** se inicia; queda bloqueada hasta que el Orquestador cree **TASK-05R** y el Humano la autorice. **Cero TASK-05R+/TASK-06 ejecutada.** Fase 3 sigue bloqueada.
+
+### 2026-10-07 — Orquestación TASK-05R (rework visual post-QA) — SDD actualizado; CERO código RN
+
+- **Contexto:** TASK-05 cerrada por el Humano como COMPLETED con nota honesta (2026-10-07). El Humano eligió la **opción C** del Orquestador: cerrar TASK-05 (sus pasos eran correctos) y tratar los 3 defectos visuales de componentes de TASK-04 en una task de rework planificada **antes** del arnés. TASK-06 sigue bloqueada.
+- **Enmiendas SDD (Orquestador, cero código de producto):**
+  - `spec/features/radar-home/spec.md` §6: desviación **8** (pill de búsqueda sin solape con la franja guinda: el contenedor de pantalla del native-stack recorta el overflow; mantener el solape exigiría tocar el chrome 2a congelado) y desviación **9** (tap en pin → cámara con offset al norte para dejar el pin en el tercio inferior + anillos del ripple re-anclados al pin en cada `onRegionChangeComplete`).
+  - `spec/features/radar-home/plan.md`: §8.1 (`marginTop: 12` congelado, sustituye el `-28` original), §8.4 (nueva prop `onRegionChangeComplete?: () => void` + método de handle `focusOnPosition(position)` con constantes verbatim `FOCUS_LATITUDE_DELTA 0.09` / `FOCUS_LONGITUDE_DELTA 0.09` / `FOCUS_CENTER_OFFSET 0.025` / 600 ms), §8.5 (re-anclaje del ripple — **sustituye** la "desviación aceptada" original; `RadarRipple` no cambia), §8.8 (flujo `handleMarkerPress`: `openPopup` → `ripplePoint null` → `focusOnPosition` → recompute vía `onRegionChangeComplete`).
+  - `spec/features/radar-home/task.md`: insertada **TASK-05R — Rework visual post-QA físico** entre TASK-05 y TASK-06 (FIX-1 pill, FIX-2 re-anclaje ripple, FIX-3 offset cámara; `allowed_files`: `RadarSearchBar.tsx`, `RadarMap.tsx`, `HomeScreen.tsx`, task.md, progress/*). Status **TODO**.
+- **Sin cambios:** `RadarRipple.tsx`, `MunicipioCallout.tsx`, auth, `app-shell`, `navigation`, `HomeProvider`, infra, constitución. Cero dependencias nuevas. Cero `npx expo start`.
+- `progress/current-task.json` → `active_task: TASK-05R`, `status: TODO` (no IN_PROGRESS). PARADA CONTROLADA.
+- **SIGUIENTE:** el Humano autoriza TASK-05R en **nueva sesión** con el Worker (DeepSeek) usando el prompt de ejecución del Orquestador. Tras ejecutarla, validación física Android + iOS (checklist en task.md) → TASK-05R COMPLETED → TASK-06 en nueva sesión. Fase 3 sigue bloqueada.

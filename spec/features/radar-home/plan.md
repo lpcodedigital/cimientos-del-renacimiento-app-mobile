@@ -323,7 +323,8 @@ Estilos **inline JS** con `radarPalette` / `appPalette` / `palette` / `fontFamil
 
 ### 8.1 `RadarSearchBar.tsx`
 
-- `View` pill: fondo `radarPalette.surface`, `borderRadius 24`, padding vertical 12 / horizontal 16, sombra CSS `boxShadow` sutil, `marginTop` negativo para solapar la franja guinda (ajuste fino en validación visual; punto de partida `-28`).
+- `View` pill: fondo `radarPalette.surface`, `borderRadius 24`, padding vertical 12 / horizontal 16, sombra CSS `boxShadow` sutil, `marginTop: 12`.
+- **Nota (QA físico 2026-10-07, spec §6.8):** el plan original pedía `marginTop: -28` para solapar la franja guinda. El contenedor de pantalla del native-stack recorta el overflow y la pill quedaba semi-oculta; mantener el solape exigiría tocar el chrome 2a (congelado, CA-07). Valor congelado: `marginTop: 12` (pill íntegra bajo la franja).
 - Fila: Ionicons `search` (20, `palette["texto-suave"]`) + `Text` 2 líneas verbatim spec §4.5 (`fontFamily["lato-bold"]`, 13, `palette.texto`, `textTransform: "uppercase"`).
 - **No editable, no interactivo:** es `View` + `Text`, cero `TextInput`, cero `Pressable`. `accessibilityLabel="Buscar (disponible en la siguiente fase)"`.
 
@@ -341,21 +342,42 @@ Estilos **inline JS** con `radarPalette` / `appPalette` / `palette` / `fontFamil
 ### 8.4 `RadarMap.tsx`
 
 - `MapView` con `ref`, `style` `flex: 1`, `provider` por defecto (iOS MapKit; Android Google vía key de `app.json`). `showsUserLocation={false}` (el pin dorado es propio), `showsCompass={false}`, `toolbarEnabled={false}`.
-- Props: `municipios: MunicipioRadar[]`, `gpsPosition: GeoPosition | null`, `cameraRequest`, `onMarkerPress(nombre)`.
+- Props: `municipios: MunicipioRadar[]`, `gpsPosition: GeoPosition | null`, `cameraRequest`, `onMarkerPress(nombre)`, `onRegionChangeComplete?: () => void` (forward al `MapView`; lo usa `HomeScreen` para re-anclar el ripple — QA físico 2026-10-07).
 - Pines: `Marker` nativo con `pinColor={radarPalette.pin}` (cero children custom → cero `tracksViewChanges`). `key = nombre`, `coordinate` de lat/lng, `onPress={() => onMarkerPress(nombre)}`. Municipios con `latitude/longitude === null` **no** pintan pin.
 - Pin GPS: si `gpsPosition` → `Marker` `pinColor={radarPalette.pinGps}`, `zIndex` alto, sin `onPress`.
 - Efecto de cámara sobre `cameraRequest` (deps `[cameraRequest]`):
   - `"fit"` → `ref.current?.fitToCoordinates(coords, { edgePadding: {top:120,right:60,bottom:120,left:60}, animated: true })`.
   - `"gps"` / `"municipio"` → `animateToRegion({ latitude, longitude, latitudeDelta: 0.12, longitudeDelta: 0.12 }, 600)`.
   - `"municipio"` sin coordenadas (lat/lng null) → no-op.
-- Expone `getPointForCoordinate(position: GeoPosition): Promise<{x:number;y:number} | null>` vía `ref` al padre (para el ripple) mediante `useImperativeHandle` + `pointForCoordinate`, `try/catch` → `null`.
+- Expone vía `useImperativeHandle` (`RadarMapHandle`):
+  - `getPointForCoordinate(position: GeoPosition): Promise<{x:number;y:number} | null>` — `pointForCoordinate`, `try/catch` → `null`.
+  - `focusOnPosition(position: GeoPosition): void` — **TASK-05R (spec §6.9)**: `animateToRegion` con centro desplazado al norte del pin para que el pin quede en el tercio inferior de la pantalla y la card KPI + ripple no lo tapen:
+
+```ts
+const FOCUS_LATITUDE_DELTA = 0.09;
+const FOCUS_LONGITUDE_DELTA = 0.09;
+const FOCUS_CENTER_OFFSET = 0.025;
+
+focusOnPosition: (position: GeoPosition): void => {
+  mapRef.current?.animateToRegion(
+    {
+      latitude: position.latitude + FOCUS_CENTER_OFFSET,
+      longitude: position.longitude,
+      latitudeDelta: FOCUS_LATITUDE_DELTA,
+      longitudeDelta: FOCUS_LONGITUDE_DELTA,
+    },
+    600
+  );
+};
+```
 
 ### 8.5 `RadarRipple.tsx`
 
 - Overlay absoluto (hermano del mapa, `pointerEvents="none"`). Al abrir popup: el padre obtiene el punto de pantalla vía `getPointForCoordinate` y lo pasa como prop `point: {x,y} | null`.
 - 3 `Animated.View` (Reanimated) círculos (tamaño base 48/88/128, `borderRadius` mitad, `borderWidth 2`, `borderColor radarPalette.ripple`), centrados en `point`.
 - Animación con shared values: `scale` 0.3→1 y `opacity` 0.9→0, `withRepeat(withTiming(1, { duration: 1400, easing: Easing.out(Easing.ease) }), -1, false)`, delays escalonados 0/220/440 ms. Solo `transform`/`opacity` (regla `animation-gpu-properties`). `.get()/.set()` no aplica (sin React Compiler); usar API estándar de Reanimated 4.
-- Se monta solo cuando hay popup abierto y `point !== null`; al cerrar popup se desmonta. Si el usuario mueve el mapa con el popup abierto, el anillo queda en el último punto (desviación aceptada y documentada en task.md; el ripple se reproduce al seleccionar).
+- Se monta solo cuando hay popup abierto y `point !== null`; al cerrar popup se desmonta.
+- **Re-anclaje (TASK-05R, spec §6.9 — sustituye la "desviación aceptada" original):** el punto de pantalla se **recomputa** cada vez que el mapa termina de moverse (`onRegionChangeComplete`) mientras el popup esté abierto, de modo que los anillos permanecen pegados al pin aunque el usuario panee o la cámara se ajuste por `focusOnPosition`. La lógica del recompute vive en `HomeScreen` (§8.8); `RadarRipple` no cambia (solo recibe la nueva prop `point`).
 
 ### 8.6 `MunicipioCallout.tsx`
 
@@ -391,7 +413,7 @@ export function toTitleCase(nombre: string): string {
 - Layout: `View flex:1` (fondo `appPalette.crema` detrás por si el mapa tarda) → `RadarMap` (flex 1) → overlay absoluto superior: `RadarSearchBar`, `RadarChipRow`, `DeviceMunicipioLabel` (columna con gap 10, padding horizontal 16) → `MunicipioCallout` si `popupMunicipio` (lookup por nombre en `data`) → `RadarRipple` si popup abierto.
 - `requestInitialCamera(data.length > 0)` una vez cuando `data` llega por primera vez (ref guard).
 - Estados: `isLoading` → mapa + `ActivityIndicator` guinda centrado; `isError` → mapa vacío + `Text` `error.message` (del `RadarError`, fallback `RADAR_ERROR_MESSAGES.radar_unavailable`) centrado sobre el mapa; `data` vacío → mapa con mensaje «Sin municipios con obras o capacitaciones.» (copy institucional, `font-lato`, `texto-suave`).
-- Al `openPopup(nombre)`: resolver punto de pantalla para el ripple vía ref del mapa (async; si `null`, popup abre igual sin anillos).
+- Al `openPopup(nombre)` (TASK-05R, spec §6.9): `setRipplePoint(null)` → `map.focusOnPosition(position)` (offset al norte, pin al tercio inferior) → cuando el mapa termina de moverse, `onRegionChangeComplete` dispara el **recompute** del punto (`getPointForCoordinate` → `setRipplePoint`). El mismo recompute corre en cualquier `onRegionChangeComplete` mientras el popup esté abierto (re-anclaje al panear). Si el punto es `null`, el popup abre igual sin anillos.
 
 ---
 

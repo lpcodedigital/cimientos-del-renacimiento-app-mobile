@@ -169,6 +169,8 @@ El mockup es imagen generada con relleno corrupto. El Trabajador **no** reproduc
 5. Labels gibberish y `MI MV UBICACIÓN` no se replican (§4.7).
 6. Lupa gris del PNG → `texto-suave #5C534C`.
 7. El bezel/status bar del PNG no se pinta (igual que 2a).
+8. **Pill de búsqueda sin solape con la franja guinda** (QA físico 2026-10-07): el contenedor de pantalla del native-stack recorta el overflow y la pill quedaba semi-oculta con el `marginTop` negativo del plan original. Mantener el solape exigiría modificar el chrome 2a (congelado, CA-07). La pill se renderiza íntegra bajo la franja con margen positivo.
+9. **Cámara con offset al tap de pin + ripple re-anclado** (QA físico 2026-10-07): el PNG no muestra interacción. Para que la card nunca tape el pin (defecto observado en Android) y los anillos no se despeguen al panear (defecto observado en ambas plataformas): al seleccionar un pin la cámara se ajusta con un offset al norte del pin (el pin queda en el tercio inferior, card y ripple visibles), y los anillos se re-anclan al pin al terminar cualquier movimiento del mapa (`onRegionChangeComplete`).
 
 ---
 
