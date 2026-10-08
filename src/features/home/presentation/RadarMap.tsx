@@ -6,10 +6,15 @@ import type { MunicipioRadar } from "../domain/entities/MunicipioRadar";
 import { radarPalette } from "@/shared/theme/tokens";
 import type { RadarCameraRequest } from "./HomeProvider";
 
+const FOCUS_LATITUDE_DELTA = 0.09;
+const FOCUS_LONGITUDE_DELTA = 0.09;
+const FOCUS_CENTER_OFFSET = 0.025;
+
 export type RadarMapHandle = {
   getPointForCoordinate: (
     position: GeoPosition
   ) => Promise<{ x: number; y: number } | null>;
+  focusOnPosition: (position: GeoPosition) => void;
 };
 
 type RadarMapProps = {
@@ -17,6 +22,7 @@ type RadarMapProps = {
   gpsPosition: GeoPosition | null;
   cameraRequest: RadarCameraRequest | null;
   onMarkerPress: (nombre: string) => void;
+  onRegionChangeComplete?: () => void;
 };
 
 function hasCoordinates(
@@ -27,7 +33,13 @@ function hasCoordinates(
 
 export const RadarMap = forwardRef<RadarMapHandle, RadarMapProps>(
   function RadarMap(
-    { municipios, gpsPosition, cameraRequest, onMarkerPress },
+    {
+      municipios,
+      gpsPosition,
+      cameraRequest,
+      onMarkerPress,
+      onRegionChangeComplete,
+    },
     ref
   ) {
     const mapRef = useRef<MapView | null>(null);
@@ -42,6 +54,17 @@ export const RadarMap = forwardRef<RadarMapHandle, RadarMapProps>(
           } catch {
             return null;
           }
+        },
+        focusOnPosition: (position) => {
+          mapRef.current?.animateToRegion(
+            {
+              latitude: position.latitude + FOCUS_CENTER_OFFSET,
+              longitude: position.longitude,
+              latitudeDelta: FOCUS_LATITUDE_DELTA,
+              longitudeDelta: FOCUS_LONGITUDE_DELTA,
+            },
+            600
+          );
         },
       }),
       []
@@ -101,6 +124,7 @@ export const RadarMap = forwardRef<RadarMapHandle, RadarMapProps>(
         showsUserLocation={false}
         showsCompass={false}
         toolbarEnabled={false}
+        onRegionChangeComplete={onRegionChangeComplete}
       >
         {municipios.map((municipio) =>
           hasCoordinates(municipio) ? (

@@ -332,3 +332,60 @@ AL TERMINAR (obligatorio):
 REPORTA: archivos editados/borrado, resultado de tsc y eslint, verificación
 HomePlaceholder eliminado + HomeScreen cableado, diff vacío de chrome/auth, y qué
 debe validar el Humano (radar dentro del chrome 2a, CA-01…07) antes de autorizar TASK-06.
+
+## Prompt para el Worker (DeepSeek) — TASK-05R
+
+MODO: EJECUCIÓN. Proyecto: Cimientos del Renacimiento — Gabinete Móvil.
+FASE 2b (radar-home). Ejecutar SOLO TASK-05R. Cero TASK-06+. Cero dependencias nuevas.
+Raíz: /Users/macbookair/Documents/Projects/React-Native/CIMIENTOS-DEL-RENACIMIENTO-APP-MOBILE
+
+LEER ANTES DE TOCAR CÓDIGO (obligatorio):
+- spec/features/radar-home/task.md  (TASK-05R: pasos y allowed_files)
+- spec/features/radar-home/spec.md  (§6.8 y §6.9)
+- spec/features/radar-home/plan.md  (§8.1, §8.4, §8.5, §8.8 — ya enmendados)
+- progress/current-task.json
+
+OBJETIVO: corregir 3 defectos visuales detectados en QA físico, SOLO en 3 archivos de presentation.
+
+PASOS:
+1) FIX-1 (pill íntegra) — src/features/home/presentation/RadarSearchBar.tsx:
+   marginTop: -28 → marginTop: 12. Cero otro cambio.
+2) FIX-2 (re-anclaje del ripple):
+   - src/features/home/presentation/RadarMap.tsx: añadir prop
+     onRegionChangeComplete?: () => void y reenviarla al MapView.
+   - src/features/home/presentation/HomeScreen.tsx: extraer el recompute del punto
+     del ripple a un useCallback recomputeRipple (deps [data, popupMunicipio]):
+     popupMunicipio === null → setRipplePoint(null); si el municipio tiene coords →
+     map.getPointForCoordinate → setRipplePoint. Pasarla como onRegionChangeComplete.
+3) FIX-3 (offset de cámara al tap de pin):
+   - RadarMap.tsx: añadir al RadarMapHandle focusOnPosition(position: GeoPosition): void
+     con constantes VERBATIM de plan §8.4: FOCUS_LATITUDE_DELTA = 0.09,
+     FOCUS_LONGITUDE_DELTA = 0.09, FOCUS_CENTER_OFFSET = 0.025, duración 600;
+     centro = { latitude: position.latitude + FOCUS_CENTER_OFFSET, ... }.
+   - HomeScreen.tsx handleMarkerPress: openPopup(nombre) → setRipplePoint(null) →
+     si hay coords → map.focusOnPosition(position). ELIMINAR el getPointForCoordinate
+     inmediato del press (el punto llega vía onRegionChangeComplete tras la animación).
+     Conservar el guard para municipio sin coords (solo openPopup, ripple null).
+4) Arnés: npx tsc --noEmit y npx eslint . → exit 0.
+
+PROHIBIDO:
+- Tocar RadarRipple.tsx, MunicipioCallout.tsx, auth, app-shell, navigation,
+  HomeProvider, useHomeRadar, infrastructure, compositionRoot, App.tsx.
+- Dependencias nuevas, npm i, npx expo start, commits.
+- any, TouchableOpacity, FlatList, className, comentarios, emojis, barrels.
+
+ALLOWED_FILES (solo estos):
+- src/features/home/presentation/RadarSearchBar.tsx
+- src/features/home/presentation/RadarMap.tsx
+- src/features/home/presentation/HomeScreen.tsx
+- spec/features/radar-home/task.md
+- progress/current-task.json
+- progress/history.md
+
+AL TERMINAR (obligatorio):
+- Marcar [x] los pasos de TASK-05R en task.md; Status: READY_FOR_REVIEW (NO COMPLETED;
+  la validación física es del Humano). Documentar desviaciones en "Notas de implementación".
+- Actualizar progress/current-task.json (TASK-05R READY_FOR_REVIEW) y progress/history.md.
+- NO npx expo start. NO commit salvo que el Humano lo pida.
+
+REPORTA al final: diff de los 3 archivos, resultado de tsc + eslint.

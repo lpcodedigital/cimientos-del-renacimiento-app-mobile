@@ -681,3 +681,27 @@
 - **Sin cambios:** `RadarRipple.tsx`, `MunicipioCallout.tsx`, auth, `app-shell`, `navigation`, `HomeProvider`, infra, constitución. Cero dependencias nuevas. Cero `npx expo start`.
 - `progress/current-task.json` → `active_task: TASK-05R`, `status: TODO` (no IN_PROGRESS). PARADA CONTROLADA.
 - **SIGUIENTE:** el Humano autoriza TASK-05R en **nueva sesión** con el Worker (DeepSeek) usando el prompt de ejecución del Orquestador. Tras ejecutarla, validación física Android + iOS (checklist en task.md) → TASK-05R COMPLETED → TASK-06 en nueva sesión. Fase 3 sigue bloqueada.
+
+### 2026-10-07 — TASK-05R (Rework visual post-QA) — READY_FOR_REVIEW
+
+- **Objetivo:** corregir los 3 defectos visuales del QA físico, solo en 3 archivos de `presentation`, sin dependencias nuevas ni cambios fuera del `allowed_files`. Cero `npx expo start`, cero commit, cero TASK-06+.
+- **FIX-1 (pill íntegra) — `RadarSearchBar.tsx`:** `marginTop: -28` → `marginTop: 12` (spec §6.8, plan §8.1). Cero otro cambio en el archivo.
+- **FIX-2 (re-anclaje del ripple):**
+  - `RadarMap.tsx`: nueva prop `onRegionChangeComplete?: () => void` reenviada al `MapView`.
+  - `HomeScreen.tsx`: extraído el recompute a `recomputeRipple` (`useCallback`, deps `[data, popupMunicipio]`): `popupMunicipio === null` → `setRipplePoint(null)`; municipio sin coords o `map === null` → `setRipplePoint(null)`; si no `getPointForCoordinate` → `setRipplePoint`. Conectada como `onRegionChangeComplete` al `RadarMap`.
+- **FIX-3 (offset de cámara al tap de pin):**
+  - `RadarMap.tsx`: `RadarMapHandle` añade `focusOnPosition(position: GeoPosition): void` con constantes verbatim a module scope `FOCUS_LATITUDE_DELTA = 0.09`, `FOCUS_LONGITUDE_DELTA = 0.09`, `FOCUS_CENTER_OFFSET = 0.025`, duración `600`; centro `{ latitude: position.latitude + FOCUS_CENTER_OFFSET, longitude: position.longitude, ... }`.
+  - `HomeScreen.tsx` `handleMarkerPress`: `openPopup(nombre)` → `setRipplePoint(null)` → si hay coords `map.focusOnPosition(position)`; **eliminado** el `getPointForCoordinate` inmediato del press (el punto llega vía `onRegionChangeComplete` tras la animación). Guard de municipio sin coords intacto (solo `openPopup`, ripple `null`).
+- **Sin cambios (diff vacío):** `RadarRipple.tsx`, `MunicipioCallout.tsx`, auth, `app-shell`, `navigation`, `HomeProvider`, `useHomeRadar`, infra, `compositionRoot`, `App.tsx`, `package.json`, `app.json`, `eslint.config.js`.
+- **Arnés (verde):** `npx tsc --noEmit` → **exit 0**; `npx eslint .` → **exit 0** (cero errores/warnings). NO se ejecutó `npx expo start`.
+- **Desviaciones:** ninguna. `FOCUS_CENTER_OFFSET` queda en `0.025` (plan §8.4); ajuste fino solo si el Humano lo pide tras validar. Documentado en las notas de implementación de `task.md`.
+- `spec/features/radar-home/task.md`: TASK-05R pasos `- [x]` / `Status: READY_FOR_REVIEW` (NO `COMPLETED`).
+- `progress/current-task.json` → `active_task: TASK-05R`, `status: READY_FOR_REVIEW`; `harness_status.last_run` actualizado; `linter_passed`/`typecheck_passed: true`.
+- **PARADA CONTROLADA (validación Humana):** comprobar en dispositivos físicos Android + iOS el checklist de `task.md` (pill íntegra; ripple pegado al pin al panear; popup nunca tapa el pin; etiqueta del dispositivo resuelve tras permiso; chips siguen centrando; drawer/logout intactos) → TASK-05R COMPLETED → TASK-06 en nueva sesión. **Cero TASK-06 ejecutada.** Fase 3 sigue bloqueada.
+
+### 2026-10-07 — TASK-05R APROBADA por el Humano (Fase 2b)
+
+- **Validación:** el Tester Visual Humano validó en **dispositivos físicos Android + iOS** y confirmó que las 3 correcciones quedaron aplicadas: la **barra de búsqueda** se ve íntegra, el **modal/card KPI** está correcto y las **ondas expansivas del ripple** también. Todo quedó como debía. TASK-05R marcada **`COMPLETED`**.
+- `spec/features/radar-home/task.md`: TASK-05R `Status: COMPLETED` + nota de aprobación del Humano (`Validación: APROBADA`); pasos en `- [x]`.
+- `progress/current-task.json` → `active_task: TASK-05R`, `status: COMPLETED`; `validation`/`last_run`/`blockers_or_errors`/`agent_notes` actualizados con la aprobación; `harness_status.linter_passed`/`typecheck_passed: true`.
+- **PARADA CONTROLADA:** TASK-06 (arnés) **NO** se inicia en esta sesión; el Humano la autoriza en **nueva sesión**. **Cero TASK-06 ejecutada.** Fase 3 sigue bloqueada.

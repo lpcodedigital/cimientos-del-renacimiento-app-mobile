@@ -72,9 +72,35 @@ export function HomeScreen() {
     void requestInitialCamera(data.length > 0);
   }, [data, requestInitialCamera]);
 
+  const recomputeRipple = useCallback(() => {
+    if (popupMunicipio === null) {
+      setRipplePoint(null);
+      return;
+    }
+    const municipio = data?.find((m) => m.nombre === popupMunicipio);
+    const map = mapRef.current;
+    if (
+      municipio === undefined ||
+      municipio.latitude === null ||
+      municipio.longitude === null ||
+      map === null
+    ) {
+      setRipplePoint(null);
+      return;
+    }
+    const position: GeoPosition = {
+      latitude: municipio.latitude,
+      longitude: municipio.longitude,
+    };
+    void map.getPointForCoordinate(position).then((point) => {
+      setRipplePoint(point);
+    });
+  }, [data, popupMunicipio]);
+
   const handleMarkerPress = useCallback(
     (nombre: string) => {
       openPopup(nombre);
+      setRipplePoint(null);
       const municipio = data?.find((m) => m.nombre === nombre);
       const map = mapRef.current;
       if (
@@ -83,15 +109,11 @@ export function HomeScreen() {
         municipio.longitude === null ||
         map === null
       ) {
-        setRipplePoint(null);
         return;
       }
-      const position: GeoPosition = {
+      map.focusOnPosition({
         latitude: municipio.latitude,
         longitude: municipio.longitude,
-      };
-      void map.getPointForCoordinate(position).then((point) => {
-        setRipplePoint(point);
       });
     },
     [data, openPopup]
@@ -119,6 +141,7 @@ export function HomeScreen() {
         gpsPosition={gpsPosition}
         cameraRequest={cameraRequest}
         onMarkerPress={handleMarkerPress}
+        onRegionChangeComplete={recomputeRipple}
       />
 
       <View

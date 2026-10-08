@@ -17,7 +17,7 @@ export function RadarSearchBar() {
         borderRadius: 24,
         paddingVertical: 12,
         paddingHorizontal: 16,
-        marginTop: -28,
+        marginTop: 12,
         flexDirection: "row",
         alignItems: "center",
         gap: 10,

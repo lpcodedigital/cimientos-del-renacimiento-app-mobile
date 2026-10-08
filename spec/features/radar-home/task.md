@@ -215,22 +215,27 @@ Reglas absolutas del Trabajador:
 
 ## TASK-05R — Rework visual post-QA físico (barra, ripple, offset de cámara)
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
+
+**Aprobación del Humano:** validada y aprobada 2026-10-07 (validación física en dispositivos Android + iOS): barra de búsqueda íntegra, modal/card correcta, ondas expansivas del ripple correctas; los 3 defectos del QA quedaron resueltos. TASK-06 NO se inicia en esta sesión.
 
 **Origen:** nota honesta de TASK-05 (QA físico del Humano, 2026-10-07). Corrige 3 defectos visuales en componentes de TASK-04. Fundamento: spec §6.8–§6.9 y plan §8.1/§8.4/§8.5/§8.8 (ya enmendados por el Orquestador). Cero dependencias nuevas. Cero cambios en auth/`app-shell`/`navigation`/`HomeProvider`/infra. Cero `className`. Solo los 3 archivos de `allowed_files`.
 
 **Pasos**
 
-- [ ] **FIX-1 (pill íntegra):** `RadarSearchBar.tsx`: `marginTop: -28` → `marginTop: 12` (spec §6.8, plan §8.1). Cero otro cambio en el archivo.
-- [ ] **FIX-2 (re-anclaje del ripple):** `RadarMap.tsx`: añadir prop `onRegionChangeComplete?: () => void` y reenviarla al `MapView`. `HomeScreen.tsx`: extraer el recompute del punto del ripple a un `useCallback` (`recomputeRipple`, deps `[data, popupMunicipio]`): si `popupMunicipio === null` → `setRipplePoint(null)`; si el municipio tiene coords → `getPointForCoordinate` → `setRipplePoint`. Pasarla como `onRegionChangeComplete` al `RadarMap` (spec §6.9, plan §8.4/§8.8).
-- [ ] **FIX-3 (offset de cámara al tap de pin):** `RadarMap.tsx`: añadir al `RadarMapHandle` el método `focusOnPosition(position: GeoPosition): void` con las constantes verbatim de plan §8.4 (`FOCUS_LATITUDE_DELTA 0.09`, `FOCUS_LONGITUDE_DELTA 0.09`, `FOCUS_CENTER_OFFSET 0.025`, duración 600; centro = `latitude + FOCUS_CENTER_OFFSET`). `HomeScreen.tsx` (`handleMarkerPress`): `openPopup(nombre)` → `setRipplePoint(null)` → si el municipio tiene coords → `map.focusOnPosition(position)`. Eliminar el `getPointForCoordinate` inmediato del press (el recompute llega vía `onRegionChangeComplete` tras la animación). Guard intacto para municipio sin coords (solo `openPopup`, ripple `null`).
-- [ ] `npx tsc --noEmit` y `npx eslint .` deben pasar.
-- [ ] Documentar en este `task.md` (notas de implementación) cualquier ajuste fino de `FOCUS_CENTER_OFFSET` si el Humano lo pide tras validar.
+- [x] **FIX-1 (pill íntegra):** `RadarSearchBar.tsx`: `marginTop: -28` → `marginTop: 12` (spec §6.8, plan §8.1). Cero otro cambio en el archivo.
+- [x] **FIX-2 (re-anclaje del ripple):** `RadarMap.tsx`: añadir prop `onRegionChangeComplete?: () => void` y reenviarla al `MapView`. `HomeScreen.tsx`: extraer el recompute del punto del ripple a un `useCallback` (`recomputeRipple`, deps `[data, popupMunicipio]`): si `popupMunicipio === null` → `setRipplePoint(null)`; si el municipio tiene coords → `getPointForCoordinate` → `setRipplePoint`. Pasarla como `onRegionChangeComplete` al `RadarMap` (spec §6.9, plan §8.4/§8.8).
+- [x] **FIX-3 (offset de cámara al tap de pin):** `RadarMap.tsx`: añadir al `RadarMapHandle` el método `focusOnPosition(position: GeoPosition): void` con las constantes verbatim de plan §8.4 (`FOCUS_LATITUDE_DELTA 0.09`, `FOCUS_LONGITUDE_DELTA 0.09`, `FOCUS_CENTER_OFFSET 0.025`, duración 600; centro = `latitude + FOCUS_CENTER_OFFSET`). `HomeScreen.tsx` (`handleMarkerPress`): `openPopup(nombre)` → `setRipplePoint(null)` → si el municipio tiene coords → `map.focusOnPosition(position)`. Eliminar el `getPointForCoordinate` inmediato del press (el recompute llega vía `onRegionChangeComplete` tras la animación). Guard intacto para municipio sin coords (solo `openPopup`, ripple `null`).
+- [x] `npx tsc --noEmit` y `npx eslint .` deben pasar (ambos exit 0).
+- [x] Documentar en este `task.md` (notas de implementación) cualquier ajuste fino de `FOCUS_CENTER_OFFSET` si el Humano lo pide tras validar.
 
 **Notas de implementación (el Trabajador documenta aquí desviaciones):**
 
-- _(pendiente)_
+- FIX-1/FIX-2/FIX-3 aplicados exactamente como pedía la task; sin desviaciones de firmas ni constantes. `FOCUS_CENTER_OFFSET` queda en `0.025` (verbatim plan §8.4), pendiente de ajuste fino solo si el Humano lo pide tras la validación física.
+- `recomputeRipple` (deps `[data, popupMunicipio]`) pasa también a `setRipplePoint(null)` cuando el municipio del popup no tiene coords (mismo guard que el press), para que nunca quede un ripple huérfano.
+- `handleMarkerPress` ya no llama a `getPointForCoordinate`; el punto llega tras `focusOnPosition` vía `onRegionChangeComplete`. El guard de municipio sin coords conserva `openPopup` + `setRipplePoint(null)`.
+- `RadarMapHandle` añade `focusOnPosition` con las constantes a module scope; `useImperativeHandle` mantiene deps `[]` (solo refs + constantes). `RadarRipple.tsx` y `MunicipioCallout.tsx` sin cambios (diff vacío).
 
 **allowed_files**
 
@@ -243,7 +248,7 @@ Reglas absolutas del Trabajador:
 
 **Definition of done:** Pill de búsqueda visible íntegra bajo la franja. Al panear con popup abierto los anillos permanecen anclados al pin. Al hacer tap en un pin la cámara deja el pin en el tercio inferior (card + ripple visibles, igual en Android e iOS). tsc + eslint verdes. `RadarRipple.tsx` y `MunicipioCallout.tsx` sin cambios. Chrome 2a y auth con diff vacío.
 
-**Validación:** Humano en dispositivos físicos Android + iOS (checklist: pill íntegra; ripple pegado al pin al panear; popup nunca tapa el pin; etiqueta del dispositivo resuelve el municipio tras conceder permiso; chips siguen centrando; drawer/logout intactos). Tras aprobarla, TASK-05R → COMPLETED y se autoriza TASK-06 en nueva sesión.
+**Validación:** **APROBADA** por el Humano en dispositivos físicos Android + iOS (2026-10-07): pill de búsqueda íntegra, card/modal correcto y ondas expansivas del ripple correctas. TASK-05R → **COMPLETED**. Se autoriza TASK-06 (arnés) en nueva sesión.
 
 ---
 
