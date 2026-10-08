@@ -650,3 +650,23 @@
 - `spec/features/radar-home/task.md`: TASK-04 `Status: COMPLETED` (pasos en `- [x]`; nota de aprobación del Humano añadida).
 - `progress/current-task.json` → `active_task: TASK-04` `status: COMPLETED`; `harness_status.linter_passed`/`typecheck_passed: true`, `bans_verificado`/`dip_verificado: true`, `package_json_sin_cambios`/`app_json_sin_cambios: true`; notas de aprobación registradas.
 - **PARADA CONTROLADA:** TASK-05 (wire navigator + borrado del placeholder, plan §9) **NO** se inicia en esta sesión; la autoriza el Humano en **nueva sesión** con el prompt de ejecución preparado por el Orquestador. **Cero TASK-05+ ejecutada.** Fase 3 sigue bloqueada.
+
+### 2026-10-07 — TASK-05 (Wire navigator + borrado del placeholder) — COMPLETED (con nota honesta)
+
+- **Objetivo:** montar `HomeScreen` (radar) como pantalla autenticada y eliminar el placeholder, sin tocar el chrome 2a (CA-07). Cero dependencias nuevas, cero código nativo, cero `npx expo start`, cero commit, cero TASK-06+.
+- **Editados (2 archivos):**
+  - `src/app/navigation/types.ts` (plan §9): `AppStackParamList` pasa de `{ HomePlaceholder: undefined }` a `{ Home: undefined }`. `AuthStackParamList` y `RootStackParamList` intactos.
+  - `src/app/navigation/RootNavigator.tsx` (plan §9): import cambiado a `import { HomeScreen } from "@/features/home/presentation/HomeScreen";` y `<AppStack.Screen name="HomePlaceholder" component={HomePlaceholderScreen} />` reemplazado por `<AppStack.Screen name="Home" component={HomeScreen} />`. `AppShell`, `<NavigationContainer key={status}>`, `appTheme`, `AuthStackNavigator` y el resto del AppStack **intactos**.
+- **Borrado (1 archivo):** `git rm src/features/home/presentation/HomePlaceholderScreen.tsx` (placeholder eliminado del repo).
+- **Verificaciones por grep:**
+  - `HomeScreen` importado **únicamente** por `src/app/navigation/RootNavigator.tsx`; el resto de referencias son su propia definición.
+  - `HomePlaceholder` **ausente** de `src/` y de `App.tsx`.
+  - `git diff -- src/features/app-shell src/features/auth` → **vacío** (0 líneas; chrome/auth congelados, CA-07).
+  - `package.json`/`app.json`/`global.css`/`src/shared/theme/tokens.ts`/`eslint.config.js`/`src/app/compositionRoot.ts`/`App.tsx` → **sin cambios**.
+  - Cero `any`/`TouchableOpacity`/`FlatList`/`expo-router`/`auth-*` fuera de auth/barrels/comentarios/emojis en lo tocado (los archivos nav solo cambian identificadores de ruta y componente).
+- **Arnés (verde):** `npx tsc --noEmit` → **exit 0**; `npx eslint .` → **exit 0** (cero errores/warnings). NO se ejecutó `npx expo start`.
+- **Validación física del Humano (Android/iOS):** app compilada y radar visible dentro del chrome 2a (pines, popup KPI, ripple, chips y centrado por chip funcionan; iOS usa MapKit nativo). El crash de **Android** (`API key not found` + `addViewAt`) y el permiso de **iOS** (`NSLocation*UsageDescription`) eran de **build/nativo**, no de código; los resolvió el Humano con `npx expo prebuild` + key Android exclusiva (package+SHA1). `app.json` ya declaraba el plugin `expo-location` y `android.config.googleMaps.apiKey`.
+- **Decisión del Humano (2026-10-07):** dar TASK-05 por **COMPLETADA con nota honesta**, sin tocar código. Sus 4 pasos se ejecutaron correctamente; la validación física detectó **3 defectos visuales en componentes de TASK-04**, que se atienden en **TASK-05R** (nueva task que creará el Orquestador) antes del arnés: (1) `RadarSearchBar` recortada por el contenedor de pantalla al solapar la franja (`marginTop: -28`); (2) `RadarRipple` se desplaza al panear el mapa con el popup abierto; (3) `MunicipioCallout` tapa el pin / posición no óptima.
+- `spec/features/radar-home/task.md`: TASK-05 pasos `- [x]` / `Status: COMPLETED` + nota honesta (3 defectos → TASK-05R).
+- `progress/current-task.json` → `active_task: TASK-05`, `status: COMPLETED`; `harness_status.linter_passed`/`typecheck_passed: true`; `bundling_passed_android`/`ios: APROBADO por el Humano (2026-10-07)`; `blockers_or_errors` con los 3 defectos diferidos a TASK-05R.
+- **PARADA CONTROLADA:** TASK-06 (arnés) **NO** se inicia; queda bloqueada hasta que el Orquestador cree **TASK-05R** y el Humano la autorice. **Cero TASK-05R+/TASK-06 ejecutada.** Fase 3 sigue bloqueada.

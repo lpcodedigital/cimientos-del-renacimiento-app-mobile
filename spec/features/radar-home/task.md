@@ -186,17 +186,19 @@ Reglas absolutas del Trabajador:
 
 ## TASK-05 — Wire navigator + borrado del placeholder
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
+
+**Nota honesta del Humano (2026-10-07):** sus 4 pasos quedaron ejecutados correctamente; la validación física detectó 3 defectos visuales en componentes de TASK-04, que se atienden en **TASK-05R** (será una nueva task que el Orquestador creará) antes del arnés. Defectos observados en dispositivo: (1) pill de búsqueda recortada por el contenedor de pantalla al solapar la franja (`RadarSearchBar`, `marginTop: -28`); (2) ripple que se desplaza al panear el mapa con el popup abierto (`RadarRipple`); (3) popup KPI que tapa el pin / posición no óptima (`MunicipioCallout`). Chrome 2a y auth intactos (CA-07). El crash Android (`API key not found`) y el permiso iOS (`NSLocation*UsageDescription`) los resolvió el Humano con `npx expo prebuild` + key Android (package+SHA1); no eran defectos de código.
 
 **Objetivo:** `Home` (radar) como pantalla autenticada. Chrome 2a intacto.
 
 **Pasos**
 
-- [ ] `navigation/types.ts`: `AppStackParamList = { Home: undefined }`.
-- [ ] `RootNavigator.tsx`: `HomeScreen` en `AppStack.Screen name="Home"`. `AppShell`, `NavigationContainer key={status}`, Auth stack **intactos**.
-- [ ] `git rm src/features/home/presentation/HomePlaceholderScreen.tsx`.
-- [ ] `npx tsc --noEmit` y `npx eslint .` deben pasar.
+- [x] `navigation/types.ts`: `AppStackParamList = { Home: undefined }`.
+- [x] `RootNavigator.tsx`: `HomeScreen` en `AppStack.Screen name="Home"`. `AppShell`, `NavigationContainer key={status}`, Auth stack **intactos**.
+- [x] `git rm src/features/home/presentation/HomePlaceholderScreen.tsx`.
+- [x] `npx tsc --noEmit` y `npx eslint .` deben pasar.
 
 **allowed_files**
 

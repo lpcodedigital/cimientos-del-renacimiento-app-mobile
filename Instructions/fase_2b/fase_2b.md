@@ -261,3 +261,74 @@ AL TERMINAR (obligatorio):
 - NO commit. NO npx expo start.
 
 REPORTA: archivos creados, resultado de tsc y eslint, verificación de fences/DIP (nadie importa HomeScreen aún), y qué debe validar el Humano antes de autorizar TASK-05.
+
+## Prompt para iniciar TASK-05 en una sesión nueva
+
+MODO: EJECUCIÓN. Proyecto: Cimientos del Renacimiento — Gabinete Móvil.
+FASE 2b (radar-home). Ejecutar SOLO TASK-05. Cero TASK-06+. Cero dependencias nuevas.
+Cero código nativo. Cero commit. Cero `npx expo start`.
+
+LEER ANTES DE TOCAR CÓDIGO (obligatorio):
+- spec/features/radar-home/task.md   (TASK-05, allowed_files y reglas)
+- spec/features/radar-home/plan.md   (§9 wire navegación, §1 hallazgos, §13)
+- spec/features/radar-home/spec.md   (§5 flujo, §8 arquitectura, §9 límites, §10 CA)
+- spec/constitution/tech-stack.md    (§1 navegación native-stack, §5 DIP)
+- progress/current-task.json
+- AGENTS.md
+
+CONTEXTO: TASK-01/02/03/04 COMPLETED y APROBADAS. Ya existen y NO se modifican:
+- src/features/home/{domain,application,infrastructure,presentation/**} completo
+  (incluye HomeScreen.tsx y los 7 componentes del radar, aún sin cablear).
+- src/app/navigation/{types.ts,RootNavigator.tsx} (con HomePlaceholder actual).
+- src/features/home/presentation/HomePlaceholderScreen.tsx (sigue montado).
+- src/app/compositionRoot.ts, App.tsx (HomeProvider dentro de AuthProvider).
+
+OBJETIVO TASK-05: montar `HomeScreen` (radar) como pantalla autenticada y eliminar
+el placeholder. Chrome 2a (AppShell/header/franja/drawer) intacto al píxel (CA-07).
+
+PASOS (verbatim plan §9 / TASK-05):
+1) src/app/navigation/types.ts: `AppStackParamList = { Home: undefined }`
+   (eliminar `HomePlaceholder`).
+2) src/app/navigation/RootNavigator.tsx:
+   `import { HomeScreen } from "@/features/home/presentation/HomeScreen";`
+   → `<AppStack.Screen name="Home" component={HomeScreen} />`.
+   AppShell, `<NavigationContainer key={status}>` y el Auth stack INTACTOS.
+3) `git rm src/features/home/presentation/HomePlaceholderScreen.tsx`.
+4) `npx tsc --noEmit` y `npx eslint .` deben pasar (exit 0, cero warnings).
+
+REGLAS DE CAPA (verificar por grep):
+- Presentation no importa infrastructure ni "@/shared/infrastructure/**"; los use cases
+  llegan SOLO por useHomeRadar() (ya resuelto en TASK-04, no tocar).
+- Cero `any`, `TouchableOpacity`, `FlatList`, `expo-router`, paleta `auth-*` fuera de auth.
+- Cero barrels `index.ts`. Cero comentarios nuevos. Cero emojis.
+
+PROHIBIDO:
+- TASK-06 (no correr el arnés global más allá de tsc+eslint).
+- Tocar src/features/home/**, auth/**, app-shell/**, compositionRoot.ts, App.tsx,
+  app.json, global.css, tokens.ts, package.json, eslint.config.js.
+- Instalar dependencias. `npx expo start`. Cualquier archivo fuera del allowed_files.
+
+ALLOWED_FILES (solo estos):
+- src/app/navigation/types.ts
+- src/app/navigation/RootNavigator.tsx
+- src/features/home/presentation/HomePlaceholderScreen.tsx   (borrado con git rm)
+- spec/features/radar-home/task.md
+- progress/current-task.json
+- progress/history.md
+
+ARNÉS: `npx tsc --noEmit` y `npx eslint .` exit 0. Verificar por grep:
+- `HomeScreen` importado únicamente por RootNavigator.
+- `HomePlaceholder` ausente de src/ y de App.tsx.
+- `git diff -- src/features/app-shell src/features/auth` vacío (CA-07).
+- `package.json`/`app.json` sin cambios.
+
+AL TERMINAR (obligatorio):
+- Marcar [x] los pasos de TASK-05 en task.md y poner Status: READY_FOR_REVIEW (NO COMPLETED).
+- progress/current-task.json → active_task TASK-05 status READY_FOR_REVIEW;
+  harness_status linter_passed true, typecheck_passed true; notas.
+- Añadir entrada en progress/history.md.
+- NO commit. NO npx expo start.
+
+REPORTA: archivos editados/borrado, resultado de tsc y eslint, verificación
+HomePlaceholder eliminado + HomeScreen cableado, diff vacío de chrome/auth, y qué
+debe validar el Humano (radar dentro del chrome 2a, CA-01…07) antes de autorizar TASK-06.

@@ -13,7 +13,7 @@ import { AppShell } from "@/features/app-shell/presentation/AppShell";
 import { LoginScreen } from "@/features/auth/presentation/screens/LoginScreen";
 import { BiometricOptInScreen } from "@/features/auth/presentation/screens/BiometricOptInScreen";
 import { BiometricUnlockScreen } from "@/features/auth/presentation/screens/BiometricUnlockScreen";
-import { HomePlaceholderScreen } from "@/features/home/presentation/HomePlaceholderScreen";
+import { HomeScreen } from "@/features/home/presentation/HomeScreen";
 
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 const AppStack = createNativeStackNavigator<AppStackParamList>();
@@ -65,10 +65,7 @@ function AppStackNavigator() {
   return (
     <AppShell>
       <AppStack.Navigator screenOptions={{ headerShown: false }}>
-        <AppStack.Screen
-          name="HomePlaceholder"
-          component={HomePlaceholderScreen}
-        />
+        <AppStack.Screen name="Home" component={HomeScreen} />
       </AppStack.Navigator>
     </AppShell>
   );
