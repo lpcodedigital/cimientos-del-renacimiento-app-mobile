@@ -59,7 +59,7 @@ Registrados en `/spec/constitution/tech-stack.md` §2.4. Exponer vía `@theme` e
 
 ### 4.2 Mapa y pines
 
-- Mapa a pantalla completa bajo el overlay. iOS MapKit / Android Google Maps (key del Humano).
+- Mapa a pantalla completa bajo el overlay. **Google Maps en ambas plataformas** (`provider={PROVIDER_GOOGLE}`; key iOS/Android vía `.env` + `app.config.js` — §6.10).
 - Pin de municipio: `radar-pin #6B142E`. Pin GPS: `radar-pin-gps #C4A35A`. Pines **sin label** en el mapa.
 - **Ripple:** 3 anillos concéntricos, borde `radar-ripple` (`#C4A35A` @ 35%), animación de expansión (scale + opacity, GPU) al abrir el popup.
 
@@ -171,6 +171,7 @@ El mockup es imagen generada con relleno corrupto. El Trabajador **no** reproduc
 7. El bezel/status bar del PNG no se pinta (igual que 2a).
 8. **Pill de búsqueda sin solape con la franja guinda** (QA físico 2026-10-07): el contenedor de pantalla del native-stack recorta el overflow y la pill quedaba semi-oculta con el `marginTop` negativo del plan original. Mantener el solape exigiría modificar el chrome 2a (congelado, CA-07). La pill se renderiza íntegra bajo la franja con margen positivo.
 9. **Cámara con offset al tap de pin + ripple re-anclado** (QA físico 2026-10-07): el PNG no muestra interacción. Para que la card nunca tape el pin (defecto observado en Android) y los anillos no se despeguen al panear (defecto observado en ambas plataformas): al seleccionar un pin la cámara se ajusta con un offset al norte del pin (el pin queda en el tercio inferior, card y ripple visibles), y los anillos se re-anclan al pin al terminar cualquier movimiento del mapa (`onRegionChangeComplete`).
+10. **Proveedor de mapas homologado (Humano 2026-10-12):** Google Maps (`PROVIDER_GOOGLE`) también en iOS — el plan original usaba Apple MapKit en iOS. Objetivo: misma cartografía, pines y cámara en ambas plataformas (el mockup usa estilo Google; mejora el pixel-diff de CA-01). Keys en `.env` (`EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_IOS` / `_ANDROID`) inyectadas por `app.config.js`; prohibido hardcodear. Fallback sin key iOS: MapKit.
 
 ---
 
@@ -225,7 +226,7 @@ Todo lo no listado permanece intacto (auth, SecureStore, chrome 2a, `NavigationC
 - [ ] **CA-06 (Búsqueda):** pill visible pixel-perfect, sin foco ni filtro (no-op total).
 - [ ] **CA-07 (Regresión):** chrome 2a (header, franja, drawer, logout) y flujos auth 1.5b idénticos; cero cambio de píxel del chrome.
 - [ ] **CA-08 (Arnés):** `npx eslint .` y `npx tsc --noEmit` en verde. Cero `any` / `TouchableOpacity` / `FlatList` / `expo-router`. DIP intacto; único importador de infra de home = `compositionRoot.ts`.
-- [ ] **CA-09 (Dependencias):** `package.json` solo suma `react-native-maps` + `expo-location`. `app.json` solo suma plugin `expo-location` (copy §2.11) y `android.config.googleMaps.apiKey` del Humano.
+- [ ] **CA-09 (Dependencias):** `package.json` solo suma `react-native-maps` + `expo-location`. `app.json` solo suma el plugin `expo-location` (copy §2.11); las API keys de Google Maps (Android/iOS) se inyectan vía `app.config.js` desde `.env` (gitignored) — cero keys hardcodeadas.
 - [ ] **CA-10 (Contrato):** wire DTO espejo 1:1 de §4.6; path exacto `/api/v1/dashboard/mapa-home`; cero `any` en mappers.
 
 CA-01…07: Tester Visual Humano en iOS + Android. CA-08…10: Revisor.

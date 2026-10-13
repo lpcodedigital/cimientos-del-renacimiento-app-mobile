@@ -341,7 +341,8 @@ Estilos **inline JS** con `radarPalette` / `appPalette` / `palette` / `fontFamil
 
 ### 8.4 `RadarMap.tsx`
 
-- `MapView` con `ref`, `style` `flex: 1`, `provider` por defecto (iOS MapKit; Android Google vía key de `app.json`). `showsUserLocation={false}` (el pin dorado es propio), `showsCompass={false}`, `toolbarEnabled={false}`.
+- `MapView` con `ref`, `style` `flex: 1`, **`provider={PROVIDER_GOOGLE}`** (import de `react-native-maps`; homologación iOS+Android, spec §6.10 — TASK-05G). `showsUserLocation={false}` (el pin dorado es propio), `showsCompass={false}`, `toolbarEnabled={false}`.
+- **Keys (mecanismo, TASK-05G):** `app.config.js` inyecta `android.config.googleMaps.apiKey` (ya existente) y el plugin `["react-native-maps", { iosGoogleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_IOS }]` desde `.env`. `app.json` **no** lleva keys. Prohibido hardcodear.
 - Props: `municipios: MunicipioRadar[]`, `gpsPosition: GeoPosition | null`, `cameraRequest`, `onMarkerPress(nombre)`, `onRegionChangeComplete?: () => void` (forward al `MapView`; lo usa `HomeScreen` para re-anclar el ripple — QA físico 2026-10-07).
 - Pines: `Marker` nativo con `pinColor={radarPalette.pin}` (cero children custom → cero `tracksViewChanges`). `key = nombre`, `coordinate` de lat/lng, `onPress={() => onMarkerPress(nombre)}`. Municipios con `latitude/longitude === null` **no** pintan pin.
 - Pin GPS: si `gpsPosition` → `Marker` `pinColor={radarPalette.pinGps}`, `zIndex` alto, sin `onPress`.

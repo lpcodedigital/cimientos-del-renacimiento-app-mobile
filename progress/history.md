@@ -705,3 +705,16 @@
 - `spec/features/radar-home/task.md`: TASK-05R `Status: COMPLETED` + nota de aprobación del Humano (`Validación: APROBADA`); pasos en `- [x]`.
 - `progress/current-task.json` → `active_task: TASK-05R`, `status: COMPLETED`; `validation`/`last_run`/`blockers_or_errors`/`agent_notes` actualizados con la aprobación; `harness_status.linter_passed`/`typecheck_passed: true`.
 - **PARADA CONTROLADA:** TASK-06 (arnés) **NO** se inicia en esta sesión; el Humano la autoriza en **nueva sesión**. **Cero TASK-06 ejecutada.** Fase 3 sigue bloqueada.
+
+### 2026-10-12 — Orquestación TASK-05G (homologación Google Maps iOS) — SDD actualizado; CERO código RN de producto
+
+- **Contexto:** TASK-05R COMPLETED y validada en físico (2026-10-07). El Humano pidió homologar el mapa a Google Maps también en iOS (antes: Apple MapKit) para tener la misma interfaz de mapa en ambas plataformas, y lo confirmó como task nueva **TASK-05G** antes del arnés TASK-06.
+- **Mecanismo de keys (decisión del Humano 2026-10-12):** cero hardcodeo. `.env` (gitignored) → `EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_IOS` (entregada por el Humano y colocada por el Orquestador en esta sesión; el valor NO va en prompts ni archivos trackeados) → `app.config.js` la inyecta dinámicamente (plugin `react-native-maps` `iosGoogleMapsApiKey`), mismo patrón que la key Android (`EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_ANDROID` → `android.config.googleMaps.apiKey`). `.env.example` actualizado (placeholders iOS/Android con prefijo `EXPO_PUBLIC_`).
+- **Enmiendas SDD (Orquestador):**
+  - `spec/constitution/tech-stack.md` §2.3: proveedor homologado `PROVIDER_GOOGLE` en ambas plataformas; keys solo vía `.env` + `app.config.js` (prohibido hardcodear); MapKit documentado como fallback sin key iOS.
+  - `spec/features/radar-home/spec.md`: §4.2 (Google Maps en ambas plataformas), §6.10 (desviación de homologación; el mockup usa cartografía estilo Google → mejora CA-01), CA-09 (`app.json` solo plugin `expo-location`; keys vía `app.config.js`/`.env`).
+  - `spec/features/radar-home/plan.md` §8.4: `provider={PROVIDER_GOOGLE}` + mecanismo de keys.
+  - `spec/features/radar-home/task.md`: insertada **TASK-05G** (app.config.js + `RadarMap.tsx` provider; gate: key ya en `.env`; `app.json`/`package.json` sin cambios) y paso de diff de TASK-06 actualizado (keys inyectadas, grep `AIza` sobre el tree).
+- **Sin cambios:** `RadarRipple.tsx`, `MunicipioCallout.tsx`, auth, `app-shell`, `navigation`, infra, `App.tsx`. Cero dependencias nuevas. Cero `npx expo start`.
+- `progress/current-task.json` → `active_task: TASK-05G`, `status: TODO` (no IN_PROGRESS). PARADA CONTROLADA.
+- **SIGUIENTE:** el Humano autoriza TASK-05G en **nueva sesión** con el Worker (DeepSeek) y el prompt del Orquestador. Tras ejecutarla: `npx expo prebuild` + `run:ios`/`run:android` (Humano) y validación lado a lado → TASK-05G COMPLETED → TASK-06 (arnés) en nueva sesión. Fase 3 sigue bloqueada.

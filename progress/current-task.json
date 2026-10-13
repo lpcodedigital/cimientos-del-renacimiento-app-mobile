@@ -12,15 +12,14 @@
     "baseline_feature": "spec/features/core-arch-refactor/spec.md"
   },
   "active_task": {
-    "id": "TASK-05R",
-    "description": "Rework visual post-QA físico (3 fixes en componentes de TASK-04): FIX-1 RadarSearchBar marginTop -28 → 12 (pill íntegra bajo la franja, spec §6.8); FIX-2 re-anclaje del ripple vía onRegionChangeComplete → recompute del punto (RadarMap nueva prop + HomeScreen recomputeRipple, spec §6.9); FIX-3 offset de cámara al tap de pin (RadarMapHandle.focusOnPosition con FOCUS_CENTER_OFFSET 0.025, pin al tercio inferior, spec §6.9). Arnés: tsc + eslint verdes. RadarRipple.tsx y MunicipioCallout.tsx sin cambios.",
-    "status": "COMPLETED",
+    "id": "TASK-05G",
+    "description": "Homologación Google Maps en iOS (spec §6.10): app.config.js añade el plugin [react-native-maps, { iosGoogleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_IOS }] conservando la inyección Android; RadarMap.tsx usa provider={PROVIDER_GOOGLE}. app.json y package.json SIN cambios; key iOS ya colocada en .env (gitignored) por el Humano/Orquestador. Arnés: tsc + eslint verdes; grep AIza sobre el tree = cero keys hardcodeadas.",
+    "status": "TODO",
     "assigned_role": "Agente Trabajador",
-    "validation": "COMPLETED y APROBADA por el Humano el 2026-10-07 (validación física en dispositivos Android + iOS): barra de búsqueda íntegra, card/modal correcta, ondas expansivas del ripple correctas; los 3 defectos del QA quedaron resueltos. FIX-1/FIX-2/FIX-3 en los 3 archivos de presentation; npx tsc --noEmit exit 0; npx eslint . exit 0. TASK-06 NO se inicia en esta sesión; se autoriza en nueva sesión.",
+    "validation": "PENDIENTE. El Humano autoriza TASK-05G en nueva sesión con el Worker (DeepSeek) y el prompt del Orquestador (2026-10-12). Tras ejecutarla: npx expo prebuild + run:ios/run:android (Humano) y validación lado a lado (misma cartografía Google, pines, offset, popup, ripple, etiqueta dispositivo, drawer/logout) → TASK-05G COMPLETED → TASK-06 (arnés) en nueva sesión.",
     "allowed_files_to_edit": [
-      "src/features/home/presentation/RadarSearchBar.tsx",
+      "app.config.js",
       "src/features/home/presentation/RadarMap.tsx",
-      "src/features/home/presentation/HomeScreen.tsx",
       "spec/features/radar-home/task.md",
       "progress/current-task.json",
       "progress/history.md"

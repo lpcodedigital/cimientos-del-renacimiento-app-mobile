@@ -59,7 +59,8 @@ Los tokens de Fase 1 (`guinda #6B142E`, `dorado #C4A35A`, `fondo #F7F4F0`, `text
 *Regla Absoluta:* no usar paleta `auth-*` en el chrome autenticado. No sustituir `app-guinda` por `guinda #6B142E` en header/drawer (el mockup manda). Tipografía: **Lato / Lato Bold** exclusivamente (si el mockup usa serif en el wordmark, desviación igual que 1.5a: Lato Bold).
 
 ## 2.3 Mapas y ubicación (Fase 2b — no instalar en 2a)
-- **Mapas:** `react-native-maps` vía `npx expo install` **solo** en Fase 2b. iOS: MapKit. Android: Google Maps requiere API key en `app.json` **autorizada por el Humano**; agentes no la inventan ni tocan nativo a mano.
+- **Mapas:** `react-native-maps` vía `npx expo install` **solo** en Fase 2b. **Proveedor homologado (decisión Humano 2026-10-12):** `provider={PROVIDER_GOOGLE}` en **ambas** plataformas (Google Maps en iOS y Android; misma cartografía, pines y comportamiento de cámara). Fallback documentado: sin key iOS, el provider por defecto de iOS es Apple MapKit.
+- **API keys de Google Maps:** viven en `.env` (gitignored) como `EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_ANDROID` y `EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_IOS`, y se inyectan vía `app.config.js` (`android.config.googleMaps.apiKey` y plugin `react-native-maps` `iosGoogleMapsApiKey`). **Prohibido hardcodear keys** en `app.json` ni en código. Las entrega el Humano; agentes no las inventan.
 - **Geolocalización:** `expo-location` vía `npx expo install` **solo** en Fase 2b, con config plugin de Expo (permisos When-In-Use). El Humano autoriza el diff de `app.json`.
 - **Drawer / menús nativos extra:** prohibido añadir paquetes. Overlay custom.
 

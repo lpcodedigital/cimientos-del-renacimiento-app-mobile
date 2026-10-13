@@ -252,6 +252,40 @@ Reglas absolutas del Trabajador:
 
 ---
 
+## TASK-05G — Homologación Google Maps en iOS
+
+**Status:** TODO
+**assigned_role:** Trabajador
+
+**Origen:** decisión del Humano (2026-10-12): homologar el mapa a Google Maps en ambas plataformas antes del arnés. Fundamento: spec §4.2/§6.10/CA-09, plan §8.4, `tech-stack.md` §2.3 (ya enmendados por el Orquestador). Cero dependencias nuevas (`package.json` intacto; el SDK de Google iOS llega por CocoaPods en el prebuild del Humano). Cero keys hardcodeadas.
+
+**Gate del Humano:** la key iOS ya fue entregada y colocada en `.env` como `EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_IOS` (gitignored). El Trabajador NO necesita conocer su valor y NO toca `.env`.
+
+**Pasos**
+
+- [ ] `app.config.js`: conservar la inyección Android existente y añadir al final del objeto retornado el plugin `["react-native-maps", { "iosGoogleMapsApiKey": process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_IOS }]` (spread de `config.plugins` existente primero). `app.json` **no se toca** (la inyección es dinámica).
+- [ ] `src/features/home/presentation/RadarMap.tsx`: `import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"` (ajustar el import existente) y `provider={PROVIDER_GOOGLE}` en el `MapView`. Cero otro cambio (props, handle, markers, efecto de cámara intactos).
+- [ ] `npx tsc --noEmit` y `npx eslint .` deben pasar.
+- [ ] Verificar `git diff -- app.json package.json` **vacío** y `git status -- .env` sin cambios trackeados (`.env` está en `.gitignore`).
+
+**Notas de implementación (el Trabajador documenta aquí desviaciones):**
+
+- _(pendiente)_
+
+**allowed_files**
+
+- `app.config.js`
+- `src/features/home/presentation/RadarMap.tsx`
+- `spec/features/radar-home/task.md`
+- `progress/current-task.json`
+- `progress/history.md`
+
+**Definition of done:** `provider={PROVIDER_GOOGLE}` activo; key iOS inyectada vía `app.config.js` desde `.env`; `app.json` y `package.json` sin cambios; tsc + eslint verdes. Cero keys en archivos trackeados.
+
+**Validación (Humano):** `npx expo prebuild` + `npx expo run:ios --device` (instala pods de Google Maps) y `npx expo run:android --device`. Checklist lado a lado: misma cartografía en iOS y Android (estilo Google), pines guinda/dorado idénticos, chips centran, tap de pin → offset + popup + ripple igual en ambas plataformas, etiqueta del dispositivo resuelve, drawer/logout intactos. Tras aprobarla, TASK-05G → COMPLETED y se autoriza TASK-06 en nueva sesión.
+
+---
+
 ## TASK-06 — Arnés
 
 **Status:** TODO
@@ -263,7 +297,7 @@ Reglas absolutas del Trabajador:
 - [ ] `npx eslint .` → exit 0 (cero warnings).
 - [ ] Grep `src/**/*.ts(x)` + `App.tsx`: cero `any`, `TouchableOpacity`, `FlatList`, `expo-router`, paleta `auth-*` fuera de auth.
 - [ ] DIP: único importador de `home/infrastructure` = `compositionRoot.ts`; `expo-location`/`react-native-maps` ausentes de domain/application; `expo-location` ausente de presentation.
-- [ ] `git diff HEAD -- package.json` muestra SOLO `react-native-maps` + `expo-location`; `app.json` SOLO plugin location + key Android.
+- [ ] `git diff HEAD -- package.json` muestra SOLO `react-native-maps` + `expo-location`; `app.json` SOLO el plugin `expo-location` (keys de Google Maps inyectadas vía `app.config.js` desde `.env`; cero keys hardcodeadas en archivos trackeados — verificar con grep `AIza` sobre el tree).
 - [ ] Contrato: grep del path `/api/v1/dashboard/mapa-home` único en `AxiosRadarMapApi.ts`; wire DTO espejo de spec §4.6.
 - [ ] Chrome: `git diff` de `src/features/app-shell/**` y `src/features/auth/**` vacío.
 
