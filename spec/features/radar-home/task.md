@@ -306,18 +306,35 @@ Reglas absolutas del Trabajador:
 
 ## TASK-06 — Arnés
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador + Revisor
+
+**Cierre del Humano (2026-10-12):** hallazgos adjudicados (ver "Resolución de hallazgos" abajo): (1) deps extra de `68cb002` ACEPTADAS como build plumbing documentado (whitelist en spec CA-09) → CA-09 listo; (2) `auth-*` en `src/shared/ui/*` ACEPTABLE (estructura congelada 1.5b; falso positivo del arnés, ban scoped a `src/features/home/**`); (3) keys `AIza` en trackeados → task de higiene `security-keys` POST-2B, antes de Fase 3. **CA-08, CA-09 y CA-10 listos. TASK-06 → COMPLETED. Fase 2b (radar-home) CERRADA.**
 
 **Pasos**
 
-- [ ] `npx tsc --noEmit` → exit 0.
-- [ ] `npx eslint .` → exit 0 (cero warnings).
-- [ ] Grep `src/**/*.ts(x)` + `App.tsx`: cero `any`, `TouchableOpacity`, `FlatList`, `expo-router`, paleta `auth-*` fuera de auth.
-- [ ] DIP: único importador de `home/infrastructure` = `compositionRoot.ts`; `expo-location`/`react-native-maps` ausentes de domain/application; `expo-location` ausente de presentation.
-- [ ] `git diff HEAD -- package.json` muestra SOLO `react-native-maps` + `expo-location`; `app.json` SOLO el plugin `expo-location` (keys de Google Maps inyectadas vía `app.config.js` desde `.env`; cero keys hardcodeadas en archivos trackeados — verificar con grep `AIza` sobre el tree).
-- [ ] Contrato: grep del path `/api/v1/dashboard/mapa-home` único en `AxiosRadarMapApi.ts`; wire DTO espejo de spec §4.6.
-- [ ] Chrome: `git diff` de `src/features/app-shell/**` y `src/features/auth/**` vacío.
+- [x] `npx tsc --noEmit` → exit 0.
+- [x] `npx eslint .` → exit 0 (cero warnings).
+- [x] Grep `src/**/*.ts(x)` + `App.tsx`: cero `any`, `TouchableOpacity`, `FlatList`, `expo-router`, paleta `auth-*` fuera de auth.
+- [x] DIP: único importador de `home/infrastructure` = `compositionRoot.ts`; `expo-location`/`react-native-maps` ausentes de domain/application; `expo-location` ausente de presentation.
+- [x] `git diff HEAD -- package.json` muestra SOLO `react-native-maps` + `expo-location`; `app.json` SOLO el plugin `expo-location` (keys de Google Maps inyectadas vía `app.config.js` desde `.env`; cero keys hardcodeadas en archivos trackeados — verificar con grep `AIza` sobre el tree).
+- [x] Contrato: grep del path `/api/v1/dashboard/mapa-home` único en `AxiosRadarMapApi.ts`; wire DTO espejo de spec §4.6.
+- [x] Chrome: `git diff` de `src/features/app-shell/**` y `src/features/auth/**` vacío.
+
+**Ejecución (Trabajador, 2026-10-12) — evidencia literal:**
+
+- `npx tsc --noEmit` → **exit 0**; `npx eslint .` → **exit 0** (cero errores, cero warnings).
+- Bans (git grep sobre `src/**/*.ts(x)` + `App.tsx`): `any` 0, `TouchableOpacity` 0, `FlatList` 0, `expo-router` 0. `auth-*`/`authPalette` 0 en `src/features/home/**` y `App.tsx`.
+- DIP: único importador de `home/infrastructure` = `src/app/compositionRoot.ts:18-19`; `react-native-maps` solo en `presentation/RadarMap.tsx:2`; `expo-location` solo en `infrastructure/ExpoLocationGateway.ts:1`.
+- Contrato: `/api/v1/dashboard/mapa-home` único en código = `src/features/home/infrastructure/AxiosRadarMapApi.ts:34`; `infrastructure/dto.ts` espejo 1:1 de spec §4.6.
+- Chrome: `git diff` de `src/features/app-shell/**` y `src/features/auth/**` **vacío** (worktree y delta vs baseline 2b `333b62f`).
+
+**Hallazgos (reportados al Revisor/Humano — NO corregidos):**
+
+1. **Deps extra fuera de alcance (commit humano `68cb002`, no radar):** `git diff HEAD -- package.json` es **vacío** (todo commiteado por el Humano). Contra el baseline 2b (`333b62f..HEAD`), aparte de `expo-location` + `react-native-maps` (TASK-01), el Humano añadió `dotenv`, `lightningcss`, `react-native-worklets`, `react-native-worklets-core`, `patch-package`, script `postinstall` y subió `react-native-reanimated` `4.5.1 → ^4.7.1`. Son del build nativo/Google Maps, ajenos al alcance de la feature. **CA-09 con hallazgo.**
+2. **`auth-*` fuera de `src/features/auth/**` (preexistente Fase 1.5a/1.5b):** coincidencias en `src/shared/ui/TextField.tsx`, `src/shared/ui/BiometricMethodCard.tsx`, `src/shared/ui/AuthScaffold.tsx`, `src/shared/ui/GoldButton.tsx` y `src/shared/theme/tokens.ts`. No introducidas por el radar; el radar tiene cero. No se toca auth/shared-ui (congelado).
+3. **AIza preexistente (ver `git grep "AIza"`):** `android/app/src/main/AndroidManifest.xml:19`, `ios/GabineteMvil/AppDelegate.swift:38`, `ios/GabineteMvil/Info.plist:37` (nativos, prohibido editar), `progress/history.md:552` (key `AIzaSy…900JQ` en archivo permitido — **no borrada**, se reporta), `Instructions/fase_2b/fase_2b.md:38`.
+4. **`git diff HEAD` no es la comparación útil:** el working tree está limpio (cambios commiteados). La verificación real se hizo contra el baseline `333b62f`.
 
 **allowed_files**
 
@@ -327,7 +344,14 @@ Reglas absolutas del Trabajador:
 
 Si el arnés falla, correcciones **solo** en archivos de TASK-01…05 (el Humano/Revisor autoriza el allowed_files extra). No "arreglar" auth ni chrome.
 
-**Definition of done:** CA-08, CA-09 y CA-10 listos. TASK-06 `READY_FOR_REVIEW`. Fase 3 no abierta.
+**Resolución de hallazgos (Humano + Orquestador, 2026-10-12):**
+
+1. **Deps extra `68cb002` → ACEPTADAS con whitelist.** El Humano las aprueba como build plumbing documentado: `react-native-reanimated ^4.7.1` + `react-native-worklets` + `react-native-worklets-core` (peer del árbol de pods de Google Maps iOS), `patch-package` + `postinstall` + `patches/expo-modules-jsi` (fix de build nativo iOS), `lightningcss` directa (redundante con `overrides`, inofensiva), `dotenv` (sin uso actual; **candidata a limpieza futura**). CA-09 enmendado en `spec.md` con esta whitelist. **CA-09 → listo.**
+2. **`auth-*` en `src/shared/ui/*` → ACEPTABLE (congelado).** Falso positivo del paso de arnés (mal scopeado por el Orquestador): esos componentes viven en `shared/ui` por diseño de 1.5b. El ban `auth-*` queda scoped al código nuevo de la feature (`src/features/home/**`), donde el radar tiene **cero** incidencias. El paso de arriba queda interpretado con este alcance.
+3. **Keys `AIza` en trackeados → task de higiene POST-2b.** Se planifica mini-task `security-keys` **antes de Fase 3**: rotar/revocar keys en Google Cloud (la `AIzaSy…900JQ` de `history.md:552` está superseded por la actual → revocar), restringir la key iOS por bundle id, limpiar `progress/history.md` e `Instructions/fase_2b/fase_2b.md`, y decidir si `android/` e `ios/` se gitignorean (regenerables vía CNG).
+4. Anotado: la comparación de deps se hace contra el baseline `333b62f`, no `HEAD`.
+
+**Definition of done:** CA-08, CA-09 (con whitelist) y CA-10 listos. TASK-06 **COMPLETED** (cierre formal del Humano, 2026-10-12). Fase 3 no abierta — antes se ejecuta la task de higiene `security-keys`.
 
 ---
 

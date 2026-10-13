@@ -442,3 +442,78 @@ AL TERMINAR (obligatorio):
 
 REPORTA al final: diff de app.config.js y RadarMap.tsx, resultado de tsc + eslint,
 y confirmación de que app.json/package.json no cambiaron.
+
+## ## Prompt para el Worker — TASK-06
+
+MODO: EJECUCIÓN. Proyecto: Cimientos del Renacimiento — Gabinete Móvil.
+FASE 2b (radar-home). Ejecutar SOLO TASK-06 (arnés / auditoría). Cero Fase 3.
+Raíz: /Users/macbookair/Documents/Projects/React-Native/CIMIENTOS-DEL-RENACIMIENTO-APP-MOBILE
+
+LEER ANTES DE TOCAR NADA (obligatorio):
+- spec/features/radar-home/task.md  (TASK-06: pasos, allowed_files y Definition of Done)
+- spec/features/radar-home/spec.md  (CA-08, CA-09, CA-10; §8 arquitectura/DIP)
+- spec/features/radar-home/plan.md  (§13 Criterio de "hecho" técnico; §6.5 fences)
+- progress/current-task.json
+- AGENTS.md
+
+CONTEXTO: TASK-05G quedó COMPLETED y validada por el Humano en Android + iOS (2026-10-12).
+Google Maps homologado con provider={PROVIDER_GOOGLE}; keys iOS/Android inyectadas vía
+app.config.js desde .env (gitignored). Fase 3 sigue bloqueada.
+
+ALCANCE: TASK-06 es AUDITORÍA + REGISTRO. No es una task de features.
+
+PASOS (ejecutar y capturar salida LITERAL + exit code):
+1) npx tsc --noEmit                         → debe ser exit 0.
+2) npx eslint .                             → debe ser exit 0 (cero errores, cero warnings).
+3) Bans en código versionado (src/**/*.ts, src/**/*.tsx, App.tsx):
+   cero `any`, `TouchableOpacity`, `FlatList`, import de `expo-router`, y paleta `auth-*`
+   fuera de src/features/auth/**.
+4) DIP:
+   - único importador de `home/infrastructure` = src/app/compositionRoot.ts;
+   - `expo-location` y `react-native-maps` ausentes de home/domain y home/application;
+   - `expo-location` ausente de home/presentation;
+   - `react-native-maps` permitido solo en home/presentation.
+5) Dependencias por diff: `git diff HEAD -- package.json` muestra SOLO react-native-maps +
+   expo-location; `git diff HEAD -- app.json` muestra SOLO el plugin expo-location
+   (las keys de Google Maps van por app.config.js desde .env; cero keys hardcodeadas).
+6) Contrato: grep del path `/api/v1/dashboard/mapa-home` debe aparecer ÚNICAMENTE en
+   src/features/home/infrastructure/AxiosRadarMapApi.ts; el wire DTO (infrastructure/dto.ts)
+   debe ser espejo 1:1 de spec §4.6.
+7) Chrome congelado: `git diff HEAD -- src/features/app-shell/** src/features/auth/**` VACÍO.
+8) `git grep "AIza"` sobre el tree: reporta TODAS las coincidencias con file:line.
+
+CAVEAT AIza (reportar, no ocultar): existen coincidencias PREEXISTENTES (no introducidas en
+esta task) en archivos nativos y de progreso — p. ej. android/app/src/main/AndroidManifest.xml,
+progress/history.md y Instructions/fase_2b/fase_2b.md. NO edites archivos nativos (.xml/.swift/
+.kt/.java/.pbxproj/Info.plist). Si aparece una key en progress/history.md (archivo permitido),
+NO la borres por tu cuenta: repórtala como hallazgo para el Revisor/Humano. No introduzcas keys.
+
+SI EL ARNÉS FALLA: NO arregles nada silenciosamente. Reporta el fallo exacto (comando + salida)
+y detente. Las correcciones solo se permiten en archivos de TASK-01…05 y requieren autorización
+explícita del Humano/Revisor (allowed_files extra). Nunca "arregles" auth ni el chrome.
+
+ALLOWED_FILES (solo estos):
+- spec/features/radar-home/task.md
+- progress/current-task.json
+- progress/history.md
+
+PROHIBIDO:
+- Dependencias nuevas, npm i, npx expo install, npx expo start, npx expo prebuild, npx expo run:*.
+- Commits.
+- Tocar .env, app.json, package.json, auth, app-shell, navigation, HomeProvider,
+  infrastructure, App.tsx, RadarMap.tsx, RadarRipple.tsx, MunicipioCallout.tsx, HomeScreen.tsx.
+- Archivos nativos (.swift/.kt/.java/.pbxproj/Info.plist/AndroidManifest.xml).
+- any, TouchableOpacity, FlatList, className, comentarios, emojis.
+
+AL TERMINAR (obligatorio):
+- Marcar [x] los pasos de TASK-06 en task.md y poner `Status: READY_FOR_REVIEW`
+  (NO COMPLETED; el Revisor re-ejecuta el arnés y el Humano cierra).
+- Actualizar progress/current-task.json (status READY_FOR_REVIEW + harness_status con
+  linter/typecheck/bans/DIP/deps/contrato/chrome verificados) y progress/history.md.
+- NO commit.
+
+REPORTA al final:
+- Salida literal de `npx tsc --noEmit` y `npx eslint .` con exit codes.
+- Resultado de cada grep (bans, DIP, contrato, AIza) con file:line.
+- `git diff HEAD -- package.json app.json` y confirmación de que auth/app-shell están vacíos.
+- Cualquier hallazgo/bloqueo y si CA-08/CA-09/CA-10 quedan listos.

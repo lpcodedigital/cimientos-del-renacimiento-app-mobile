@@ -226,7 +226,7 @@ Todo lo no listado permanece intacto (auth, SecureStore, chrome 2a, `NavigationC
 - [ ] **CA-06 (Búsqueda):** pill visible pixel-perfect, sin foco ni filtro (no-op total).
 - [ ] **CA-07 (Regresión):** chrome 2a (header, franja, drawer, logout) y flujos auth 1.5b idénticos; cero cambio de píxel del chrome.
 - [ ] **CA-08 (Arnés):** `npx eslint .` y `npx tsc --noEmit` en verde. Cero `any` / `TouchableOpacity` / `FlatList` / `expo-router`. DIP intacto; único importador de infra de home = `compositionRoot.ts`.
-- [ ] **CA-09 (Dependencias):** `package.json` solo suma `react-native-maps` + `expo-location`. `app.json` solo suma el plugin `expo-location` (copy §2.11); las API keys de Google Maps (Android/iOS) se inyectan vía `app.config.js` desde `.env` (gitignored) — cero keys hardcodeadas.
+- [ ] **CA-09 (Dependencias):** `package.json` suma: (a) deps del radar autorizadas: `react-native-maps` + `expo-location`; (b) **build plumbing aprobado por el Humano** (commit `68cb002`, 2026-10-12): `react-native-reanimated ^4.7.1` + `react-native-worklets` + `react-native-worklets-core` (peer del árbol de pods de Google Maps iOS), `patch-package` + `postinstall` + `patches/expo-modules-jsi` (fix de build nativo iOS), `lightningcss` directa (redundante con `overrides`, inofensiva) y `dotenv` (sin uso actual; **candidata a limpieza futura**). `app.json` solo suma el plugin `expo-location` (copy §2.11); las API keys de Google Maps (Android/iOS) se inyectan vía `app.config.js` desde `.env` (gitignored) — cero keys hardcodeadas en archivos nuevos de la feature.
 - [ ] **CA-10 (Contrato):** wire DTO espejo 1:1 de §4.6; path exacto `/api/v1/dashboard/mapa-home`; cero `any` en mappers.
 
 CA-01…07: Tester Visual Humano en iOS + Android. CA-08…10: Revisor.
