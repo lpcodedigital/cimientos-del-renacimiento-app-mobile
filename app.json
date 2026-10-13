@@ -24,12 +24,7 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.lpcodedigital.cimientosdelrenacimiento",
-      "config": {
-        "googleMaps": {
-          "apiKey": "AIzaSyB6Qt2WUgwHaQc83UatDS8sg76Dy7RrlqE"
-        }
-      }
+      "package": "com.lpcodedigital.cimientosdelrenacimiento"
     },
     "web": {
       "favicon": "./assets/favicon.png",
