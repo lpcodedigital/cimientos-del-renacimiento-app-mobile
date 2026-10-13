@@ -11,6 +11,16 @@ export default ({ config }) => {
           apiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_ANDROID
         }
       }
-    }
+    },
+    plugins: [
+      ...(config.plugins || []),
+      [
+        "react-native-maps",
+        {
+          iosGoogleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_IOS,
+          androidGoogleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_ANDROID
+        }
+      ]
+    ]
   };
 };

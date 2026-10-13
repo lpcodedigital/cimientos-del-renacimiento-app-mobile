@@ -718,3 +718,37 @@
 - **Sin cambios:** `RadarRipple.tsx`, `MunicipioCallout.tsx`, auth, `app-shell`, `navigation`, infra, `App.tsx`. Cero dependencias nuevas. Cero `npx expo start`.
 - `progress/current-task.json` → `active_task: TASK-05G`, `status: TODO` (no IN_PROGRESS). PARADA CONTROLADA.
 - **SIGUIENTE:** el Humano autoriza TASK-05G en **nueva sesión** con el Worker (DeepSeek) y el prompt del Orquestador. Tras ejecutarla: `npx expo prebuild` + `run:ios`/`run:android` (Humano) y validación lado a lado → TASK-05G COMPLETED → TASK-06 (arnés) en nueva sesión. Fase 3 sigue bloqueada.
+
+### 2026-10-12 — TASK-05G (Homologación Google Maps en iOS) — READY_FOR_REVIEW (Trabajador)
+
+- **Objetivo:** homologar el mapa a Google Maps también en iOS. Solo 2 archivos de product code, cero dependencias nuevas, cero keys hardcodeadas, cero `npx expo start`/`prebuild`/`run:*`, cero commit.
+- **Editados (2 archivos):**
+  - `app.config.js`: añadida la clave `plugins` al final del objeto retornado — `[...(config.plugins || []), ["react-native-maps", { iosGoogleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_IOS }]]`. La inyección Android existente (`android.config.googleMaps.apiKey` desde `EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_ANDROID`) quedó **intacta**. `app.json` sin tocar (inyección dinámica vía `.env`).
+  - `src/features/home/presentation/RadarMap.tsx`: import cambiado a `import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";` y `provider={PROVIDER_GOOGLE}` añadido al `MapView`. Props, `RadarMapHandle` (`getPointForCoordinate`/`focusOnPosition`), markers, efecto de cámara y `onRegionChangeComplete` **intactos**.
+- **Verificaciones:**
+  - `git diff -- app.json package.json` → **vacío** (exit 0).
+  - `git status` → `.env` **no aparece** (ignorado por `.gitignore:73`); solo `app.config.js`, `RadarMap.tsx` y el preexistente `Instructions/fase_2b/fase_2b.md`.
+  - `git grep "AIza"` → cero coincidencias **nuevas** en `app.config.js`/`RadarMap.tsx` (la key iOS se lee de `process.env`, nunca se escribe).
+  - Cero `any`/`TouchableOpacity`/`FlatList`/`className`/comentarios nuevos/emojis en lo tocado.
+- **Arnés (verde):** `npx tsc --noEmit` → **exit 0**; `npx eslint .` → **exit 0** (cero errores/warnings). NO se ejecutó `npx expo start`.
+- `spec/features/radar-home/task.md`: TASK-05G pasos `- [x]` / `Status: READY_FOR_REVIEW` (NO `COMPLETED`; el rebuild y la validación física son del Humano). Notas de implementación añadidas (sin desviaciones).
+- `progress/current-task.json` → `active_task: TASK-05G`, `status: READY_FOR_REVIEW`; `harness_status.last_run`/`validation`/`blockers_or_errors` actualizados; `linter_passed`/`typecheck_passed`/`package_json_sin_cambios`/`app_json_sin_cambios: true`.
+- **PARADA CONTROLADA (validación Humana):** `npx expo prebuild` + `npx expo run:ios --device` (instala pods de Google Maps) y `npx expo run:android --device`; checklist lado a lado (misma cartografía Google en iOS y Android, pines guinda/dorado, chips centran, tap de pin → offset + popup + ripple, etiqueta del dispositivo, drawer/logout) → TASK-05G COMPLETED → TASK-06 (arnés) en nueva sesión. **Cero TASK-06 ejecutada.** Fase 3 sigue bloqueada.
+
+### 2026-10-12 — TASK-05G QA físico iOS OK / regresión Android detectada y corregida — READY_FOR_REVIEW (Trabajador)
+
+- **QA físico del Humano:** iOS validado — Google Maps se aplicó correctamente (homologación `PROVIDER_GOOGLE` + key iOS desde `.env` vía `app.config.js`). **Android falló** con `addViewAt: ... API key not found. Check that <meta-data android:name="com.google.android.geo.API_KEY" .../> is in the <application> element of AndroidManifest.xml`.
+- **Diagnóstico (no fue borrado manual):** `git diff -- android/app/src/main/AndroidManifest.xml` mostró que el Human's `npx expo prebuild` **eliminó** la línea `<meta-data android:name="com.google.android.geo.API_KEY" android:value="AIza…"/>`. Causa raíz en el plugin de `react-native-maps@1.27.2` (`node_modules/react-native-maps/plugin/build/android.js:47-52`): si no recibe la prop `androidGoogleMapsApiKey`, ejecuta `removeMetaDataItemFromMainApplication(..., 'com.google.android.geo.API_KEY')`. Al añadir el plugin solo con `iosGoogleMapsApiKey` (TASK-05G inicial), el mod de Android borró la key que exponía `android.config.googleMaps.apiKey`. **Ningún archivo nativo fue editado a mano** (prohibido por AGENTS.md/task).
+- **Fix (solo config, archivo permitido `app.config.js`):** el plugin `react-native-maps` recibe ahora **ambas** props — `iosGoogleMapsApiKey` y `androidGoogleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_ANDROID` — de modo que re-inyecta el meta-data de Android en el próximo `prebuild`. Se conserva además `android.config.googleMaps.apiKey` (misma key). Verificado con `node --env-file=.env` que ambas props resuelven a valor no vacío (sin imprimir el valor).
+- **Invariantes:** `app.json`/`package.json` **sin cambios** (siguen vacíos por diff); `.env` ignorado; cero keys hardcodeadas en `app.config.js`/`RadarMap.tsx`. El `AndroidManifest.xml` y los archivos `ios/*` modificados en el working tree son producto del `prebuild` del Humano (pods de Google Maps + mods), no ediciones del agente.
+- **Arnés (verde):** `npx tsc --noEmit` → **exit 0**; `npx eslint .` → **exit 0**. NO se ejecutó `npx expo start/prebuild/run`.
+- `spec/features/radar-home/task.md`: TASK-05G sigue `Status: READY_FOR_REVIEW` (NO `COMPLETED`); añadida la sección «Corrección post-QA físico — regresión Android» con causa raíz y fix.
+- `progress/current-task.json` → `active_task: TASK-05G`, `status: READY_FOR_REVIEW`; `description`/`validation`/`last_run`/`bundling_passed_android`/`bundling_passed_ios`/`blockers_or_errors` actualizados con la regresión y el fix.
+- **PARADA CONTROLADA (validación Humana):** re-ejecutar `npx expo prebuild --platform android` + `npx expo run:android --device` y validar Android (Google Maps con la key re-inyectada) → TASK-05G COMPLETED → TASK-06 (arnés) en nueva sesión. **Cero TASK-06 ejecutada.** Fase 3 sigue bloqueada.
+
+### 2026-10-12 — TASK-05G APROBADA por el Humano (Fase 2b)
+
+- **Validación:** el Tester Visual Humano validó en **dispositivos físicos Android + iOS** y confirmó que Google Maps funciona correctamente en **ambas plataformas** tras el fix de la regresión Android. iOS: Google Maps aplicado correctamente. Android: tras re-ejecutar `npx expo prebuild --platform android` + `npx expo run:android --device`, la key se re-inyectó (gracias a `androidGoogleMapsApiKey` pasado al plugin `react-native-maps` en `app.config.js`) y el mapa Google funcionó. TASK-05G marcada **`COMPLETED`**.
+- `spec/features/radar-home/task.md`: TASK-05G `Status: COMPLETED` + nota de aprobación del Humano (`Validación: APROBADA`); pasos en `- [x]`.
+- `progress/current-task.json` → `active_task: TASK-05G`, `status: COMPLETED`; `validation`/`last_run`/`bundling_passed_android`/`bundling_passed_ios`/`blockers_or_errors` actualizados con la aprobación; `harness_status.linter_passed`/`typecheck_passed`/`package_json_sin_cambios`/`app_json_sin_cambios: true`.
+- **PARADA CONTROLADA:** TASK-06 (arnés) **NO** se inicia en esta sesión; el Humano la autoriza en **nueva sesión**. **Cero TASK-06 ejecutada.** Fase 3 sigue bloqueada.

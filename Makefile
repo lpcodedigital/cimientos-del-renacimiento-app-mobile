@@ -43,7 +43,7 @@ start-c:
 	npx expo start -c
 
 run-android:
-	npx expo run:android
+	npx expo run:android --device
 
 run-ios:
 	npx expo run:ios --device

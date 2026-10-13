@@ -254,8 +254,10 @@ Reglas absolutas del Trabajador:
 
 ## TASK-05G — Homologación Google Maps en iOS
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
+
+**Aprobación del Humano:** validada y aprobada 2026-10-12 (validación física en **Android + iOS**: Google Maps aplicado correctamente en ambas plataformas tras el fix de la regresión Android). TASK-06 NO se inicia en esta sesión.
 
 **Origen:** decisión del Humano (2026-10-12): homologar el mapa a Google Maps en ambas plataformas antes del arnés. Fundamento: spec §4.2/§6.10/CA-09, plan §8.4, `tech-stack.md` §2.3 (ya enmendados por el Orquestador). Cero dependencias nuevas (`package.json` intacto; el SDK de Google iOS llega por CocoaPods en el prebuild del Humano). Cero keys hardcodeadas.
 
@@ -263,14 +265,30 @@ Reglas absolutas del Trabajador:
 
 **Pasos**
 
-- [ ] `app.config.js`: conservar la inyección Android existente y añadir al final del objeto retornado el plugin `["react-native-maps", { "iosGoogleMapsApiKey": process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_IOS }]` (spread de `config.plugins` existente primero). `app.json` **no se toca** (la inyección es dinámica).
-- [ ] `src/features/home/presentation/RadarMap.tsx`: `import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"` (ajustar el import existente) y `provider={PROVIDER_GOOGLE}` en el `MapView`. Cero otro cambio (props, handle, markers, efecto de cámara intactos).
-- [ ] `npx tsc --noEmit` y `npx eslint .` deben pasar.
-- [ ] Verificar `git diff -- app.json package.json` **vacío** y `git status -- .env` sin cambios trackeados (`.env` está en `.gitignore`).
+- [x] `app.config.js`: conservar la inyección Android existente y añadir al final del objeto retornado el plugin `["react-native-maps", { "iosGoogleMapsApiKey": process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_IOS }]` (spread de `config.plugins` existente primero). `app.json` **no se toca** (la inyección es dinámica).
+- [x] `src/features/home/presentation/RadarMap.tsx`: `import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"` (ajustar el import existente) y `provider={PROVIDER_GOOGLE}` en el `MapView`. Cero otro cambio (props, handle, markers, efecto de cámara intactos).
+- [x] `npx tsc --noEmit` y `npx eslint .` deben pasar.
+- [x] Verificar `git diff -- app.json package.json` **vacío** y `git status -- .env` sin cambios trackeados (`.env` está en `.gitignore`).
 
 **Notas de implementación (el Trabajador documenta aquí desviaciones):**
 
-- _(pendiente)_
+- `app.config.js`: se añadió `plugins` como última clave del objeto retornado con el spread `...(config.plugins || [])` primero y el plugin `react-native-maps`; la inyección Android existente (`android.config.googleMaps.apiKey`) quedó intacta. `app.json` no se tocó (inyección dinámica desde `.env`).
+- `RadarMap.tsx`: import ampliado con `PROVIDER_GOOGLE` y `provider={PROVIDER_GOOGLE}` en el `MapView`; resto (props, `RadarMapHandle`, markers, efecto de cámara, `onRegionChangeComplete`) intacto.
+- Arnés: `npx tsc --noEmit` → exit 0; `npx eslint .` → exit 0. `git diff -- app.json package.json` → vacío. `.env` ignorado por `.gitignore` (no aparece en `git status`). Cero keys hardcodeadas en los archivos tocados (cero coincidencias `AIza` en `app.config.js`/`RadarMap.tsx`). Cero `npx expo start`/`prebuild`/`run:*`, cero commit.
+
+**Corrección post-QA físico (2026-10-12) — regresión Android `API key not found`:**
+
+- **Síntoma:** tras el `npx expo prebuild` del Humano, iOS validó Google Maps correctamente, pero Android falló con `addViewAt ... API key not found`; `AndroidManifest.xml` quedó **sin** el `<meta-data android:name="com.google.android.geo.API_KEY" .../>`.
+- **Causa raíz (no fue borrado manual):** el plugin de `react-native-maps@1.27.2` (`node_modules/react-native-maps/plugin/build/android.js:47-52`) **elimina** el meta-data `com.google.android.geo.API_KEY` si se le pasa sin la prop `androidGoogleMapsApiKey`:
+  ```js
+  if (props?.androidGoogleMapsApiKey) { addMetaDataItemToMainApplication(mainApplication, 'com.google.android.geo.API_KEY', props.androidGoogleMapsApiKey); }
+  else { removeMetaDataItemFromMainApplication(mainApplication, 'com.google.android.geo.API_KEY'); }
+  ```
+  Al añadir el plugin solo con `iosGoogleMapsApiKey`, el mod de Android borraba la key que exponía `android.config.googleMaps.apiKey`.
+- **Fix (config-level, cero edición nativa):** `app.config.js` pasa **ambas** props al plugin — `iosGoogleMapsApiKey` y `androidGoogleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_ANDROID` — de modo que el plugin re-inyecta el meta-data de Android en el próximo `prebuild`. Se conserva además `android.config.googleMaps.apiKey` (misma key). Verificado con `node --env-file=.env`: ambas props resuelven a valor no vacío.
+- **Acción del Humano:** re-ejecutar `npx expo prebuild --platform android` (o `npx expo prebuild`) + `npx expo run:android --device` y validar Android. **TASK-05G permanece `READY_FOR_REVIEW`** hasta que Android quede validado en físico.
+
+**Validación (Humano, 2026-10-12):** **APROBADA** en dispositivos físicos **Android + iOS**. iOS: Google Maps aplicado correctamente. Android: tras re-ejecutar `npx expo prebuild --platform android` + `run:android`, la key se re-inyectó y Google Maps funcionó. TASK-05G → **COMPLETED**. Se autoriza TASK-06 (arnés) en nueva sesión.
 
 **allowed_files**
 

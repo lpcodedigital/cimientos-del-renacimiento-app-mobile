@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
 import type { GeoPosition } from "../domain/entities/GeoPosition";
 import type { MunicipioRadar } from "../domain/entities/MunicipioRadar";
@@ -121,6 +121,7 @@ export const RadarMap = forwardRef<RadarMapHandle, RadarMapProps>(
       <MapView
         ref={mapRef}
         style={{ flex: 1 }}
+        provider={PROVIDER_GOOGLE}
         showsUserLocation={false}
         showsCompass={false}
         toolbarEnabled={false}

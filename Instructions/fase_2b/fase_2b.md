@@ -389,3 +389,56 @@ AL TERMINAR (obligatorio):
 - NO npx expo start. NO commit salvo que el Humano lo pida.
 
 REPORTA al final: diff de los 3 archivos, resultado de tsc + eslint.
+
+## Prompt para el Worker — TASK-05G
+
+MODO: EJECUCIÓN. Proyecto: Cimientos del Renacimiento — Gabinete Móvil.
+FASE 2b (radar-home). Ejecutar SOLO TASK-05G. Cero TASK-06+. Cero dependencias nuevas.
+Raíz: /Users/macbookair/Documents/Projects/React-Native/CIMIENTOS-DEL-RENACIMIENTO-APP-MOBILE
+
+LEER ANTES DE TOCAR CÓDIGO (obligatorio):
+- spec/features/radar-home/task.md  (TASK-05G: pasos y allowed_files)
+- spec/features/radar-home/spec.md  (§4.2, §6.10, CA-09)
+- spec/features/radar-home/plan.md  (§8.4)
+- progress/current-task.json
+
+CONTEXTO DE KEYS: la key iOS YA existe en .env como EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_IOS
+(gitignored). NO necesitas su valor. PROHIBIDO tocar .env, hardcodear keys o pedirlas.
+
+PASOS:
+1) app.config.js — CONSERVAR la inyección Android existente y añadir al objeto retornado
+   el plugin (spread de config.plugins primero):
+   plugins: [
+     ...(config.plugins || []),
+     ["react-native-maps", { iosGoogleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_IOS }]
+   ]
+   app.json NO se toca (la inyección es dinámica).
+2) src/features/home/presentation/RadarMap.tsx — ajustar el import de react-native-maps
+   para incluir PROVIDER_GOOGLE y poner provider={PROVIDER_GOOGLE} en el MapView.
+   Cero otro cambio (props, handle focusOnPosition, markers, efecto de cámara intactos).
+3) Arnés: npx tsc --noEmit y npx eslint . → exit 0.
+4) Verificar: git diff -- app.json package.json → vacío. git status → .env NO aparece
+   (está en .gitignore). git grep "AIza" sobre archivos trackeados → sin coincidencias
+   nuevas en lo que tocaste.
+
+PROHIBIDO:
+- Tocar .env, app.json, package.json, auth, app-shell, navigation, HomeProvider,
+  infrastructure, App.tsx, RadarRipple.tsx, MunicipioCallout.tsx, HomeScreen.tsx.
+- Dependencias nuevas, npm i, npx expo install, npx expo start, npx expo prebuild, commits.
+- any, TouchableOpacity, FlatList, className, comentarios, emojis.
+
+ALLOWED_FILES (solo estos):
+- app.config.js
+- src/features/home/presentation/RadarMap.tsx
+- spec/features/radar-home/task.md
+- progress/current-task.json
+- progress/history.md
+
+AL TERMINAR (obligatorio):
+- Marcar [x] los pasos de TASK-05G en task.md; Status: READY_FOR_REVIEW (NO COMPLETED;
+  el rebuild y la validación física son del Humano). Documentar desviaciones en notas.
+- Actualizar progress/current-task.json y progress/history.md.
+- NO npx expo start / prebuild / run:ios / run:android. NO commit.
+
+REPORTA al final: diff de app.config.js y RadarMap.tsx, resultado de tsc + eslint,
+y confirmación de que app.json/package.json no cambiaron.
