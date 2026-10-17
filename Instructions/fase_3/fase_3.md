@@ -452,3 +452,82 @@ harness_status.typecheck_passed: true, nota con archivos editados) y añade la
 entrada en progress/history.md con la evidencia literal (tsc/eslint, greps,
 gate de deps). NO inicies TASK-06. PARADA CONTROLADA: reporta qué revisar y
 los archivos editados.
+
+## Prompt para la nueva sesión (TASK-06):
+
+MODO: EJECUCIÓN / AUDITORÍA (Trabajador + Revisor). Ejecutas ÚNICAMENTE la
+TASK-06 de la feature search-bar (Fase 3). No planeas, no orquestas, no
+ejecutas ninguna otra TASK y NO abres Fase 4.
+Proyecto: Cimientos del Renacimiento — Gabinete Móvil (Expo SDK 57 + RN + TS strict).
+Raíz: /Users/macbookair/Documents/Projects/React-Native/CIMIENTOS-DEL-RENACIMIENTO-APP-MOBILE
+
+LEE EN ESTE ORDEN (obligatorio, nada más al inicio):
+1. AGENTS.md (leyes absolutas y arnés)
+2. progress/current-task.json (active_task = TASK-05 COMPLETED)
+3. spec/features/search-bar/task.md — SOLO la sección TASK-06
+4. spec/features/search-bar/plan.md — SOLO §10 (skills) y §11 (criterio de
+   hecho técnico); usa §1 si necesitas el árbol destino
+5. progress/history.md — SOLO las entradas 2026-10-17 de TASK-04 y TASK-05
+   (incluida la aprobación Humana)
+
+CONTEXTO (ya cerrado por el Humano, no re-debatir):
+- TASK-01…TASK-05 COMPLETED. TASK-05 validada por el Humano en Android + iOS
+  con el checklist CA-01…07: funciona correctamente.
+- package.json/lock ya contienen @shopify/flash-list@2.0.2 y
+  expo-image@~57.0.5 desde TASK-01. NO reinstales ni toques package.json/lock.
+- app.json/app.config.js no cambiaron por la feature. NO toques config nativa
+  ni archivos nativos.
+- TASK-06 es SOLO auditoría/arnés: no añade features, no cambia UI.
+
+EJECUTA EXACTAMENTE (task.md TASK-06, verbatim):
+1. npx tsc --noEmit → exit 0.
+2. npx eslint . → exit 0 y cero warnings. Desviación conocida: 1 warning
+   preexistente de TASK-03 en src/features/search/presentation/SearchProvider.tsx
+   (useContext importado y sin usar). NO edites ese archivo sin autorización
+   explícita del Humano; si persiste, documéntalo como desviación y solicita
+   autorización (es un archivo de TASK-03, fuera del allowed_files de TASK-06).
+3. Greps src/**/*.ts(x) + App.tsx: cero any, TouchableOpacity, FlatList,
+   expo-router, estimatedItemSize; auth-* fuera de auth = 0 (salvo el ACEPTADO
+   preexistente de 1.5b en src/shared/ui/* y tokens.ts, documentado en
+   harness_status); searchPalette.accent fuera de tokens.ts = 0.
+4. DIP: único importador de search/infrastructure = src/app/compositionRoot.ts;
+   @shopify/* y expo-image ausentes de domain/application;
+   @shopify/flash-list y expo-image solo en search/presentation.
+5. Deps: git diff de package.json contra baseline pre-Fase-3 muestra SOLO
+   @shopify/flash-list + expo-image; git diff -- app.json app.config.js VACÍO.
+6. Contrato: path /api/v1/app-mobile/global-search una sola vez en código
+   (AxiosGlobalSearchApi.ts); infrastructure/dto.ts espejo de spec §4.6.
+7. Chrome/radar: git diff de src/features/app-shell/** y src/features/home/**
+   limitado a los 3 archivos de acciones de TASK-05 (AppDrawer.tsx,
+   menuItems.ts, RadarSearchBar.tsx); cero otro cambio.
+
+REGLAS:
+- Solo Pressable; cero TouchableOpacity/FlatList/any/className/comentarios nuevos.
+- Ternarios estrictos en JSX (cero && con valores falsy).
+- NO toques SearchScreen ni search/domain|application|infrastructure|presentation,
+  SearchProvider, useSearch, App.tsx, compositionRoot, eslint.config.js,
+  package.json/lock, app.json/app.config.js, global.css, tokens.ts ni nativos.
+- Instructions/** está fuera de alcance (hay una modificación preexistente en
+  Instructions/fase_3/fase_3.md; no la toques).
+- NO ejecutes npx expo start/prebuild/run:*. Sin commit. Sin dependencias nuevas.
+- Correcciones: SOLO en archivos de TASK-01…05 y SOLO si el Humano/Revisor
+  autoriza el allowed_files extra. No "arregles" auth, chrome ni radar.
+
+ARCHIVOS PERMITIDOS (prohibido tocar cualquier otro sin autorización):
+- spec/features/search-bar/task.md
+- progress/current-task.json
+- progress/history.md
+
+ARNÉS OBLIGATORIO AL CERRAR:
+- Reproduce y reporta literalmente tsc/eslint, los greps y el gate de deps.
+- git diff -- package.json app.json app.config.js → VACÍO.
+- Verifica que TASK-06 no introduce cambios de código en src/.
+
+CIERRE:
+- Marca en spec/features/search-bar/task.md los pasos de TASK-06 como - [x] y
+  Status: READY_FOR_REVIEW (NO COMPLETED: el cierre formal lo hace el Humano).
+- Actualiza progress/current-task.json (active_task TASK-06 READY_FOR_REVIEW,
+  harness_status con la evidencia y desviaciones) y añade la entrada en
+  progress/history.md con la evidencia literal.
+- NO inicies Fase 4. PARADA CONTROLADA: reporta el resultado del arnés,
+  desviaciones y qué debe revisar el Humano.

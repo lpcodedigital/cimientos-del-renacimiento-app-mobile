@@ -169,18 +169,18 @@
 
 ## TASK-06 — Arnés
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador + Revisor
 
 **Pasos**
 
-- [ ] `npx tsc --noEmit` → exit 0.
-- [ ] `npx eslint .` → exit 0 (cero warnings).
-- [ ] Grep `src/**/*.ts(x)` + `App.tsx`: cero `any`, `TouchableOpacity`, `FlatList`, `expo-router`, `estimatedItemSize`, paleta `auth-*` fuera de auth, `searchPalette.accent` fuera de `tokens.ts`.
-- [ ] DIP: único importador de `search/infrastructure` = `compositionRoot.ts`; `@shopify/*`/`expo-image` ausentes de `domain`/`application`; `@shopify/flash-list` y `expo-image` solo en `search/presentation`.
-- [ ] Deps: `git diff` de `package.json` contra baseline pre-Fase-3 muestra SOLO `@shopify/flash-list` + `expo-image`; `app.json`/`app.config.js` sin cambios por la feature.
-- [ ] Contrato: grep del path `/api/v1/app-mobile/global-search` único en `AxiosGlobalSearchApi.ts`; `infrastructure/dto.ts` espejo de spec §4.6.
-- [ ] Chrome/radar: `git diff` de `src/features/app-shell/**` y `src/features/home/**` muestra solo los 3 archivos de acciones de TASK-05 (más `RadarSearchBar` ya listado); cero otro cambio.
+- [x] `npx tsc --noEmit` → exit 0.
+- [x] `npx eslint .` → exit 0, cero warnings. La desviación preexistente de TASK-03 (`useContext` sin usar en `SearchProvider.tsx:4`) fue corregida manualmente por el Humano (eliminación del import, 1 línea) y el arnés se re-ejecutó en verde: `npx tsc --noEmit` exit 0; `npx eslint .` exit 0 sin warnings.
+- [x] Grep `src/**/*.ts(x)` + `App.tsx`: cero `any`, `TouchableOpacity`, `FlatList`, `expo-router`, `estimatedItemSize`, paleta `auth-*` fuera de auth, `searchPalette.accent` fuera de `tokens.ts`.
+- [x] DIP: único importador de `search/infrastructure` = `compositionRoot.ts`; `@shopify/*`/`expo-image` ausentes de `domain`/`application`; `@shopify/flash-list` y `expo-image` solo en `search/presentation`.
+- [x] Deps: `git diff` de `package.json` contra baseline pre-Fase-3 muestra SOLO `@shopify/flash-list` + `expo-image`; `app.json`/`app.config.js` sin cambios por la feature.
+- [x] Contrato: grep del path `/api/v1/app-mobile/global-search` único en `AxiosGlobalSearchApi.ts`; `infrastructure/dto.ts` espejo de spec §4.6.
+- [x] Chrome/radar: `git diff` de `src/features/app-shell/**` y `src/features/home/**` muestra solo los 3 archivos de acciones de TASK-05 (más `RadarSearchBar` ya listado); cero otro cambio.
 
 **allowed_files**
 
@@ -189,6 +189,8 @@
 - `progress/history.md`
 
 Si el arnés falla, correcciones **solo** en archivos de TASK-01…05 (el Humano/Revisor autoriza el allowed_files extra). No "arreglar" auth, chrome ni radar.
+
+**Validación (Humano):** APROBADA el 2026-10-17. El Humano autorizó y aplicó manualmente el fix de 1 línea en `SearchProvider.tsx` (eliminar `useContext` sin usar). Arnés re-ejecutado: `npx tsc --noEmit` exit 0; `npx eslint .` exit 0 sin warnings; greps, DIP, deps, contrato y chrome/radar en verde. TASK-06 → COMPLETED. Fase 4 no abierta.
 
 **Definition of done:** CA-08, CA-09 y CA-10 listos; TASK-06 COMPLETED (cierre formal del Humano). Fase 4 no abierta.
 

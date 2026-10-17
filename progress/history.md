@@ -1005,3 +1005,41 @@
 - **Validación del Humano:** TASK-05 validada en dispositivos **Android + iOS** con el checklist CA-01…07; funciona correctamente (entrada desde la barra del Home y desde el drawer, cierre del drawer, `autoFocus`/teclado, back arrow al radar, búsqueda real, spinners, contador, grid 2 columnas con pills, fallback «Sin imagen», scroll infinito, X conserva foco, empty state y radar/chrome pixel-idénticos).
 - **Cierre:** `spec/features/search-bar/task.md` → TASK-05 `- [x]` / `Status: COMPLETED` (validación Humana registrada). `progress/current-task.json` → `active_task: TASK-05` `COMPLETED`, `current_roadmap_phase` actualizado, nota `fase_3_task_05_run` marcada como aprobada, `blockers_or_errors` apuntando a TASK-06.
 - **Gobernanza:** TASK-06 (arnés) **NO iniciada**: se autoriza en **NUEVA SESIÓN** con el prompt de ejecución. Fase 4 sigue bloqueada.
+
+### 2026-10-17 — TASK-06 (Arnés de control Fase 3) — READY_FOR_REVIEW (Trabajador + Revisor)
+
+- **Alcance:** SOLO auditoría/arnés de la feature `search-bar`. Cero cambios de código, cero features, cero UI, cero dependencias, cero commit, cero `npx expo start`/`prebuild`/`run:*`. Editados únicamente `spec/features/search-bar/task.md`, `progress/current-task.json` y `progress/history.md`.
+- **Typecheck:** `npx tsc --noEmit` → **exit 0**.
+- **Linter:** `npx eslint .` → **exit 0**. Salida literal:
+  ```
+  /Users/macbookair/Documents/Projects/React-Native/CIMIENTOS-DEL-RENACIMIENTO-APP-MOBILE/src/features/search/presentation/SearchProvider.tsx
+    4:3  warning  'useContext' is defined but never used  @typescript-eslint/no-unused-vars
+
+  ✖ 1 problem (0 errors, 1 warning)
+  ```
+  **Desviación conocida:** warning preexistente de TASK-03 (`useContext` importado y sin usar; snippet verbatim de plan §7). `SearchProvider.tsx` está fuera de `allowed_files` de TASK-06 y **no se editó**. Se solicita al Humano/Revisor autorizar el fix de 1 línea (eliminar `useContext` del import) o aceptar la desviación.
+- **Bans (git grep sobre `src/**/*.ts`, `src/**/*.tsx`, `App.tsx`):**
+  ```
+  any=0 | TouchableOpacity=0 | FlatList=0 | expo-router=0 | estimatedItemSize=0
+  className en search/**=0 (solo coincidencias preexistentes en features/auth/.../LoginScreen.tsx y src/shared/ui/*)
+  searchPalette.accent fuera de tokens.ts=0
+  auth-* fuera de auth: solo src/shared/ui/BiometricMethodCard.tsx, src/shared/ui/TextField.tsx y src/shared/theme/tokens.ts (ACEPTADO preexistente 1.5b); cero en search/** y App.tsx
+  ```
+- **DIP:** único importador de `search/infrastructure` = `src/app/compositionRoot.ts:22`. `@shopify/*`/`expo-image` ausentes de `domain`/`application`. `@shopify/flash-list` solo en `search/presentation/SearchScreen.tsx:4`; `expo-image` solo en `search/presentation/SearchResultCard.tsx:2`.
+- **Gate de deps (baseline pre-Fase-3 `3ab59f9`):** `git diff 3ab59f9 -- package.json` → SOLO `+"@shopify/flash-list": "2.0.2"` y `+"expo-image": "~57.0.5"`. `git diff -- package.json app.json app.config.js` (worktree) → **VACÍO**. `git diff 3ab59f9 -- app.json app.config.js` → **VACÍO**.
+- **Contrato:** `/api/v1/app-mobile/global-search` aparece **una sola vez** en código (`AxiosGlobalSearchApi.ts:32`). `infrastructure/dto.ts` es espejo de spec §4.6 (`idOriginal`, `tipo`, `titulo`, `municipio`, `localidad?`, `descripcionCorta?`, `estatus?`, `progreso?`, `imagenUrl?`; Page: `content`, `totalElements`, `totalPages`, `number`, `last`).
+- **Chrome/radar:** `git diff --stat 3ab59f9 -- src/features/app-shell src/features/home` → SOLO `AppDrawer.tsx` (+9), `menuItems.ts` (4 cambiadas), `RadarSearchBar.tsx` (+21/-8); `3 files changed, 26 insertions(+), 8 deletions(-)`. `git diff -- src/features/app-shell src/features/home` (worktree) → **VACÍO**.
+- **TASK-06 sin cambios de código:** `git diff -- src/ App.tsx` → **VACÍO**; sin untracked. `git status --porcelain` solo muestra la modificación preexistente de `Instructions/fase_3/fase_3.md`, fuera de alcance y no tocada.
+- **Estado:** `spec/features/search-bar/task.md` TASK-06 → pasos `- [x]` / `Status: READY_FOR_REVIEW` (NO COMPLETED). `progress/current-task.json` → `active_task: TASK-06` `READY_FOR_REVIEW`, `harness_status` con evidencia y desviación.
+- **PARADA CONTROLADA (gate Humano):** el Humano/Revisor debe (1) decidir sobre el warning de `SearchProvider.tsx` (autorizar fix de 1 línea o aceptar la desviación) y (2) dar el cierre formal de TASK-06/Fase 3. **NO se abrió Fase 4.**
+
+### 2026-10-17 — TASK-06 APROBADA por el Humano — COMPLETED
+
+- **Validación del Humano:** TASK-06 validada. El Humano autorizó y aplicó **manualmente** el fix de 1 línea en `src/features/search/presentation/SearchProvider.tsx` (eliminación del import `useContext` sin usar), resolviendo la única desviación del arnés. El agente no editó código.
+- **Arnés re-ejecutado sobre el árbol con el fix:**
+  - `npx tsc --noEmit` → **exit 0**.
+  - `npx eslint .` → **exit 0, cero errores y cero warnings**.
+  - Greps/depuración sin cambios: `any`/`TouchableOpacity`/`FlatList`/`expo-router`/`estimatedItemSize` = 0; `searchPalette.accent` fuera de `tokens.ts` = 0; `auth-*` solo en auth + `src/shared/ui/*` + `tokens.ts` (aceptado 1.5b).
+  - DIP, deps (`package.json` vs baseline `3ab59f9` solo FlashList + expo-image; `app.json`/`app.config.js` sin diff), contrato (`/api/v1/app-mobile/global-search` único + `dto.ts` espejo §4.6) y chrome/radar (solo `AppDrawer.tsx`, `menuItems.ts`, `RadarSearchBar.tsx`) → **en verde**.
+- **Cierre:** `spec/features/search-bar/task.md` → TASK-06 `- [x]` / `Status: COMPLETED` con validación Humana registrada. `progress/current-task.json` → `active_task: TASK-06` `COMPLETED`, `current_roadmap_phase` actualizado, `harness_status.linter` sin warnings, `fase_3_task_06_run` y `blockers_or_errors` con el cierre.
+- **Gobernanza:** Fase 3 (search-bar) con TASK-01…TASK-06 **COMPLETED**. **Fase 4 NO abierta.** Sin commit (lo decide el Humano).
