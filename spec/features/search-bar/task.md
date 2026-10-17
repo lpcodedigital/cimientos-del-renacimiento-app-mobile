@@ -108,18 +108,18 @@
 
 ## TASK-04 — Componentes de búsqueda (sin wire al navigator)
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
 
 **Pasos (5 archivos nuevos, plan §8 + spec §4.5; nadie importa `SearchScreen` todavía)**
 
-- [ ] `src/features/search/presentation/format.ts` (plan §8.1, verbatim; `toTitleCase` duplicado deliberadamente — prohibido importar de `home`).
-- [ ] `src/features/search/presentation/SearchInputBar.tsx` (plan §8.2: pill blanca, lupa, `TextInput` autoFocus con placeholder verbatim, X solo con texto que llama `clearQuery` sin quitar foco).
-- [ ] `src/features/search/presentation/SearchResultCard.tsx` (plan §8.3: `memo`, imagen `expo-image` 4:3 con `recyclingKey`/`memory-disk` o fallback «Sin imagen», pill de tipo, título Title Case 2 líneas, ubicación, avance solo con campos presentes — `0%` se pinta).
-- [ ] `src/features/search/presentation/SearchEmptyState.tsx` (plan §8.4: variantes `initial`/`empty`/`error`, copy verbatim).
-- [ ] `src/features/search/presentation/SearchScreen.tsx` (plan §8.5: `useInfiniteQuery` con `queryKey` debounced + `keepPreviousData` + `enabled: isActive`; `renderCard`/`keyExtractor` hoisted; FlashList `numColumns={2}` sin `estimatedItemSize`; heading + contador; spinner central/footer; back arrow con `navigation.goBack()`).
-- [ ] Grep: `expo-image` y `@shopify/flash-list` solo en estos archivos; cero imports de `infrastructure`; cero `FlatList`/`estimatedItemSize`/`any`/`TouchableOpacity`.
-- [ ] `npx tsc --noEmit` → exit 0; `npx eslint .` → exit 0. `git diff -- package.json app.json` → vacío.
+- [x] `src/features/search/presentation/format.ts` (plan §8.1, verbatim; `toTitleCase` duplicado deliberadamente — prohibido importar de `home`).
+- [x] `src/features/search/presentation/SearchInputBar.tsx` (plan §8.2: pill blanca, lupa, `TextInput` autoFocus con placeholder verbatim, X solo con texto que llama `clearQuery` sin quitar foco).
+- [x] `src/features/search/presentation/SearchResultCard.tsx` (plan §8.3: `memo`, imagen `expo-image` 4:3 con `recyclingKey`/`memory-disk` o fallback «Sin imagen», pill de tipo, título Title Case 2 líneas, ubicación, avance solo con campos presentes — `0%` se pinta).
+- [x] `src/features/search/presentation/SearchEmptyState.tsx` (plan §8.4: variantes `initial`/`empty`/`error`, copy verbatim).
+- [x] `src/features/search/presentation/SearchScreen.tsx` (plan §8.5: `useInfiniteQuery` con `queryKey` debounced + `keepPreviousData` + `enabled: isActive`; `renderCard`/`keyExtractor` hoisted; FlashList `numColumns={2}` sin `estimatedItemSize`; heading + contador; spinner central/footer; back arrow con `navigation.goBack()`).
+- [x] Grep: `expo-image` y `@shopify/flash-list` solo en estos archivos; cero imports de `infrastructure`; cero `FlatList`/`estimatedItemSize`/`any`/`TouchableOpacity`.
+- [x] `npx tsc --noEmit` → exit 0; `npx eslint .` → exit 0. `git diff -- package.json app.json` → vacío.
 
 **Nota:** el screen referencia `AppStackParamList` con la ruta `Search` (type-only import). Si `types.ts` aún no la declara (se añade en TASK-05), añadirla **en esta TASK** como excepción tipada: `Search: undefined` en `AppStackParamList` (archivo permitido abajo). RootNavigator NO se toca en esta TASK.
 
@@ -135,7 +135,7 @@
 - `progress/current-task.json`
 - `progress/history.md`
 
-**Validación (Humano):** revisión de código (la pantalla aún no se ve: no hay ruta montada). Tras aprobarla, TASK-04 → COMPLETED y se autoriza TASK-05 en nueva sesión.
+**Validación (Humano):** revisión de código (la pantalla aún no se ve: no hay ruta montada). Aprobada por el Humano el 2026-10-17: TASK-04 → COMPLETED. TASK-05 se autoriza en nueva sesión con prompt de ejecución.
 
 ---
 

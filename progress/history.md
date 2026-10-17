@@ -941,3 +941,36 @@
 - **Validación del Humano:** infra + wiring revisados y aprobados (firmas verbatim de plan §6–§7, mapper 1:1, DIP y fences). Arnés reproducido: `npx tsc --noEmit` → exit 0; `npx eslint .` → exit 0; grep DIP limpio (único importador `compositionRoot.ts:22`); `git diff -- package.json app.json app.config.js` → VACÍO.
 - **Cierre:** `spec/features/search-bar/task.md` → TASK-03 `- [x]` / `Status: COMPLETED`. `progress/current-task.json` → `active_task: TASK-03` `COMPLETED`, `current_roadmap_phase` actualizado, nota `fase_3_task_03_run` marcada como aprobada.
 - **Gobernanza:** no se requiere `prebuild`/rebuild por TASK-03 (solo JS/TS; los módulos nativos se reconstruyeron en TASK-01). TASK-04 (5 componentes sin wire) **NO iniciada**: se autoriza en **NUEVA SESIÓN** con prompt de ejecución. La compilación en dispositivo queda para el gate de TASK-05. Fase 4 sigue bloqueada.
+
+### 2026-10-17 — TASK-04 (Componentes de búsqueda, sin wire al navigator) — READY_FOR_REVIEW (Trabajador)
+
+- **Alcance (plan §8.1–§8.5 + spec §4.5 verbatim):** solo los 5 componentes de `search/presentation` + `Search: undefined` en `AppStackParamList`. Cero wire al `RootNavigator`, cero toques a `domain/**`, `application/**`, `infrastructure/**`, `SearchProvider`, `useSearch`, `App.tsx`, `compositionRoot`, `eslint.config.js`, nativos, `package.json`/lock, `app.json`/`app.config.js`, `global.css` o `tokens.ts`. No se instalaron dependencias, no se ejecutó `npx expo start`/`prebuild`/`run:*`, cero commit. La pantalla aún no se ve (no hay ruta montada).
+- **Archivos creados (5):**
+  - `src/features/search/presentation/format.ts` (`toTitleCase`, `formatProgreso`, `formatUbicacion` verbatim; `toTitleCase` duplicado deliberadamente, sin importar de `home`).
+  - `src/features/search/presentation/SearchInputBar.tsx` (pill blanca `searchPalette.surface` radio 24, lupa Ionicons, `TextInput` `autoFocus` con placeholder verbatim, X solo con `query.length > 0` que llama `clearQuery` sin `blur()`).
+  - `src/features/search/presentation/SearchResultCard.tsx` (`memo`, `expo-image` 4:3 con `recyclingKey={card.imagenUrl}` + `cachePolicy="memory-disk"` + `transition={0}`; fallback `Sin imagen`; pill `Obra`/`Capacitación`; título `toTitleCase` 2 líneas; ubicación; avance con ternario estricto por presencia — `progreso: 0` se pinta).
+  - `src/features/search/presentation/SearchEmptyState.tsx` (variantes `initial`/`empty`/`error`, iconos `search-outline`/`alert-circle-outline`, copy verbatim).
+  - `src/features/search/presentation/SearchScreen.tsx` (`useInfiniteQuery<SearchPage, SearchError, InfiniteData<SearchPage>, readonly unknown[], number>` con `queryKey: ["search", "global", debouncedQuery]`, `initialPageParam: 0`, `getNextPageParam` por `isLast`, `enabled: isActive`, `placeholderData: keepPreviousData`; `renderCard`/`keyExtractor`/`cardWrapperStyle` hoisted; `FlashList` `numColumns={2}` sin `estimatedItemSize`; heading `Resultado de búsqueda` + contador singular/plural; spinner central y footer; back arrow `navigation.goBack()`; `useSearch()` como único consumo de casos de uso).
+- **Archivo editado (1):**
+  - `src/app/navigation/types.ts`: `AppStackParamList` pasa a `{ Home: undefined; Search: undefined }` (excepción tipada autorizada; `RootNavigator` intacto).
+- **Arnés — typecheck:** `npx tsc --noEmit` → **exit 0**.
+- **Arnés — linter:** `npx eslint .` → **exit 0** (1 warning preexistente de TASK-03: `useContext` sin usar en `SearchProvider.tsx`, import del snippet verbatim de plan §7; los 5 archivos nuevos sin warnings).
+- **Greps de capas/UI (evidencia):**
+  ```
+  expo-image / @shopify/flash-list en src/:
+    SearchResultCard.tsx:2:import { Image } from "expo-image";
+    SearchScreen.tsx:4:import { FlashList, type ListRenderItem } from "@shopify/flash-list";
+
+  infrastructure|@/shared/infrastructure|axios|expo-secure-store|SecureStore en search/presentation: NONE
+  FlatList|estimatedItemSize|any|TouchableOpacity|className en search/presentation: NONE
+  auth-* / searchPalette.accent en search/presentation: NONE
+  ```
+- **Gate de deps:** `git diff -- package.json app.json app.config.js` → **VACÍO**. `git status --short` lista solo `src/app/navigation/types.ts` (1 línea) + los 5 archivos nuevos de `search/presentation`; `domain/**`, `application/**` e `infrastructure/**` sin cambios.
+- **Estado:** `spec/features/search-bar/task.md` TASK-04 marcada `- [x]` / `Status: READY_FOR_REVIEW`. `progress/current-task.json` → `active_task: TASK-04` `READY_FOR_REVIEW`, `harness_status.typecheck_passed: true`, nota `fase_3_task_04_run` con los archivos creados/editados.
+- **PARADA CONTROLADA (gate Humano):** TASK-04 NO se marca COMPLETED. El Humano revisa los 5 componentes (estructura/copy/estilos verbatim de plan §8) y la línea de `types.ts`. Tras aprobarla, TASK-04 → COMPLETED y se autoriza TASK-05 en nueva sesión. TASK-05 NO iniciada. Fase 4 sigue bloqueada.
+
+### 2026-10-17 — TASK-04 APROBADA por el Humano — COMPLETED
+
+- **Validación del Humano:** los 5 componentes de `search/presentation` (`format.ts`, `SearchInputBar.tsx`, `SearchResultCard.tsx`, `SearchEmptyState.tsx`, `SearchScreen.tsx`) y la línea `Search: undefined` de `src/app/navigation/types.ts` revisados y aprobados. No se requirió `prebuild`/rebuild: TASK-04 es solo JS/TS y los módulos nativos (`@shopify/flash-list`, `expo-image`) ya se reconstruyeron en TASK-01. La compilación visual en dispositivo queda para el gate de TASK-05.
+- **Cierre:** `spec/features/search-bar/task.md` → TASK-04 `- [x]` / `Status: COMPLETED`. `progress/current-task.json` → `active_task: TASK-04` `COMPLETED`, `current_roadmap_phase` actualizado, `blockers_or_errors` apuntando a TASK-05 y nota `fase_3_task_04_run` marcada como aprobada.
+- **Gobernanza:** TASK-05 (wire navigator + RadarSearchBar + drawer) **NO iniciada**: se autoriza en **NUEVA SESIÓN** con el prompt de ejecución. Tras TASK-05, la validación visual en Android + iOS la hace el Humano (checklist CA-01…07). TASK-06 (arnés) no iniciada. Fase 4 sigue bloqueada.
