@@ -42,3 +42,14 @@ export const radarPalette = {
   pinGps: "#C4A35A",
   ripple: "rgba(196,163,90,0.35)",
 } as const;
+
+export const searchPalette = {
+  tagObra: "#5C7A3F",
+  tagCurso: "#8B5E2F",
+  cardBg: "#F5F0E8",
+  screenBg: "#E8E4D9",
+  surface: "#FFFFFF",
+  textMuted: "#777777",
+  imagePlaceholder: "#E4E0D5",
+  accent: "#C97C33",
+} as const;

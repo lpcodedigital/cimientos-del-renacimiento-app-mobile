@@ -20,17 +20,17 @@
 
 ## TASK-01 — Tokens `search-*` + dependencias (FlashList + expo-image)
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
 **Gate previo (Humano):** spec.md aprobada. El rebuild nativo posterior es del Humano.
 
 **Pasos**
 
-- [ ] `global.css`: añadir los 8 tokens `--color-search-*` dentro del `@theme` existente (plan §3.1, verbatim). Tokens Fase 1, `auth-*`, `app-*`, `radar-*` intactos.
-- [ ] `src/shared/theme/tokens.ts`: añadir `searchPalette` (plan §3.2, verbatim) al final del archivo. Resto de paletas intactas.
-- [ ] `npx expo install @shopify/flash-list expo-image` (solo esas dos).
-- [ ] Verificar `git diff -- app.json app.config.js` → **vacío** (ninguna requiere plugin).
-- [ ] `npx tsc --noEmit` → exit 0.
+- [x] `global.css`: añadir los 8 tokens `--color-search-*` dentro del `@theme` existente (plan §3.1, verbatim). Tokens Fase 1, `auth-*`, `app-*`, `radar-*` intactos.
+- [x] `src/shared/theme/tokens.ts`: añadir `searchPalette` (plan §3.2, verbatim) al final del archivo. Resto de paletas intactas.
+- [x] `npx expo install @shopify/flash-list expo-image` (solo esas dos).
+- [x] Verificar `git diff -- app.json app.config.js` → **vacío** (ninguna requiere plugin).
+- [x] `npx tsc --noEmit` → exit 0.
 
 **allowed_files**
 

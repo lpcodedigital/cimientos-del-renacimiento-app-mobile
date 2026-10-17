@@ -834,3 +834,50 @@
 - **Decisión del Humano:** el Worker (DeepSeek) ejecuta TASK-01 en **nueva sesión**, puesto en contexto por el propio Humano con el prompt de ejecución preparado por el Orquestador. Cero TASK iniciada en la sesión de planeación.
 - `progress/current-task.json` → `active_task: TASK-01` (`TODO`, desbloqueada), `current_roadmap_phase` y `blockers_or_errors` actualizados; `spec_file` marcada APROBADA.
 - **Gate restante tras TASK-01:** el Humano valida el diff (tokens + `package.json` con solo `@shopify/flash-list` + `expo-image`) y hace el **rebuild nativo** (`npx expo prebuild` + `run:ios`/`run:android`) — FlashList es módulo nativo. Fase 4 sigue bloqueada.
+
+### 2026-10-16 — TASK-01 (Tokens `search-*` + dependencias) — READY_FOR_REVIEW (Trabajador)
+
+- **Alcance (plan §3 verbatim):** solo tokens + las 2 deps autorizadas. Cero componentes, cero `src/features/search/**`, cero toques a `src/app/**`/`App.tsx`/`eslint.config.js`/nativos. No se ejecutó `npx expo start`/`prebuild`/`run:*`; cero commit.
+- **`global.css`:** añadidos los 8 tokens `--color-search-*` dentro del `@theme` existente, tras los `radar-*` (Fase 1, `auth-*`, `app-*`, `radar-*` intactos):
+  ```
+  --color-search-tag-obra: #5c7a3f;
+  --color-search-tag-curso: #8b5e2f;
+  --color-search-card-bg: #f5f0e8;
+  --color-search-screen-bg: #e8e4d9;
+  --color-search-surface: #ffffff;
+  --color-search-text-muted: #777777;
+  --color-search-image-placeholder: #e4e0d5;
+  --color-search-accent: #c97c33;
+  ```
+- **`src/shared/theme/tokens.ts`:** añadido `searchPalette` al final, `palette`/`fontFamily`/`authPalette`/`appPalette`/`radarPalette` sin tocar:
+  ```ts
+  export const searchPalette = {
+    tagObra: "#5C7A3F",
+    tagCurso: "#8B5E2F",
+    cardBg: "#F5F0E8",
+    screenBg: "#E8E4D9",
+    surface: "#FFFFFF",
+    textMuted: "#777777",
+    imagePlaceholder: "#E4E0D5",
+    accent: "#C97C33",
+  } as const;
+  ```
+  `accent` queda registrado pero prohibido en Fase 3 (spec §9).
+- **Dependencias (`npx expo install @shopify/flash-list expo-image`):** instaladas `@shopify/flash-list@2.0.2` y `expo-image@~57.0.5`. `git diff -- package.json`:
+  ```diff
+  +    "@shopify/flash-list": "2.0.2",
+  ...
+  +    "expo-image": "~57.0.5",
+  ```
+  Únicas dos entradas nuevas. `package-lock.json`: solo inserciones (`1 file changed, 42 insertions(+)`, 0 deleciones).
+- **Gate app config:** `git diff -- app.json app.config.js` → **VACÍO**. Hallazgo: el comando `expo install` imprimió el aviso `Cannot automatically write to dynamic config at: app.config.js / Add the following to your Expo config { "plugins": ["expo-image"] }`, pero **no** modificó ninguna config (ninguna de las 2 deps requiere config plugin en Fase 3; no se añadió el plugin).
+- **Arnés:** `npx tsc --noEmit` → **exit 0** (verde).
+- **Hallazgo (ajeno a TASK-01, plumbing preexistente):** el `postinstall` (`patch-package`) reportó `Failed to apply patch for package expo-modules-jsi` (`patches/expo-modules-jsi+57.1.1.patch`). No introducido por esta task (el lockfile no tuvo deleciones ni cambios de versión de `expo-modules-jsi`); se reporta para el Revisor. El `npm install` completó y ambas deps quedaron operativas (`2.0.2` / `57.0.5`).
+- **Estado:** `spec/features/search-bar/task.md` TASK-01 marcada `- [x]` / `Status: READY_FOR_REVIEW`. `progress/current-task.json` → `active_task: TASK-01` `READY_FOR_REVIEW`, `harness_status.typecheck_passed: true`, `package_json_sin_cambios: false` (solo las 2 deps), `app_json_sin_cambios: true`.
+- **PARADA CONTROLADA (gate Humano):** TASK-01 NO se marca COMPLETED. El Humano valida el diff de tokens + `package.json` y ejecuta el **rebuild nativo** (`npx expo prebuild` + `run:ios`/`run:android`) — FlashList es módulo nativo. Tras aprobarla, TASK-01 → COMPLETED y se autoriza TASK-02 en nueva sesión. TASK-02 NO iniciada. Fase 4 sigue bloqueada.
+
+### 2026-10-16 — TASK-01 APROBADA por el Humano — COMPLETED
+
+- **Validación del Humano:** diff de `global.css` (8 tokens `search-*`), `src/shared/theme/tokens.ts` (`searchPalette`) y `package.json` (solo `@shopify/flash-list@2.0.2` + `expo-image@~57.0.5`) revisado y aprobado. Rebuild nativo (`npx expo prebuild` + `run:ios`/`run:android`) ejecutado y validado **OK en Android e iOS**.
+- **Cierre:** `spec/features/search-bar/task.md` → TASK-01 `- [x]` / `Status: COMPLETED`. `progress/current-task.json` → `active_task: TASK-01` `COMPLETED`, `current_roadmap_phase` actualizado.
+- **Gobernanza:** TASK-02 (domain + application) **NO iniciada**. Se autoriza en **NUEVA SESIÓN** con el prompt de ejecución (patrón por task). Fase 4 sigue bloqueada.

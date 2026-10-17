@@ -1,6 +1,6 @@
 {
   "project_name": "Cimientos del Renacimiento - Gabinete Móvil",
-  "current_roadmap_phase": "Fase 2b: Radar Territorial (radar-home) — CERRADA (2026-10-12). security-keys CANCELADA por el Humano (2026-10-15: keys ya rotadas en Google Console). Fase 3 (search-bar): Paso 0 SDD ESCRITO y spec.md APROBADA por el Humano (2026-10-15). TASK-01 TODO: la ejecuta el Worker en NUEVA SESIÓN (el Humano lo pone en contexto con el prompt del Orquestador); gate de rebuild nativo del Humano tras el install.",
+  "current_roadmap_phase": "Fase 2b: Radar Territorial (radar-home) — CERRADA (2026-10-12). security-keys CANCELADA por el Humano (2026-10-15: keys ya rotadas en Google Console). Fase 3 (search-bar): Paso 0 SDD ESCRITO y spec.md APROBADA por el Humano (2026-10-15). TASK-01 COMPLETED (2026-10-16: tokens + @shopify/flash-list@2.0.2 + expo-image@~57.0.5; diff validado por el Humano + rebuild nativo OK en Android e iOS). TASK-02 (domain + application) TODO: se autoriza en NUEVA SESIÓN; NO iniciada.",
   "active_feature": "search-bar",
   "context_pointers": {
     "mockup_busqueda": "spec/features/search-bar/mockups/Busqueda.png",
@@ -15,9 +15,9 @@
   "active_task": {
     "id": "TASK-01",
     "description": "Tokens search-* (global.css @theme + tokens.ts searchPalette, plan §3 verbatim) + npx expo install @shopify/flash-list expo-image (únicas 2 deps autorizadas). Gate: app.json/app.config.js sin cambios; rebuild nativo = Humano (FlashList es módulo nativo).",
-    "status": "TODO",
+    "status": "COMPLETED",
     "assigned_role": "Agente Trabajador",
-    "validation": "spec.md APROBADA por el Humano (2026-10-15). TASK-01 DESBLOQUEADA: la ejecuta el Worker (DeepSeek) en NUEVA SESIÓN con el prompt de ejecución preparado por el Orquestador. Tras ejecutarla queda READY_FOR_REVIEW; el Humano valida diff de tokens/package.json + rebuild nativo (npx expo prebuild + run:ios/run:android) y la cierra.",
+    "validation": "COMPLETED (2026-10-16) aprobada por el Humano: diff de global.css/tokens.ts/package.json validado y rebuild nativo (npx expo prebuild + run:ios/run:android) OK en Android e iOS. TASK-02 NO iniciada: se autoriza en NUEVA SESIÓN con el prompt de ejecución.",
     "allowed_files_to_edit": [
       "global.css",
       "src/shared/theme/tokens.ts",
@@ -29,6 +29,7 @@
     ]
   },
   "harness_status": {
+    "fase_3_task_01_run": "2026-10-16 (Fase 3 TASK-01, Worker): tokens search-* en global.css (8) + tokens.ts (searchPalette); npx expo install @shopify/flash-list@2.0.2 expo-image@~57.0.5; npx tsc --noEmit exit 0; git diff -- app.json app.config.js VACÍO; git diff -- package.json SOLO las 2 deps. Hallazgo: postinstall patch-package falló al aplicar patches/expo-modules-jsi+57.1.1.patch (plumbing preexistente, ajeno a TASK-01; lockfile sin deleciones). TASK-01 COMPLETED (2026-10-16): Humano validó el diff y el rebuild nativo (prebuild + run:ios/run:android) OK en Android e iOS. TASK-02 no iniciada.",
     "last_run": "2026-10-12 (Fase 2b TASK-06 arnés/auditoría). npx tsc --noEmit exit 0; npx eslint . exit 0 (cero errores/warnings). Bans por git grep sobre src/**/*.ts(x)+App.tsx: any 0, TouchableOpacity 0, FlatList 0, expo-router 0; auth-* 0 en src/features/home/**. DIP: home/infrastructure solo importado por src/app/compositionRoot.ts:18-19; react-native-maps solo en presentation/RadarMap.tsx:2; expo-location solo en infrastructure/ExpoLocationGateway.ts:1. Contrato: path /api/v1/dashboard/mapa-home único en AxiosRadarMapApi.ts:34; dto.ts espejo 1:1 de spec §4.6. Chrome: git diff de src/features/app-shell/** y src/features/auth/** VACÍO (worktree y vs baseline 333b62f). git grep AIza: coincidencias preexistentes (ver aiza). git diff HEAD -- package.json/app.json VACÍO (todo commiteado); contra baseline 333b62f el radar añade solo las 2 deps + plugin, pero hay deps extra de commit humano 68cb002. Cero dependencias nuevas por el agente; NO se ejecutó npx expo start/prebuild/run; cero commit.",
     "typecheck": "npx tsc --noEmit -> exit 0",
     "linter": "npx eslint . -> exit 0 (cero errores, cero warnings)",
@@ -41,8 +42,10 @@
     "dip_verificado": true,
     "dip_detalle": "Único importador de home/infrastructure = src/app/compositionRoot.ts:18-19. expo-location ausente de domain/application/presentation (solo infrastructure/ExpoLocationGateway.ts:1). react-native-maps ausente de domain/application (solo presentation/RadarMap.tsx:2).",
     "deps_verificado": "ACEPTADO con whitelist (spec CA-09 enmendado, decisión Humano 2026-10-12): deps nuevas = expo-location + react-native-maps (radar) + build plumbing aprobado del commit 68cb002 (reanimated ^4.7.1, worklets, worklets-core, patch-package, postinstall, lightningcss, dotenv — dotenv candidata a limpieza futura).",
-    "package_json_sin_cambios": true,
+    "package_json_sin_cambios": false,
+    "package_json_sin_cambios_nota": "FASE 3 TASK-01 (2026-10-16): package.json suma SOLO @shopify/flash-list 2.0.2 + expo-image ~57.0.5 (npx expo install, únicas 2 deps autorizadas CA-09). package-lock.json solo inserciones (+42, 0 deleciones). Rebuild nativo = Humano.",
     "app_json_sin_cambios": true,
+    "app_json_nota": "FASE 3 TASK-01 (2026-10-16): git diff -- app.json app.config.js VACÍO. npx expo install mostró aviso 'Cannot automatically write to dynamic config at app.config.js / Add expo-image plugin' pero NO modificó ninguna config (ninguna de las 2 deps requiere plugin; el aviso es del comando, no una edición).",
     "contrato_verificado": true,
     "contrato_detalle": "/api/v1/dashboard/mapa-home aparece SOLO una vez en código: src/features/home/infrastructure/AxiosRadarMapApi.ts:34. infrastructure/dto.ts es espejo 1:1 de spec §4.6 (municipio, totalObras, totalCursos, totalInversion, obrasFinalizadas, obrasEnProceso, latitude|null, longitude|null). Cero any en el mapper.",
     "chrome_verificado": true,

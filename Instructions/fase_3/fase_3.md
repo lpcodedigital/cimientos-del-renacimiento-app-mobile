@@ -58,3 +58,64 @@ REGLAS: cero vibe coding; cero deps no autorizadas; Context7 solo para consultas
 quirúrgicas (FlashList, debounce patterns, Expo SDK 57); actualiza
 progress/current-task.json y progress/history.md al cerrar la sesión de planeación.
 NO arrancues Fase 3 sin mockups + endpoints confirmados por el Humano.
+
+## Prompt para el Worker (DeepSeek) — TASK-01 de search-bar
+
+MODO: EJECUCIÓN (Trabajador). Ejecutas ÚNICAMENTE la TASK-01 de la feature
+search-bar (Fase 3). No planeas, no orquestas, no ejecutas ninguna otra TASK.
+Proyecto: Cimientos del Renacimiento — Gabinete Móvil (Expo SDK 57 + RN + TS strict).
+Raíz: /Users/macbookair/Documents/Projects/React-Native/CIMIENTOS-DEL-RENACIMIENTO-APP-MOBILE
+
+LEE EN ESTE ORDEN (obligatorio, nada más al inicio):
+1. AGENTS.md (leyes absolutas y arnés)
+2. progress/current-task.json (estado vivo; active_task = TASK-01)
+3. spec/features/search-bar/task.md — SOLO la sección TASK-01
+4. spec/features/search-bar/plan.md — SOLO §3 (tokens verbatim) y §3.3 (deps)
+5. spec/features/search-bar/spec.md — SOLO §9 (límites) y CA-09
+6. spec/constitution/tech-stack.md — SOLO §2 (FlashList v2 / expo-image) y §2.5
+
+CONTEXTO (ya aprobado por el Humano, no re-debatir):
+- spec.md de search-bar APROBADA (2026-10-15). Fase 2b (radar-home) CERRADA.
+- Las ÚNICAS 2 dependencias autorizadas son @shopify/flash-list y expo-image.
+
+EJECUTA EXACTAMENTE (plan §3, verbatim):
+1. global.css: añade los 8 tokens --color-search-* dentro del @theme existente,
+   copiando plan §3.1 verbatim (tag-obra #5c7a3f, tag-curso #8b5e2f,
+   card-bg #f5f0e8, screen-bg #e8e4d9, surface #ffffff, text-muted #777777,
+   image-placeholder #e4e0d5, accent #c97c33). NO toques los tokens Fase 1,
+   auth-*, app-* ni radar-*.
+2. src/shared/theme/tokens.ts: añade searchPalette al final del archivo,
+   copiando plan §3.2 verbatim. NO toques palette, fontFamily, authPalette,
+   appPalette ni radarPalette.
+3. Instala SOLO estas dos dependencias:
+   npx expo install @shopify/flash-list expo-image
+   (NUNCA npm i; cero otras dependencias).
+4. Verifica con git diff que app.json y app.config.js quedaron SIN CAMBIOS
+   (ninguna de las dos deps requiere config plugin).
+
+ARCHIVOS PERMITIDOS (allowed_files — prohibido tocar cualquier otro):
+- global.css
+- src/shared/theme/tokens.ts
+- package.json / package-lock.json (solo vía npx expo install)
+- spec/features/search-bar/task.md (marcar pasos - [x] y Status: READY_FOR_REVIEW)
+- progress/current-task.json
+- progress/history.md
+
+PROHIBIDO: crear componentes o cualquier archivo bajo src/features/**; tocar
+src/app/**, App.tsx, eslint.config.js, app.json, app.config.js; escribir código
+nativo; hacer commit; correr npx expo start / prebuild / run:* (el rebuild
+nativo es EXCLUSIVO del Humano); usar estimatedItemSize en cualquier lado.
+
+ARNÉS OBLIGATORIO AL CERRAR:
+- npx tsc --noEmit → debe dar exit 0.
+- git diff -- app.json app.config.js → debe quedar vacío.
+- git diff -- package.json → solo @shopify/flash-list + expo-image añadidas.
+
+CIERRE: marca en spec/features/search-bar/task.md los pasos de TASK-01 como
+- [x] y Status: READY_FOR_REVIEW (NO COMPLETED — la cierra el Humano tras
+validar el diff y hacer el rebuild nativo). Actualiza progress/current-task.json
+(active_task TASK-01 READY_FOR_REVIEW, harness_status.typecheck_passed: true,
+package_json_sin_cambios: false con nota de las 2 deps, app_json_sin_cambios:
+true) y añade la entrada en progress/history.md con la evidencia literal
+(versiones instaladas, salida del tsc, diffs). NO inicies TASK-02.
+PARADA CONTROLADA al terminar: reporta al Humanoque revisar para rebuild nativo.

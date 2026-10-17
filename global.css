@@ -42,6 +42,15 @@
   --color-radar-popup-header: #d6ded1;
   --color-radar-popup-body: #d8dac9;
 
+  --color-search-tag-obra: #5c7a3f;
+  --color-search-tag-curso: #8b5e2f;
+  --color-search-card-bg: #f5f0e8;
+  --color-search-screen-bg: #e8e4d9;
+  --color-search-surface: #ffffff;
+  --color-search-text-muted: #777777;
+  --color-search-image-placeholder: #e4e0d5;
+  --color-search-accent: #c97c33;
+
   --font-lato: "Lato";
   --font-lato-bold: "Lato-Bold";
 }
