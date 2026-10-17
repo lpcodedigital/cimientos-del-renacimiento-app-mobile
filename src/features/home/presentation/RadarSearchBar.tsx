@@ -1,6 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Text, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Pressable, Text } from "react-native";
 
+import type { AppStackParamList } from "@/app/navigation/types";
 import {
   fontFamily as font,
   palette,
@@ -8,11 +11,16 @@ import {
 } from "@/shared/theme/tokens";
 
 export function RadarSearchBar() {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<AppStackParamList>>();
+
   return (
-    <View
-      accessibilityLabel="Buscar (disponible en la siguiente fase)"
+    <Pressable
+      onPress={() => navigation.navigate("Search")}
+      accessibilityRole="button"
+      accessibilityLabel="Buscar"
       accessible
-      style={{
+      style={({ pressed }) => ({
         backgroundColor: radarPalette.surface,
         borderRadius: 24,
         paddingVertical: 12,
@@ -22,7 +30,8 @@ export function RadarSearchBar() {
         alignItems: "center",
         gap: 10,
         boxShadow: "0px 2px 8px rgba(0,0,0,0.15)",
-      }}
+        opacity: pressed ? 0.9 : 1,
+      })}
     >
       <Ionicons name="search" size={20} color={palette["texto-suave"]} />
       <Text
@@ -37,6 +46,6 @@ export function RadarSearchBar() {
       >
         {"BUSCAR MUNICIPIO, LOCALIDAD,\nOBRA O CAPACITACION"}
       </Text>
-    </View>
+    </Pressable>
   );
 }

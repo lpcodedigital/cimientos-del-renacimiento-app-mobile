@@ -974,3 +974,34 @@
 - **Validación del Humano:** los 5 componentes de `search/presentation` (`format.ts`, `SearchInputBar.tsx`, `SearchResultCard.tsx`, `SearchEmptyState.tsx`, `SearchScreen.tsx`) y la línea `Search: undefined` de `src/app/navigation/types.ts` revisados y aprobados. No se requirió `prebuild`/rebuild: TASK-04 es solo JS/TS y los módulos nativos (`@shopify/flash-list`, `expo-image`) ya se reconstruyeron en TASK-01. La compilación visual en dispositivo queda para el gate de TASK-05.
 - **Cierre:** `spec/features/search-bar/task.md` → TASK-04 `- [x]` / `Status: COMPLETED`. `progress/current-task.json` → `active_task: TASK-04` `COMPLETED`, `current_roadmap_phase` actualizado, `blockers_or_errors` apuntando a TASK-05 y nota `fase_3_task_04_run` marcada como aprobada.
 - **Gobernanza:** TASK-05 (wire navigator + RadarSearchBar + drawer) **NO iniciada**: se autoriza en **NUEVA SESIÓN** con el prompt de ejecución. Tras TASK-05, la validación visual en Android + iOS la hace el Humano (checklist CA-01…07). TASK-06 (arnés) no iniciada. Fase 4 sigue bloqueada.
+
+### 2026-10-17 — TASK-05 (Wire navigator + entradas de navegación) — READY_FOR_REVIEW (Trabajador)
+
+- **Alcance (plan §9.2–§9.5 verbatim):** solo el wire al navigator y las tres entradas de navegación. Cero cambio visual, cero toques a `SearchScreen`, `search/domain|application|infrastructure|presentation`, `SearchProvider`, `useSearch`, `App.tsx`, `compositionRoot`, `eslint.config.js`, `types.ts` (ya traía `Search`), `package.json`/lock, `app.json`/`app.config.js`, `global.css`, `tokens.ts` ni nativos. No se instalaron dependencias, no se ejecutó `npx expo start`/`prebuild`/`run:*`, cero commit.
+- **Archivos editados (4):**
+  - `src/app/navigation/RootNavigator.tsx`: añadido `import { SearchScreen } from "@/features/search/presentation/SearchScreen";` y `<AppStack.Screen name="Search" component={SearchScreen} />` tras `Home`. `AppShell`, `NavigationContainer key={status}` y `AuthStackNavigator` intactos.
+  - `src/features/home/presentation/RadarSearchBar.tsx`: `View` raíz → `Pressable` con `useNavigation<NativeStackNavigationProp<AppStackParamList>>()`, `onPress={() => navigation.navigate("Search")}`, `accessibilityRole="button"`, `accessibilityLabel="Buscar"` (sustituye el label anterior), `pressed → opacity 0.9`. Mismos `surface`, radio 24, paddings, `marginTop`, `gap`, `boxShadow`, lupa y textos.
+  - `src/features/app-shell/presentation/menuItems.ts`: `AppMenuAction` = `"home" | "search" | "noop" | "sign-out"`; ítem `search` con `action: "search"`. Labels e iconos intactos.
+  - `src/features/app-shell/presentation/AppDrawer.tsx`: `useNavigation` tipado; handler de ítems añade `action === "search"` → `onClose()` + `navigation.navigate("Search")`. `home`/`noop`/`sign-out` y layout intactos.
+- **Arnés — typecheck:** `npx tsc --noEmit` → **exit 0**.
+- **Arnés — linter:** `npx eslint .` → **exit 0** (1 warning preexistente de TASK-03: `useContext` sin usar en `SearchProvider.tsx`; los archivos de TASK-05 sin warnings).
+- **Greps de acciones/píxel y DIP (evidencia):**
+  ```
+  git diff --stat -- src/features/app-shell src/features/home:
+    AppDrawer.tsx  |  9 +++++++++
+    menuItems.ts   |  4 ++--
+    RadarSearchBar.tsx | 21 +++++++++++++++------
+    3 files changed, 26 insertions(+), 8 deletions(-)
+
+  grep search/infrastructure en src fuera de compositionRoot.ts: NONE
+  TouchableOpacity|FlatList|estimatedItemSize|expo-router|any|className en archivos editados: NONE
+  ```
+- **Gate de deps:** `git diff -- package.json app.json app.config.js` → **VACÍO**. `git status --short` lista solo los 4 archivos de TASK-05 (más una modificación preexistente de `Instructions/fase_3/fase_3.md`, ajena a esta TASK y no editada por el agente).
+- **Estado:** `spec/features/search-bar/task.md` TASK-05 marcada `- [x]` / `Status: READY_FOR_REVIEW` (NO COMPLETED). `progress/current-task.json` → `active_task: TASK-05` `READY_FOR_REVIEW`, `harness_status.typecheck_passed: true`, nota `fase_3_task_05_run` con archivos editados.
+- **PARADA CONTROLADA (gate Humano):** validación visual en Android + iOS con checklist CA-01…07 (entrada desde barra del Home y desde el drawer con cierre; `autoFocus` + teclado; back arrow al radar; búsqueda real; spinner/contador/grid/pills/fallback/scroll infinito; X conserva foco; empty state; radar y chrome pixel-idénticos). Al aprobarla, TASK-05 → COMPLETED y se autoriza TASK-06 en nueva sesión. TASK-06 NO iniciada. Fase 4 sigue bloqueada.
+
+### 2026-10-17 — TASK-05 APROBADA por el Humano — COMPLETED
+
+- **Validación del Humano:** TASK-05 validada en dispositivos **Android + iOS** con el checklist CA-01…07; funciona correctamente (entrada desde la barra del Home y desde el drawer, cierre del drawer, `autoFocus`/teclado, back arrow al radar, búsqueda real, spinners, contador, grid 2 columnas con pills, fallback «Sin imagen», scroll infinito, X conserva foco, empty state y radar/chrome pixel-idénticos).
+- **Cierre:** `spec/features/search-bar/task.md` → TASK-05 `- [x]` / `Status: COMPLETED` (validación Humana registrada). `progress/current-task.json` → `active_task: TASK-05` `COMPLETED`, `current_roadmap_phase` actualizado, nota `fase_3_task_05_run` marcada como aprobada, `blockers_or_errors` apuntando a TASK-06.
+- **Gobernanza:** TASK-06 (arnés) **NO iniciada**: se autoriza en **NUEVA SESIÓN** con el prompt de ejecución. Fase 4 sigue bloqueada.

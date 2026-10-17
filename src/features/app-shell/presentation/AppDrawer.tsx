@@ -1,8 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useEffect } from "react";
 import { BackHandler, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import type { AppStackParamList } from "@/app/navigation/types";
 import { useAuth } from "@/features/auth/presentation/useAuth";
 import { appPalette, fontFamily } from "@/shared/theme/tokens";
 
@@ -17,6 +20,8 @@ type AppDrawerProps = {
 export function AppDrawer({ open, onClose, onSignOut }: AppDrawerProps) {
   const insets = useSafeAreaInsets();
   const { user } = useAuth();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<AppStackParamList>>();
 
   useEffect(() => {
     if (!open) {
@@ -121,6 +126,10 @@ export function AppDrawer({ open, onClose, onSignOut }: AppDrawerProps) {
               onPress={() => {
                 if (item.action === "home") {
                   onClose();
+                }
+                if (item.action === "search") {
+                  onClose();
+                  navigation.navigate("Search");
                 }
               }}
               accessibilityRole="button"

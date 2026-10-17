@@ -1,4 +1,4 @@
-export type AppMenuAction = "home" | "noop" | "sign-out";
+export type AppMenuAction = "home" | "search" | "noop" | "sign-out";
 
 export type AppMenuItem = {
   id: string;
@@ -9,7 +9,7 @@ export type AppMenuItem = {
 
 export const menuItems: readonly AppMenuItem[] = [
   { id: "home", label: "Inicio", ionicon: "home-outline", action: "home" },
-  { id: "search", label: "Búsqueda", ionicon: "search-outline", action: "noop" },
+  { id: "search", label: "Búsqueda", ionicon: "search-outline", action: "search" },
   {
     id: "profile",
     label: "Mi perfil",

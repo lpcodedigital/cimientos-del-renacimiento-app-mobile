@@ -141,17 +141,17 @@
 
 ## TASK-05 — Wire navigator + entradas de navegación (cero cambio de píxel)
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
 
 **Pasos (4 archivos editados, plan §9; `types.ts` ya trae `Search` de TASK-04)**
 
-- [ ] `src/app/navigation/RootNavigator.tsx`: import de `SearchScreen` + `<AppStack.Screen name="Search" component={SearchScreen} />` tras `Home` (plan §9.2). `AppShell`/`NavigationContainer key={status}`/`AuthStackNavigator` intactos.
-- [ ] `src/features/home/presentation/RadarSearchBar.tsx`: envolver en `Pressable` que navega a `Search` (plan §9.3). Cero cambio visual; sustituir `accessibilityLabel` por `Buscar`.
-- [ ] `src/features/app-shell/presentation/menuItems.ts`: `AppMenuAction` añade `"search"`; ítem `search` con `action: "search"` (plan §9.4). Labels/iconos intactos.
-- [ ] `src/features/app-shell/presentation/AppDrawer.tsx`: `action === "search"` → `onClose()` + `navigation.navigate("Search")` (plan §9.5). Cero cambio visual.
-- [ ] Grep: `git diff -- src/features/app-shell src/features/home` muestra **solo** los 3 archivos anteriores (acciones, cero píxel).
-- [ ] `npx tsc --noEmit` → exit 0; `npx eslint .` → exit 0. `git diff -- package.json app.json app.config.js` → vacío.
+- [x] `src/app/navigation/RootNavigator.tsx`: import de `SearchScreen` + `<AppStack.Screen name="Search" component={SearchScreen} />` tras `Home` (plan §9.2). `AppShell`/`NavigationContainer key={status}`/`AuthStackNavigator` intactos.
+- [x] `src/features/home/presentation/RadarSearchBar.tsx`: envolver en `Pressable` que navega a `Search` (plan §9.3). Cero cambio visual; sustituir `accessibilityLabel` por `Buscar`.
+- [x] `src/features/app-shell/presentation/menuItems.ts`: `AppMenuAction` añade `"search"`; ítem `search` con `action: "search"` (plan §9.4). Labels/iconos intactos.
+- [x] `src/features/app-shell/presentation/AppDrawer.tsx`: `action === "search"` → `onClose()` + `navigation.navigate("Search")` (plan §9.5). Cero cambio visual.
+- [x] Grep: `git diff -- src/features/app-shell src/features/home` muestra **solo** los 3 archivos anteriores (acciones, cero píxel).
+- [x] `npx tsc --noEmit` → exit 0; `npx eslint .` → exit 0. `git diff -- package.json app.json app.config.js` → vacío.
 
 **allowed_files**
 
@@ -163,7 +163,7 @@
 - `progress/current-task.json`
 - `progress/history.md`
 
-**Validación (Humano, dispositivos Android + iOS):** checklist CA-01…07 — entrada desde la barra del Home y desde el drawer (el drawer se cierra); `autoFocus` + teclado; back arrow vuelve al radar; búsqueda real (ej. `merida`, `temozon`); spinner central en 1ª carga; contador; grid 2 columnas con pills `Obra`/`Capacitación`; fallback «Sin imagen» en tarjetas sin `imagenUrl`; avance solo en obras; scroll infinito con spinner al pie; X limpia todo y conserva foco; empty state con query sin resultados; radar y chrome pixel-idénticos (pines, chips, popup, ripple, drawer, logout). Tras aprobarla, TASK-05 → COMPLETED y se autoriza TASK-06 en nueva sesión.
+**Validación (Humano, dispositivos Android + iOS):** checklist CA-01…07 — entrada desde la barra del Home y desde el drawer (el drawer se cierra); `autoFocus` + teclado; back arrow vuelve al radar; búsqueda real (ej. `merida`, `temozon`); spinner central en 1ª carga; contador; grid 2 columnas con pills `Obra`/`Capacitación`; fallback «Sin imagen» en tarjetas sin `imagenUrl`; avance solo en obras; scroll infinito con spinner al pie; X limpia todo y conserva foco; empty state con query sin resultados; radar y chrome pixel-idénticos (pines, chips, popup, ripple, drawer, logout). **APROBADA por el Humano el 2026-10-17:** validada en Android + iOS, funciona correctamente. TASK-05 → COMPLETED; TASK-06 se autoriza en nueva sesión.
 
 ---
 

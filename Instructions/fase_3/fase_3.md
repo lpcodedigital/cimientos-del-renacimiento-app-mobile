@@ -274,3 +274,181 @@ y añade la entrada en progress/history.md con la evidencia literal (salida de
 tsc/eslint, grep DIP, gate de deps). NO inicies TASK-04.
 PARADA CONTROLADA al terminar: reporta al Humano qué revisar y los archivos
 creados/editados.
+
+## Prompt para la nueva sesión (TASK-04):
+
+MODO: EJECUCIÓN (Trabajador). Ejecutas ÚNICAMENTE la TASK-04 de la feature
+search-bar (Fase 3). No planeas, no orquestas, no ejecutas ninguna otra TASK.
+Proyecto: Cimientos del Renacimiento — Gabinete Móvil (Expo SDK 57 + RN + TS strict).
+Raíz: /Users/macbookair/Documents/Projects/React-Native/CIMIENTOS-DEL-RENACIMIENTO-APP-MOBILE
+
+LEE EN ESTE ORDEN (obligatorio, nada más al inicio):
+1. AGENTS.md (leyes absolutas y arnés)
+2. progress/current-task.json (estado vivo; active_task = TASK-03 COMPLETED)
+3. spec/features/search-bar/task.md — SOLO la sección TASK-04
+4. spec/features/search-bar/plan.md — SOLO §8.1–§8.5
+5. progress/history.md — SOLO la entrada 2026-10-16 de TASK-03
+
+CONTEXTO (ya cerrado por el Humano, no re-debatir):
+- TASK-01 COMPLETED: tokens search-* + @shopify/flash-list@2.0.2 +
+  expo-image@~57.0.5 instalados; rebuild nativo OK. NO reinstales nada y NO
+  toques package.json/lock.
+- TASK-02 COMPLETED: 6 archivos de domain + application, CONGELADOS.
+- TASK-03 COMPLETED: infrastructure + SearchProvider/useSearch + wiring +
+  fences, CONGELADOS. Consume la búsqueda SOLO por useSearch().
+- TASK-04 crea los 5 componentes de UI, SIN wire al navigator (RootNavigator
+  no se toca; SearchScreen aún no se ve). NO toques navegación, App.tsx,
+  compositionRoot, eslint.config.js ni nada de infrastructure/domain/application.
+- `src/app/navigation/types.ts` aún NO declara `Search`: añade SOLO
+  `Search: undefined` en `AppStackParamList` (excepción tipada autorizada).
+
+EJECUTA EXACTAMENTE (plan §8, firmas/estructura verbatim, cero desviaciones):
+1. src/features/search/presentation/format.ts                (§8.1; toTitleCase
+   duplicado deliberadamente — prohibido importar de home)
+2. src/features/search/presentation/SearchInputBar.tsx       (§8.2; pill blanca,
+   lupa, TextInput autoFocus con placeholder verbatim, X solo con texto que
+   llama clearQuery sin quitar foco)
+3. src/features/search/presentation/SearchResultCard.tsx     (§8.3; memo,
+   expo-image 4:3 con recyclingKey/memory-disk o fallback «Sin imagen», pill
+   Obra/Capacitación, título Title Case 2 líneas, ubicación, avance solo con
+   progreso+estatus presentes — 0% se pinta; ternario estricto)
+4. src/features/search/presentation/SearchEmptyState.tsx     (§8.4; variantes
+   initial/empty/error, copy verbatim)
+5. src/features/search/presentation/SearchScreen.tsx         (§8.5;
+   useInfiniteQuery con queryKey ["search","global",debouncedQuery],
+   initialPageParam 0, getNextPageParam por isLast/page+1, enabled: isActive,
+   placeholderData: keepPreviousData; renderCard/keyExtractor hoisted;
+   FlashList numColumns={2} SIN estimatedItemSize; heading + contador;
+   spinner central/footer; back arrow con navigation.goBack())
+6. src/app/navigation/types.ts: añadir SOLO `Search: undefined` en
+   AppStackParamList (RootNavigator NO se toca en esta TASK).
+
+REGLAS DE CAPAS / UI (verificar con grep al cerrar):
+- presentation/** consume casos de uso SOLO vía useSearch(); cero imports de
+  infrastructure, @/shared/infrastructure, axios, SecureStore.
+- expo-image y @shopify/flash-list SOLO en search/presentation.
+- Solo Pressable; cero FlatList/estimatedItemSize/className/any/comentarios/
+  barrels index.ts; ternarios estrictos en JSX (cero && con valores falsy).
+- Paleta search-* + tokens existentes; prohibida auth-* y
+  searchPalette.accent.
+- Cero toques a domain/**, application/**, infrastructure/**, SearchProvider,
+  useSearch, App.tsx, compositionRoot, eslint.config.js, nativos,
+  package.json/lock, app.json/app.config.js, global.css, tokens.ts.
+
+ARCHIVOS PERMITIDOS (prohibido tocar cualquier otro):
+- src/features/search/presentation/format.ts
+- src/features/search/presentation/SearchInputBar.tsx
+- src/features/search/presentation/SearchResultCard.tsx
+- src/features/search/presentation/SearchEmptyState.tsx
+- src/features/search/presentation/SearchScreen.tsx
+- src/app/navigation/types.ts (solo `Search: undefined`)
+- spec/features/search-bar/task.md (marcar pasos - [x] y Status: READY_FOR_REVIEW)
+- progress/current-task.json
+- progress/history.md
+
+PROHIBIDO: wire del RootNavigator, RadarSearchBar/menuItems/AppDrawer
+(TASK-05); instalar dependencias; npx expo start/prebuild/run:* (exclusivo del
+Humano); hacer commit.
+
+ARNÉS OBLIGATORIO AL CERRAR:
+- npx tsc --noEmit → exit 0.
+- npx eslint . → exit 0 (si falla, corrige SOLO en los archivos permitidos).
+- Grep: expo-image/@shopify solo en search/presentation; cero imports de
+  infrastructure en presentation; cero FlatList/estimatedItemSize/any/
+  TouchableOpacity en search/presentation.
+- git diff -- package.json app.json app.config.js → VACÍO.
+- Confirmar que domain/application e infrastructure no cambiaron.
+
+CIERRE: marca en spec/features/search-bar/task.md los pasos de TASK-04 como
+- [x] y Status: READY_FOR_REVIEW (NO COMPLETED — la cierra el Humano tras
+revisar componentes). Actualiza progress/current-task.json (active_task
+TASK-04 READY_FOR_REVIEW, harness_status.typecheck_passed: true y nota de los
+archivos creados/editados) y añade la entrada en progress/history.md con la
+evidencia literal (salida de tsc/eslint, greps, gate de deps). NO inicies
+TASK-05. PARADA CONTROLADA al terminar: reporta qué revisar y los archivos
+creados/editados.
+
+## Prompt para la nueva sesión (TASK-05):
+
+MODO: EJECUCIÓN (Trabajador). Ejecutas ÚNICAMENTE la TASK-05 de la feature
+search-bar (Fase 3). No planeas, no orquestas, no ejecutas ninguna otra TASK.
+Proyecto: Cimientos del Renacimiento — Gabinete Móvil (Expo SDK 57 + RN + TS strict).
+Raíz: /Users/macbookair/Documents/Projects/React-Native/CIMIENTOS-DEL-RENACIMIENTO-APP-MOBILE
+
+LEE EN ESTE ORDEN (obligatorio, nada más al inicio):
+1. AGENTS.md (leyes absolutas y arnés)
+2. progress/current-task.json (active_task = TASK-04 COMPLETED)
+3. spec/features/search-bar/task.md — SOLO la sección TASK-05
+4. spec/features/search-bar/plan.md — SOLO §9.1–§9.5
+5. progress/history.md — SOLO la entrada 2026-10-17 de TASK-04
+
+CONTEXTO (ya cerrado por el Humano, no re-debatir):
+- TASK-01 COMPLETED: tokens search-* + @shopify/flash-list@2.0.2 +
+  expo-image@~57.0.5; rebuild nativo OK. NO reinstales nada y NO toques
+  package.json/lock.
+- TASK-02, TASK-03 y TASK-04 COMPLETED y CONGELADOS. La búsqueda se consume
+  SOLO por useSearch(). SearchScreen, SearchInputBar, SearchResultCard,
+  SearchEmptyState y format.ts ya existen y fueron aprobados.
+- `src/app/navigation/types.ts` YA declara `Search: undefined`. NO lo toques.
+- TASK-05 = wire del navigator + entradas de navegación. Cero cambio visual.
+
+EJECUTA EXACTAMENTE (plan §9, verbatim, cero desviaciones):
+1. src/app/navigation/RootNavigator.tsx (plan §9.2): añade
+   `import { SearchScreen } from "@/features/search/presentation/SearchScreen";`
+   y `<AppStack.Screen name="Search" component={SearchScreen} />` tras la
+   screen `Home`. `AppShell`, `NavigationContainer key={status}` y
+   `AuthStackNavigator` INTACTOS.
+2. src/features/home/presentation/RadarSearchBar.tsx (plan §9.3; cero cambio
+   de píxel): envuelve/convierte el contenedor raíz en `Pressable` conservando
+   TODOS los estilos y el contenido actual (surface, radio 24, paddings,
+   marginTop, gap, boxShadow, lupa y textos). Añade
+   `onPress={() => navigation.navigate("Search")}` con `useNavigation`
+   tipado como plan §8.5 (`NativeStackNavigationProp<AppStackParamList>`),
+   `accessibilityRole="button"`, `accessibilityLabel="Buscar"` (sustituye el
+   label anterior) y feedback `pressed` → opacity 0.9. Cero otro cambio visual.
+3. src/features/app-shell/presentation/menuItems.ts (plan §9.4; cero píxel):
+   `AppMenuAction` pasa a `"home" | "search" | "noop" | "sign-out"`; el ítem
+   `search` cambia su `action` de `"noop"` a `"search"`. Labels e iconos
+   intactos.
+4. src/features/app-shell/presentation/AppDrawer.tsx (plan §9.5; cero píxel):
+   añade `useNavigation` tipado como plan §8.5. En el handler de ítems:
+   `action === "search"` → `onClose()` + `navigation.navigate("Search")`.
+   `home`/`noop`/`sign-out` y todo el layout intactos. Cero cambio visual.
+
+REGLAS:
+- Solo Pressable; cero TouchableOpacity/FlatList/any/className/comentarios.
+- Ternarios estrictos en JSX (cero && con valores falsy).
+- NO toques SearchScreen ni ningún archivo de search/domain/application/
+  infrastructure/presentation, SearchProvider, useSearch, App.tsx,
+  compositionRoot, eslint.config.js, package.json/lock, app.json/app.config.js,
+  global.css, tokens.ts, nativos.
+- NO ejecutes npx expo start/prebuild/run:* (exclusivo del Humano). Sin commit.
+
+ARCHIVOS PERMITIDOS (prohibido tocar cualquier otro):
+- src/app/navigation/RootNavigator.tsx
+- src/features/home/presentation/RadarSearchBar.tsx
+- src/features/app-shell/presentation/menuItems.ts
+- src/features/app-shell/presentation/AppDrawer.tsx
+- spec/features/search-bar/task.md
+- progress/current-task.json
+- progress/history.md
+
+ARNÉS OBLIGATORIO AL CERRAR:
+- npx tsc --noEmit → exit 0.
+- npx eslint . → exit 0 (se acepta únicamente el warning preexistente de
+  TASK-03: useContext sin usar en SearchProvider.tsx; no introduzcas warnings
+  nuevos). Si falla, corrige SOLO en los archivos permitidos.
+- Grep: `git diff -- src/features/app-shell src/features/home` muestra SOLO
+  RadarSearchBar + menuItems + AppDrawer (acciones, cero píxel).
+- Grep: cero imports de search/infrastructure fuera de compositionRoot;
+  cero any/TouchableOpacity/FlatList/estimatedItemSize/expo-router nuevos.
+- git diff -- package.json app.json app.config.js → VACÍO.
+
+CIERRE: marca en spec/features/search-bar/task.md los pasos de TASK-05 como
+- [x] y Status: READY_FOR_REVIEW (NO COMPLETED: la validación visual Android +
+iOS la hace el Humano con el checklist CA-01…07). Actualiza
+progress/current-task.json (active_task TASK-05 READY_FOR_REVIEW,
+harness_status.typecheck_passed: true, nota con archivos editados) y añade la
+entrada en progress/history.md con la evidencia literal (tsc/eslint, greps,
+gate de deps). NO inicies TASK-06. PARADA CONTROLADA: reporta qué revisar y
+los archivos editados.
