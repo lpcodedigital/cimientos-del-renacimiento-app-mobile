@@ -17,6 +17,9 @@ import { createResolveDeviceMunicipio } from "@/features/home/application/resolv
 import type { HomeUseCases } from "@/features/home/application/types";
 import { createAxiosRadarMapApi } from "@/features/home/infrastructure/AxiosRadarMapApi";
 import { createExpoLocationGateway } from "@/features/home/infrastructure/ExpoLocationGateway";
+import { createGlobalSearch } from "@/features/search/application/globalSearch";
+import type { SearchUseCases } from "@/features/search/application/types";
+import { createAxiosGlobalSearchApi } from "@/features/search/infrastructure/AxiosGlobalSearchApi";
 
 export function createAuthUseCases(): AuthUseCases {
   const tokenHolder = createAxiosAuthTokenHolder();
@@ -58,5 +61,12 @@ export function createHomeUseCases(): HomeUseCases {
     getCurrentLocation: createGetCurrentLocation({ locationGateway }),
     requestLocationAccess: createRequestLocationAccess({ locationGateway }),
     resolveDeviceMunicipio: createResolveDeviceMunicipio({ locationGateway }),
+  };
+}
+
+export function createSearchUseCases(): SearchUseCases {
+  const searchRepository = createAxiosGlobalSearchApi();
+  return {
+    globalSearch: createGlobalSearch({ searchRepository }),
   };
 }

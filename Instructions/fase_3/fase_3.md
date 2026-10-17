@@ -185,3 +185,92 @@ TASK-02 READY_FOR_REVIEW, harness_status.typecheck_passed: true y nota de los
 literal (salida del tsc/eslint, resultado del grep de capas, cero deps).
 NO inicies TASK-03.
 PARADA CONTROLADA al terminar: reporta al Humano que revisar y los 6 archivos para revisión.
+
+## Prompt para el Worker (DeepSeek) — TASK-03 de search-bar
+
+MODO: EJECUCIÓN (Trabajador). Ejecutas ÚNICAMENTE la TASK-03 de la feature
+search-bar (Fase 3). No planeas, no orquestas, no ejecutas ninguna otra TASK.
+Proyecto: Cimientos del Renacimiento — Gabinete Móvil (Expo SDK 57 + RN + TS strict).
+Raíz: /Users/macbookair/Documents/Projects/React-Native/CIMIENTOS-DEL-RENACIMIENTO-APP-MOBILE
+
+LEE EN ESTE ORDEN (obligatorio, nada más al inicio):
+1. AGENTS.md (leyes absolutas y arnés)
+2. progress/current-task.json (estado vivo; active_task = TASK-02 COMPLETED)
+3. spec/features/search-bar/task.md — SOLO la sección TASK-03
+4. spec/features/search-bar/plan.md — SOLO §6.1–§6.5 y §7
+5. spec/constitution/tech-stack.md — SOLO §5 (Clean Architecture / SOLID)
+6. progress/history.md — SOLO las entradas 2026-10-16 de TASK-02 (contexto inmediato)
+
+CONTEXTO (ya cerrado por el Humano, no re-debatir):
+- TASK-01 COMPLETED: tokens search-* registrados y @shopify/flash-list@2.0.2 +
+  expo-image@~57.0.5 instaladas; rebuild nativo OK en Android e iOS.
+  NO reinstales nada y NO toques package.json/lock.
+- TASK-02 COMPLETED: 6 archivos de domain + application creados y aprobados.
+  Están CONGELADOS: no los modifiques salvo que el plan §6–§7 lo exija
+  explícitamente (no lo exige).
+- TASK-03 crea infrastructure + SearchProvider/useSearch + wiring, con firmas
+  verbatim. NO crea componentes de UI ni toca navegación (eso es TASK-04/05).
+
+EJECUTA EXACTAMENTE (plan §6–§7, firmas verbatim, cero desviaciones):
+1. src/features/search/infrastructure/dto.ts                          (§6.1)
+2. src/features/search/infrastructure/AxiosGlobalSearchApi.ts         (§6.2;
+   path del endpoint solo aquí; cancelación re-lanzada intacta)
+3. src/features/search/presentation/SearchProvider.tsx                (§7,
+   verbatim con SEARCH_MIN_CHARS / SEARCH_DEBOUNCE_MS)
+4. src/features/search/presentation/useSearch.ts                      (§7)
+5. src/app/compositionRoot.ts: añadir createSearchUseCases()          (§6.3;
+   createAuthUseCases/createHomeUseCases intactos, solo adiciones)
+6. App.tsx: searchUseCases a nivel de módulo + <SearchProvider> dentro de
+   <HomeProvider>                                                 (§6.4)
+7. eslint.config.js: añadir @shopify/* + expo-image a los bans de
+   domain/** y application/**                                   (§6.5; bloque
+   presentation/navigation sin cambios)
+
+CONTRATO HTTP (verbatim en plan §6.1–§6.2, no inventar):
+GET /api/v1/app-mobile/global-search?search={q}&page={n}&size=10
+→ Spring Page<AppMobileGlobalSearchCardDTO>. El mapper es 1:1; campos
+opcionales ausentes → null.
+
+REGLAS DE CAPAS / DIP (verificar con grep al cerrar):
+- domain/** y application/**: cero imports de infraestructura, React, Expo,
+  Axios, TanStack, @shopify, expo-image, @/shared, @/app (TASK-02 ya cumple;
+  no romperlo).
+- infrastructure/**: implementa el puerto SearchRepository; puede usar Axios.
+- presentation/**: consume casos de uso vía SearchProvider; nunca infraestructura.
+- Único importador de search/infrastructure = src/app/compositionRoot.ts.
+- Cero any, cero comentarios, cero barrels index.ts, cero clases para use cases.
+
+ARCHIVOS PERMITIDOS (prohibido tocar cualquier otro):
+- src/features/search/infrastructure/** (los 2 archivos)
+- src/features/search/presentation/SearchProvider.tsx
+- src/features/search/presentation/useSearch.ts
+- src/app/compositionRoot.ts
+- App.tsx
+- eslint.config.js
+- spec/features/search-bar/task.md (marcar pasos - [x] y Status: READY_FOR_REVIEW)
+- progress/current-task.json
+- progress/history.md
+
+PROHIBIDO: tocar src/features/search/domain/** y application/**; crear
+componentes de UI o SearchScreen (TASK-04); tocar navegación (TASK-05);
+tocar nativos, package.json/lock, app.json, app.config.js, global.css,
+src/shared/theme/tokens.ts; instalar dependencias; hacer commit; correr
+npx expo start / prebuild / run:* (exclusivo del Humano).
+
+ARNÉS OBLIGATORIO AL CERRAR:
+- npx tsc --noEmit → exit 0.
+- npx eslint . → exit 0 (si falla, corrige SOLO en los archivos permitidos).
+- Grep DIP: único importador de search/infrastructure = compositionRoot.ts;
+  @shopify/* y expo-image ausentes de domain/** y application/**.
+- git diff -- package.json app.json app.config.js → VACÍO.
+- Confirmar que app.json/app.config.js y domain/application no cambiaron.
+
+CIERRE: marca en spec/features/search-bar/task.md los pasos de TASK-03 como
+- [x] y Status: READY_FOR_REVIEW (NO COMPLETED — la cierra el Humano tras
+validar firmas, mapper 1:1, DIP y fences). Actualiza
+progress/current-task.json (active_task TASK-03 READY_FOR_REVIEW,
+harness_status.typecheck_passed: true y nota de los archivos creados/editados)
+y añade la entrada en progress/history.md con la evidencia literal (salida de
+tsc/eslint, grep DIP, gate de deps). NO inicies TASK-04.
+PARADA CONTROLADA al terminar: reporta al Humano qué revisar y los archivos
+creados/editados.

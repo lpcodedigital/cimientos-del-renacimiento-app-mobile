@@ -1,6 +1,6 @@
 {
   "project_name": "Cimientos del Renacimiento - Gabinete Móvil",
-  "current_roadmap_phase": "Fase 2b: Radar Territorial (radar-home) — CERRADA (2026-10-12). security-keys CANCELADA por el Humano (2026-10-15: keys ya rotadas en Google Console). Fase 3 (search-bar): Paso 0 SDD ESCRITO y spec.md APROBADA por el Humano (2026-10-15). TASK-01 COMPLETED (2026-10-16: tokens + @shopify/flash-list@2.0.2 + expo-image@~57.0.5; diff validado por el Humano + rebuild nativo OK en Android e iOS). TASK-02 (domain + application) COMPLETED (2026-10-16: 6 archivos con firmas verbatim de plan §4–§5; validada por el Humano). TASK-03 (infrastructure + wiring) TODO: se autoriza en NUEVA SESIÓN; NO iniciada.",
+  "current_roadmap_phase": "Fase 2b: Radar Territorial (radar-home) — CERRADA (2026-10-12). security-keys CANCELADA por el Humano (2026-10-15: keys ya rotadas en Google Console). Fase 3 (search-bar): Paso 0 SDD ESCRITO y spec.md APROBADA por el Humano (2026-10-15). TASK-01 COMPLETED (2026-10-16: tokens + @shopify/flash-list@2.0.2 + expo-image@~57.0.5; diff validado por el Humano + rebuild nativo OK en Android e iOS). TASK-02 (domain + application) COMPLETED (2026-10-16: 6 archivos con firmas verbatim de plan §4–§5; validada por el Humano). TASK-03 (infrastructure + wiring) COMPLETED (2026-10-16: 4 archivos nuevos + compositionRoot/App.tsx/eslint.config.js; aprobada por el Humano). TASK-04 (componentes de búsqueda) TODO: se autoriza en NUEVA SESIÓN con prompt de ejecución.",
   "active_feature": "search-bar",
   "context_pointers": {
     "mockup_busqueda": "spec/features/search-bar/mockups/Busqueda.png",
@@ -13,14 +13,18 @@
     "baseline_feature": "spec/features/core-arch-refactor/spec.md"
   },
   "active_task": {
-    "id": "TASK-02",
-    "description": "Domain + application de search (plan §4.1–§4.4 y §5.1–§5.2 verbatim): 6 archivos nuevos, cero consumidores, cero infrastructure/presentation.",
+    "id": "TASK-03",
+    "description": "Infrastructure + wiring de search (plan §6.1–§6.5 y §7 verbatim): infra dto + AxiosGlobalSearchApi, SearchProvider + useSearch, createSearchUseCases en compositionRoot, SearchProvider en App.tsx y fences eslint en domain/application.",
     "status": "COMPLETED",
     "assigned_role": "Agente Trabajador",
-    "validation": "COMPLETED (2026-10-16) aprobada por el Humano: los 6 archivos revisados (firmas verbatim y capas limpias). npx tsc --noEmit exit 0; npx eslint . exit 0; grep de capas limpio; git diff -- package.json app.json app.config.js VACÍO. TASK-03 NO iniciada: se autoriza en NUEVA SESIÓN con el prompt de ejecución.",
+    "validation": "COMPLETED (2026-10-16) aprobada por el Humano: firmas verbatim, mapper 1:1, DIP y fences validados. npx tsc --noEmit exit 0; npx eslint . exit 0 (1 warning preexistente en el snippet verbatim de plan §7: import useContext sin usar en SearchProvider.tsx); grep DIP: único importador de search/infrastructure = src/app/compositionRoot.ts:22; @shopify/expo-image ausentes de domain/application; git diff -- package.json app.json app.config.js VACÍO. TASK-04 NO iniciada: se autoriza en NUEVA SESIÓN con prompt de ejecución.",
     "allowed_files_to_edit": [
-      "src/features/search/domain/** (los 4 archivos)",
-      "src/features/search/application/** (los 2 archivos)",
+      "src/features/search/infrastructure/** (los 2 archivos)",
+      "src/features/search/presentation/SearchProvider.tsx",
+      "src/features/search/presentation/useSearch.ts",
+      "src/app/compositionRoot.ts",
+      "App.tsx",
+      "eslint.config.js",
       "spec/features/search-bar/task.md",
       "progress/current-task.json",
       "progress/history.md"
@@ -29,6 +33,7 @@
   "harness_status": {
     "fase_3_task_01_run": "2026-10-16 (Fase 3 TASK-01, Worker): tokens search-* en global.css (8) + tokens.ts (searchPalette); npx expo install @shopify/flash-list@2.0.2 expo-image@~57.0.5; npx tsc --noEmit exit 0; git diff -- app.json app.config.js VACÍO; git diff -- package.json SOLO las 2 deps. Hallazgo: postinstall patch-package falló al aplicar patches/expo-modules-jsi+57.1.1.patch (plumbing preexistente, ajeno a TASK-01; lockfile sin deleciones). TASK-01 COMPLETED (2026-10-16): Humano validó el diff y el rebuild nativo (prebuild + run:ios/run:android) OK en Android e iOS. TASK-02 no iniciada.",
     "fase_3_task_02_run": "2026-10-16 (Fase 3 TASK-02, Worker): 6 archivos creados — domain/entities/SearchCard.ts, domain/entities/SearchPage.ts, domain/errors/SearchError.ts, domain/ports/SearchRepository.ts, application/types.ts, application/globalSearch.ts. npx tsc --noEmit exit 0; npx eslint . exit 0; grep de capas: domain solo imports relativos, application solo ../domain + ./types, cero react/expo/axios/tanstack/shopify/flash-list/expo-image/@-shared/@-app; git diff -- package.json app.json app.config.js VACÍO. Cero deps nuevas, cero commit, cero infrastructure/presentation.",
+    "fase_3_task_03_run": "2026-10-16 (Fase 3 TASK-03, Worker): creados infrastructure/dto.ts + infrastructure/AxiosGlobalSearchApi.ts + presentation/SearchProvider.tsx + presentation/useSearch.ts; editados src/app/compositionRoot.ts (+createSearchUseCases), App.tsx (searchUseCases + SearchProvider dentro de HomeProvider) y eslint.config.js (+@shopify/*, expo-image en domain/application). npx tsc --noEmit exit 0; npx eslint . exit 0 (1 warning: useContext sin usar en SearchProvider.tsx, tal cual el snippet verbatim de plan §7); DIP: search/infrastructure solo importado en compositionRoot.ts:22; path /api/v1/app-mobile/global-search único en AxiosGlobalSearchApi.ts:32; git diff -- package.json app.json app.config.js VACÍO; domain/application sin cambios. Cero deps nuevas, cero commit, cero UI/navegación. TASK-03 COMPLETED (aprobada por el Humano 2026-10-16). TASK-04 no iniciada.",
     "last_run": "2026-10-12 (Fase 2b TASK-06 arnés/auditoría). npx tsc --noEmit exit 0; npx eslint . exit 0 (cero errores/warnings). Bans por git grep sobre src/**/*.ts(x)+App.tsx: any 0, TouchableOpacity 0, FlatList 0, expo-router 0; auth-* 0 en src/features/home/**. DIP: home/infrastructure solo importado por src/app/compositionRoot.ts:18-19; react-native-maps solo en presentation/RadarMap.tsx:2; expo-location solo en infrastructure/ExpoLocationGateway.ts:1. Contrato: path /api/v1/dashboard/mapa-home único en AxiosRadarMapApi.ts:34; dto.ts espejo 1:1 de spec §4.6. Chrome: git diff de src/features/app-shell/** y src/features/auth/** VACÍO (worktree y vs baseline 333b62f). git grep AIza: coincidencias preexistentes (ver aiza). git diff HEAD -- package.json/app.json VACÍO (todo commiteado); contra baseline 333b62f el radar añade solo las 2 deps + plugin, pero hay deps extra de commit humano 68cb002. Cero dependencias nuevas por el agente; NO se ejecutó npx expo start/prebuild/run; cero commit.",
     "typecheck": "npx tsc --noEmit -> exit 0",
     "linter": "npx eslint . -> exit 0 (cero errores, cero warnings)",

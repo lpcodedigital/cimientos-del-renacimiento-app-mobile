@@ -75,20 +75,20 @@
 
 ## TASK-03 — Infrastructure + compositionRoot + SearchProvider + fences
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
 
 **Pasos (4 archivos nuevos + 3 editados, verbatim de plan §6–§7)**
 
-- [ ] `src/features/search/infrastructure/dto.ts` (plan §6.1).
-- [ ] `src/features/search/infrastructure/AxiosGlobalSearchApi.ts` (plan §6.2; path del endpoint solo aquí; cancelación re-lanzada intacta).
-- [ ] `src/features/search/presentation/SearchProvider.tsx` (plan §7, verbatim con `SEARCH_MIN_CHARS`/`SEARCH_DEBOUNCE_MS`).
-- [ ] `src/features/search/presentation/useSearch.ts` (plan §7).
-- [ ] `src/app/compositionRoot.ts`: añadir `createSearchUseCases()` (plan §6.3; `createAuthUseCases`/`createHomeUseCases` intactos — solo adiciones).
-- [ ] `App.tsx`: `searchUseCases` a nivel de módulo + `<SearchProvider>` dentro de `<HomeProvider>` (plan §6.4).
-- [ ] `eslint.config.js`: `@shopify/*` + `expo-image` añadidos a los bans de `domain/**` y `application/**` (plan §6.5). Bloque presentation/navigation sin cambios.
-- [ ] Grep DIP: único importador de `search/infrastructure` = `compositionRoot.ts`; `@shopify/*`/`expo-image` ausentes de `domain`/`application`.
-- [ ] `npx tsc --noEmit` → exit 0. `git diff -- package.json app.json app.config.js` → vacío.
+- [x] `src/features/search/infrastructure/dto.ts` (plan §6.1).
+- [x] `src/features/search/infrastructure/AxiosGlobalSearchApi.ts` (plan §6.2; path del endpoint solo aquí; cancelación re-lanzada intacta).
+- [x] `src/features/search/presentation/SearchProvider.tsx` (plan §7, verbatim con `SEARCH_MIN_CHARS`/`SEARCH_DEBOUNCE_MS`).
+- [x] `src/features/search/presentation/useSearch.ts` (plan §7).
+- [x] `src/app/compositionRoot.ts`: añadir `createSearchUseCases()` (plan §6.3; `createAuthUseCases`/`createHomeUseCases` intactos — solo adiciones).
+- [x] `App.tsx`: `searchUseCases` a nivel de módulo + `<SearchProvider>` dentro de `<HomeProvider>` (plan §6.4).
+- [x] `eslint.config.js`: `@shopify/*` + `expo-image` añadidos a los bans de `domain/**` y `application/**` (plan §6.5). Bloque presentation/navigation sin cambios.
+- [x] Grep DIP: único importador de `search/infrastructure` = `compositionRoot.ts`; `@shopify/*`/`expo-image` ausentes de `domain`/`application`.
+- [x] `npx tsc --noEmit` → exit 0. `git diff -- package.json app.json app.config.js` → vacío.
 
 **allowed_files**
 
@@ -102,7 +102,7 @@
 - `progress/current-task.json`
 - `progress/history.md`
 
-**Validación (Humano):** revisar firmas verbatim, mapper 1:1 (campos opcionales → `null`), DIP y fences. Tras aprobarla, TASK-03 → COMPLETED y se autoriza TASK-04 en nueva sesión.
+**Validación (Humano):** revisar firmas verbatim, mapper 1:1 (campos opcionales → `null`), DIP y fences. Aprobada por el Humano el 2026-10-16: TASK-03 → COMPLETED. TASK-04 se autoriza en nueva sesión con prompt de ejecución.
 
 ---
 

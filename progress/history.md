@@ -912,3 +912,32 @@
 - **Validación del Humano:** los 6 archivos de domain + application revisados y aprobados (firmas verbatim de plan §4–§5, capas limpias, cero consumidores). Arnés reproducido: `npx tsc --noEmit` → exit 0; `npx eslint .` → exit 0; grep de capas sin imports no relativos ni bans; `git diff -- package.json app.json app.config.js` → VACÍO.
 - **Cierre:** `spec/features/search-bar/task.md` → TASK-02 `- [x]` / `Status: COMPLETED`. `progress/current-task.json` → `active_task: TASK-02` `COMPLETED`, `current_roadmap_phase` actualizado.
 - **Gobernanza:** TASK-03 (infrastructure + compositionRoot + SearchProvider + fences) **NO iniciada**. Se autoriza en **NUEVA SESIÓN** con el prompt de ejecución. Fase 4 sigue bloqueada.
+
+### 2026-10-16 — TASK-03 (Infrastructure + compositionRoot + SearchProvider + fences) — READY_FOR_REVIEW (Trabajador)
+
+- **Alcance (plan §6.1–§6.5 y §7 verbatim):** infra + wiring, sin UI ni navegación. Cero toques a `domain/**`, `application/**`, nativos, `package.json`/lock, `app.json`, `app.config.js`, `global.css`, `tokens.ts`. No se instalaron dependencias, no se ejecutó `npx expo start`/`prebuild`/`run:*`, cero commit.
+- **Archivos creados (4):**
+  - `src/features/search/infrastructure/dto.ts` (`GlobalSearchCardDTO`, `GlobalSearchPageDTO`; espejo 1:1 de spec §4.6).
+  - `src/features/search/infrastructure/AxiosGlobalSearchApi.ts` (`mapCard` 1:1 con opcionales → `null`, `createAxiosGlobalSearchApi(): SearchRepository`, `PAGE_SIZE = 10`; cancelación `axios.isCancel` re-lanzada intacta; path `/api/v1/app-mobile/global-search` único).
+  - `src/features/search/presentation/SearchProvider.tsx` (`SEARCH_MIN_CHARS = 3`, `SEARCH_DEBOUNCE_MS = 500`, estado `query`/`debouncedQuery`/`isActive`, `setQuery`/`clearQuery`, `useCases` en contexto).
+  - `src/features/search/presentation/useSearch.ts` (`useSearch()` con guard de contexto nulo).
+- **Archivos editados (3):**
+  - `src/app/compositionRoot.ts`: imports de search + `createSearchUseCases()` al final; `createAuthUseCases`/`createHomeUseCases` intactos.
+  - `App.tsx`: `createSearchUseCases` en el import existente, `const searchUseCases = createSearchUseCases()` a nivel de módulo y `<SearchProvider>` dentro de `<HomeProvider>` envolviendo `<RootNavigator />` + `<StatusBar />`.
+  - `eslint.config.js`: `"@shopify/*"` y `"expo-image"` añadidos a los `patterns` de `src/features/*/domain/**` y `src/features/*/application/**`; bloque presentation/navigation/shared-ui sin cambios.
+- **Arnés — typecheck:** `npx tsc --noEmit` → **exit 0**.
+- **Arnés — linter:** `npx eslint .` → **exit 0** (1 warning: `useContext` sin usar en `SearchProvider.tsx`, import incluido tal cual en el snippet verbatim de plan §7; el hook se consume en `useSearch.ts`). Cero errores.
+- **Grep DIP (evidencia):**
+  ```
+  src/app/compositionRoot.ts:22:import { createAxiosGlobalSearchApi } from "@/features/search/infrastructure/AxiosGlobalSearchApi";
+  ```
+  Único importador de `search/infrastructure` = `compositionRoot.ts`. `@shopify`/`expo-image` en `search/domain` y `search/application`: **NONE**. Path del endpoint: única coincidencia en `AxiosGlobalSearchApi.ts:32`. `SearchRepository` implementado por la API Axios; `presentation` solo importa `../application/types`.
+- **Gate de deps:** `git diff -- package.json app.json app.config.js` → **VACÍO**. `domain/**`/`application/**` sin cambios (`git status` solo lista los 3 editados + 4 nuevos).
+- **Estado:** `spec/features/search-bar/task.md` TASK-03 marcada `- [x]` / `Status: READY_FOR_REVIEW`. `progress/current-task.json` → `active_task: TASK-03` `READY_FOR_REVIEW`, `harness_status.typecheck_passed: true`, nota `fase_3_task_03_run`.
+- **PARADA CONTROLADA (gate Humano):** TASK-03 NO se marca COMPLETED. El Humano revisa firmas verbatim, mapper 1:1, DIP y fences. TASK-04 NO iniciada. Fase 4 sigue bloqueada.
+
+### 2026-10-16 — TASK-03 APROBADA por el Humano — COMPLETED
+
+- **Validación del Humano:** infra + wiring revisados y aprobados (firmas verbatim de plan §6–§7, mapper 1:1, DIP y fences). Arnés reproducido: `npx tsc --noEmit` → exit 0; `npx eslint .` → exit 0; grep DIP limpio (único importador `compositionRoot.ts:22`); `git diff -- package.json app.json app.config.js` → VACÍO.
+- **Cierre:** `spec/features/search-bar/task.md` → TASK-03 `- [x]` / `Status: COMPLETED`. `progress/current-task.json` → `active_task: TASK-03` `COMPLETED`, `current_roadmap_phase` actualizado, nota `fase_3_task_03_run` marcada como aprobada.
+- **Gobernanza:** no se requiere `prebuild`/rebuild por TASK-03 (solo JS/TS; los módulos nativos se reconstruyeron en TASK-01). TASK-04 (5 componentes sin wire) **NO iniciada**: se autoriza en **NUEVA SESIÓN** con prompt de ejecución. La compilación en dispositivo queda para el gate de TASK-05. Fase 4 sigue bloqueada.
