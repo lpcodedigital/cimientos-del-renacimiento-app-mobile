@@ -119,3 +119,69 @@ package_json_sin_cambios: false con nota de las 2 deps, app_json_sin_cambios:
 true) y añade la entrada en progress/history.md con la evidencia literal
 (versiones instaladas, salida del tsc, diffs). NO inicies TASK-02.
 PARADA CONTROLADA al terminar: reporta al Humanoque revisar para rebuild nativo.
+
+## Prompt para el Worker (DeepSeek) — TASK-02 de search-bar
+
+MODO: EJECUCIÓN (Trabajador). Ejecutas ÚNICAMENTE la TASK-02 de la feature
+search-bar (Fase 3). No planeas, no orquestas, no ejecutas ninguna otra TASK.
+Proyecto: Cimientos del Renacimiento — Gabinete Móvil (Expo SDK 57 + RN + TS strict).
+Raíz: /Users/macbookair/Documents/Projects/React-Native/CIMIENTOS-DEL-RENACIMIENTO-APP-MOBILE
+
+LEE EN ESTE ORDEN (obligatorio, nada más al inicio):
+1. AGENTS.md (leyes absolutas y arnés)
+2. progress/current-task.json (estado vivo; active_task = TASK-01 COMPLETED)
+3. spec/features/search-bar/task.md — SOLO la sección TASK-02
+4. spec/features/search-bar/plan.md — SOLO §4.1–§4.4 y §5.1–§5.2
+5. spec/constitution/tech-stack.md — SOLO §5 (Clean Architecture / SOLID)
+6. progress/history.md — SOLO la entrada 2026-10-16 de TASK-01 (contexto inmediato)
+
+CONTEXTO (ya cerrado por el Humano, no re-debatir):
+- TASK-01 COMPLETED (2026-10-16): tokens search-* registrados y
+  @shopify/flash-list@2.0.2 + expo-image@~57.0.5 instaladas; rebuild nativo OK
+  en Android e iOS. NO reinstales nada.
+- TASK-02 crea SOLO domain + application, sin consumidores. Nadie los importa aún.
+
+EJECUTA EXACTAMENTE (plan §4–§5, firmas verbatim, cero desviaciones):
+1. src/features/search/domain/entities/SearchCard.ts        (plan §4.1)
+2. src/features/search/domain/entities/SearchPage.ts        (plan §4.2)
+3. src/features/search/domain/errors/SearchError.ts         (plan §4.3, incluye isSearchError)
+4. src/features/search/domain/ports/SearchRepository.ts     (plan §4.4)
+5. src/features/search/application/types.ts                 (plan §5.1)
+6. src/features/search/application/globalSearch.ts          (plan §5.2; deja subir SearchError sin catch)
+
+REGLAS DE CAPAS (verificar con grep al cerrar):
+- domain/: solo imports relativos entre archivos de domain.
+- application/: solo imports "../domain/..." y "./types".
+- Cero imports de react, react-native, expo-*, axios, @tanstack, @shopify,
+  expo-image, @/shared, @/app.
+- Cero any, cero comentarios, cero barrels index.ts, cero clases para use cases
+  (factories closure).
+
+ARCHIVOS PERMITIDOS (allowed_files — prohibido tocar cualquier otro):
+- src/features/search/domain/** (los 4 archivos)
+- src/features/search/application/** (los 2 archivos)
+- spec/features/search-bar/task.md (marcar pasos - [x] y Status: READY_FOR_REVIEW)
+- progress/current-task.json
+- progress/history.md
+
+PROHIBIDO: crear infrastructure/presentation o cualquier otro archivo bajo
+src/features/**; tocar src/app/**, App.tsx, eslint.config.js, app.json,
+app.config.js, global.css, src/shared/theme/tokens.ts, package.json/lock;
+instalar dependencias; escribir código nativo; hacer commit; correr
+npx expo start / prebuild / run:* (exclusivo del Humano).
+
+ARNÉS OBLIGATORIO AL CERRAR:
+- npx tsc --noEmit → exit 0.
+- Grep de capas: domain sin imports no relativos; application solo
+  ../domain + ./types; cero React/Expo/Axios/TanStack/FlashList/expo-image.
+- npx eslint . → exit 0 (si el lint falla, corrige SOLO en estos 6 archivos).
+- git diff -- package.json app.json app.config.js → VACÍO.
+
+CIERRE: marca en spec/features/search-bar/task.md los pasos de TASK-02 como
+- [x] y Status: READY_FOR_REVIEW (NO COMPLETED — la cierra el Humano tras
+validar los 6 archivos). Actualiza progress/current-task.json (active_task
+TASK-02 READY_FOR_REVIEW, harness_status.typecheck_passed: true y nota de los
+6 archivos creados) y añade la entrada en progress/history.md con la evidencia
+literal (salida del tsc/eslint, resultado del grep de capas, cero deps).
+NO inicies TASK-03.
+PARADA CONTROLADA al terminar: reporta al Humano que revisar y los 6 archivos para revisión.

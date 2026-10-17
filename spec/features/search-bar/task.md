@@ -47,19 +47,19 @@
 
 ## TASK-02 — Domain + Application de search
 
-**Status:** TODO
+**Status:** COMPLETED
 **assigned_role:** Trabajador
 
 **Pasos (6 archivos nuevos, firmas verbatim de plan §4–§5; cero consumidores)**
 
-- [ ] `src/features/search/domain/entities/SearchCard.ts` (plan §4.1).
-- [ ] `src/features/search/domain/entities/SearchPage.ts` (plan §4.2).
-- [ ] `src/features/search/domain/errors/SearchError.ts` (plan §4.3, incluye `isSearchError`).
-- [ ] `src/features/search/domain/ports/SearchRepository.ts` (plan §4.4).
-- [ ] `src/features/search/application/types.ts` (plan §5.1).
-- [ ] `src/features/search/application/globalSearch.ts` (plan §5.2; deja subir `SearchError` sin catch).
-- [ ] Grep de capas: `domain/` solo imports relativos; `application/` solo `../domain/...` + `./types`; cero React/Expo/Axios/TanStack/FlashList/expo-image.
-- [ ] `npx tsc --noEmit` → exit 0.
+- [x] `src/features/search/domain/entities/SearchCard.ts` (plan §4.1).
+- [x] `src/features/search/domain/entities/SearchPage.ts` (plan §4.2).
+- [x] `src/features/search/domain/errors/SearchError.ts` (plan §4.3, incluye `isSearchError`).
+- [x] `src/features/search/domain/ports/SearchRepository.ts` (plan §4.4).
+- [x] `src/features/search/application/types.ts` (plan §5.1).
+- [x] `src/features/search/application/globalSearch.ts` (plan §5.2; deja subir `SearchError` sin catch).
+- [x] Grep de capas: `domain/` solo imports relativos; `application/` solo `../domain/...` + `./types`; cero React/Expo/Axios/TanStack/FlashList/expo-image.
+- [x] `npx tsc --noEmit` → exit 0.
 
 **allowed_files**
 

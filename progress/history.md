@@ -881,3 +881,34 @@
 - **Validación del Humano:** diff de `global.css` (8 tokens `search-*`), `src/shared/theme/tokens.ts` (`searchPalette`) y `package.json` (solo `@shopify/flash-list@2.0.2` + `expo-image@~57.0.5`) revisado y aprobado. Rebuild nativo (`npx expo prebuild` + `run:ios`/`run:android`) ejecutado y validado **OK en Android e iOS**.
 - **Cierre:** `spec/features/search-bar/task.md` → TASK-01 `- [x]` / `Status: COMPLETED`. `progress/current-task.json` → `active_task: TASK-01` `COMPLETED`, `current_roadmap_phase` actualizado.
 - **Gobernanza:** TASK-02 (domain + application) **NO iniciada**. Se autoriza en **NUEVA SESIÓN** con el prompt de ejecución (patrón por task). Fase 4 sigue bloqueada.
+
+### 2026-10-16 — TASK-02 (Domain + Application de search) — READY_FOR_REVIEW (Trabajador)
+
+- **Alcance (plan §4.1–§4.4 y §5.1–§5.2 verbatim):** solo domain + application, sin consumidores. Cero `infrastructure/`/`presentation/`, cero toques a `src/app/**`, `App.tsx`, `eslint.config.js`, `app.json`, `app.config.js`, `global.css`, `tokens.ts`, `package.json`/lock. No se instalaron dependencias, no se ejecutó `npx expo start`/`prebuild`/`run:*`, cero commit.
+- **Archivos creados (6):**
+  - `src/features/search/domain/entities/SearchCard.ts` (`SearchCardTipo`, `SearchCard`).
+  - `src/features/search/domain/entities/SearchPage.ts` (`SearchPage`, import relativo `./SearchCard`).
+  - `src/features/search/domain/errors/SearchError.ts` (`SearchErrorKind`, `SearchError`, `SEARCH_ERROR_MESSAGES`, `searchError`, `isSearchError`).
+  - `src/features/search/domain/ports/SearchRepository.ts` (`SearchRepository`, import relativo `../entities/SearchPage`).
+  - `src/features/search/application/types.ts` (`SearchUseCases`, import `../domain/entities/SearchPage`).
+  - `src/features/search/application/globalSearch.ts` (`createGlobalSearch` factory closure; deja subir `SearchError` sin catch; imports `../domain/ports/SearchRepository` + `./types`).
+- **Arnés — typecheck:** `npx tsc --noEmit` → **exit 0**.
+- **Arnés — linter:** `npx eslint .` → **exit 0** (cero errores, cero warnings).
+- **Grep de capas (evidencia):**
+  ```
+  domain/ports/SearchRepository.ts:1:import type { SearchPage } from "../entities/SearchPage";
+  domain/entities/SearchPage.ts:1:import type { SearchCard } from "./SearchCard";
+  application/globalSearch.ts:1:import type { SearchRepository } from "../domain/ports/SearchRepository";
+  application/globalSearch.ts:2:import type { SearchUseCases } from "./types";
+  application/types.ts:1:import type { SearchPage } from "../domain/entities/SearchPage";
+  ```
+  Imports no relativos: **NONE**. Bans por término (case-insensitive, sobre `domain/` + `application/`): `react: 0`, `axios: 0`, `tanstack: 0`, `shopify: 0`, `flash-list: 0`, `expo-image: 0`, `@/shared: 0`, `@/app: 0`. (`expo` solo aparece como subcadena de `export`; cero imports de Expo.) `any`/comentarios/barrels `index.ts`: **NONE**.
+- **Gate de deps:** `git diff -- package.json app.json app.config.js` → **VACÍO**. Cero dependencias nuevas.
+- **Estado:** `spec/features/search-bar/task.md` TASK-02 marcada `- [x]` / `Status: READY_FOR_REVIEW`. `progress/current-task.json` → `active_task: TASK-02` `READY_FOR_REVIEW`, `harness_status.typecheck_passed: true`, nota `fase_3_task_02_run` con los 6 archivos.
+- **PARADA CONTROLADA (gate Humano):** TASK-02 NO se marca COMPLETED. El Humano revisa los 6 archivos (firmas verbatim, capas limpias). Tras aprobarla, TASK-02 → COMPLETED y se autoriza TASK-03 en nueva sesión. TASK-03 NO iniciada. Fase 4 sigue bloqueada.
+
+### 2026-10-16 — TASK-02 APROBADA por el Humano — COMPLETED
+
+- **Validación del Humano:** los 6 archivos de domain + application revisados y aprobados (firmas verbatim de plan §4–§5, capas limpias, cero consumidores). Arnés reproducido: `npx tsc --noEmit` → exit 0; `npx eslint .` → exit 0; grep de capas sin imports no relativos ni bans; `git diff -- package.json app.json app.config.js` → VACÍO.
+- **Cierre:** `spec/features/search-bar/task.md` → TASK-02 `- [x]` / `Status: COMPLETED`. `progress/current-task.json` → `active_task: TASK-02` `COMPLETED`, `current_roadmap_phase` actualizado.
+- **Gobernanza:** TASK-03 (infrastructure + compositionRoot + SearchProvider + fences) **NO iniciada**. Se autoriza en **NUEVA SESIÓN** con el prompt de ejecución. Fase 4 sigue bloqueada.
