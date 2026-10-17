@@ -28,12 +28,18 @@
 * **Arquitectura:** 2a es feature `app-shell` **solo presentation** (`src/features/app-shell/presentation/`). No se inventa `domain`/`application`/`infrastructure` vacío. `RootNavigator` solo importa `AppShell` y envuelve el stack. 2b abre `src/features/home/{domain,application,infrastructure,presentation}` con puertos, use cases (closures), DTOs de wire y `compositionRoot`. DIP/fences ESLint de 1.5b intactos.
 * **Regla de bloqueo:** El Orquestador no genera el `plan.md` de 2b si 2a no está auditada por el Revisor y aprobada por el Tester Visual Humano en dispositivo. Fase 3 permanece bloqueada hasta cerrar 2b.
 
-## Fase 3: Búsqueda Predictiva y Explorador
-* **Objetivo:** Búsqueda en tiempo real sin degradación de rendimiento.
+## Fase 3: Búsqueda Predictiva y Explorador (search-bar)
+* **Reescrita el 2026-10-15** contra el contrato real del backend (`GET /api/v1/app-mobile/global-search`) y el mockup `spec/features/search-bar/mockups/Busqueda.png` (este párrafo **supersede** la versión original de barra con autocompletado de localidades). Decisiones del Humano (2026-10-15) asentadas en `spec/features/search-bar/spec.md` §2.
+* **Objetivo:** Búsqueda global en tiempo real sin degradación de rendimiento (UX tipo Uber/Rappi).
 * **Alcance:**
-  - Pantalla 3: Barra de búsqueda con autocompletado en tiempo real (*"EL CUYO"*)[cite: 1] y debounce.
-  - Renderizado de resultados filtrados por localidad o municipio[cite: 1]. **Regla Estricta:** Implementación obligatoria con `FlashList` de Shopify (Prohibido usar `FlatList`).
-  - Tarjetas con tags diferenciados: Obra vs Capacitación, avance y monto invertido[cite: 1].
+  - **Pantalla `Search` propia en el AppStack.** La `RadarSearchBar` del Home actúa como *falso input*: al tocarla navega a `Search`. El ítem «Búsqueda» del drawer también navega. **Chrome 2a congelado** (header sigue mostrando `INICIO`; cero cambio de píxel): el back arrow (`navigation.goBack()`) y el título `BÚSQUEDA` viven **en el cuerpo** de la pantalla.
+  - `TextInput` real con `autoFocus`, botón **X** que limpia texto y resultados, **debounce 500 ms**, mínimo **3 caracteres** para disparar la búsqueda.
+  - **Contrato real (producción):** `GET /api/v1/app-mobile/global-search?search={q}&page={n}&size=10` → Spring `Page<AppMobileGlobalSearchCardDTO>` (`idOriginal`, `tipo` `"OBRA"|"CURSO"`, `titulo`, `municipio`, `localidad`/`estatus`/`progreso` solo presentes en OBRAS por `@JsonInclude(NON_NULL)`, `descripcionCorta`, `imagenUrl` opcional). **Scroll infinito** concatenando `page+1` (`last`/`number` del Page).
+  - **Regla Estricta:** implementación obligatoria con `FlashList` de Shopify (**Prohibido `FlatList`**), grid de **2 columnas**. **`expo-image`** para las imágenes remotas (HTTPS/Cloudflare) con fallback «Sin imagen» cuando `imagenUrl` ausente. Ambas dependencias autorizadas por el Humano el 2026-10-15.
+  - **Tarjetas:** pill de tipo (`Obra`/`Capacitación`), título, ubicación (localidad/municipio), línea de avance `{progreso}% {estatus}` **solo en OBRAS**. El DTO **no trae monto ni fecha** → no se renderizan (el «$3.1 MDP» y «NOV 12-2025» del mockup son artefactos). Tap en tarjeta → **no-op** (detalle = Fase 4).
+  - **Estados:** spinner central en primera carga, spinner pequeño al pie en paginación, contador con `totalElements`, empty state, mensaje de error institucional.
+* **Arquitectura:** feature `src/features/search/{domain,application,infrastructure,presentation}` (4 capas, puertos, use case closure, DTO espejo) + `SearchProvider`/`useSearch` (calco `HomeProvider`) + `useInfiniteQuery` de TanStack Query (server state) + `compositionRoot` único importador de infra + fences ESLint. Cero cambio de píxel en chrome 2a y radar 2b (solo acciones de navegación nuevas).
+* **Regla de bloqueo:** TASK-01 no inicia hasta que el Humano apruebe `spec/features/search-bar/spec.md`. Fase 4 permanece bloqueada hasta que el Revisor audite y el Tester Visual Humano apruebe Fase 3 en dispositivo.
 
 ## Fase 4: Ficha Final (Resumen Ejecutivo) y Evidencias
 * **Objetivo:** Interfaz de solo-lectura con alto impacto visual y carga asíncrona de medios.

@@ -12,7 +12,8 @@
 - **Styling Engine:** NativeWind (Tailwind CSS adaptado a React Native). 
   - *Regla Absoluta:* No mezclar clases de NativeWind con `StyleSheet.create()` a menos que se requiera calcular valores dinámicos complejos.
 - **Restricciones de Rendimiento Visual:**
-  - **Listas:** Uso obligatorio de `@shopify/flash-list` para renderizar el explorador de obras. *PROHIBIDO usar `FlatList` de react-native.*
+  - **Listas:** Uso obligatorio de `@shopify/flash-list` para renderizar el explorador de obras. *PROHIBIDO usar `FlatList` de react-native.* Instalación autorizada por el Humano (2026-10-15) en Fase 3 vía `npx expo install`. **FlashList v2:** prohibido pasar `estimatedItemSize` (la prop no existe en v2); requiere New Architecture (RN 0.86 la trae activa por defecto); sin config plugin.
+  - **Imágenes remotas:** `expo-image` (autorizada por el Humano 2026-10-15, Fase 3) para las imágenes de tarjetas servidas vía HTTPS/Cloudflare, con caché `memory-disk` y `recyclingKey` dentro de FlashList. Prohibido usar `Image` de react-native para imágenes remotas del explorador.
   - **Interacciones:** Uso obligatorio de `Pressable` con configuraciones de feedback. *PROHIBIDO usar la librería legada `TouchableOpacity`.*
 - **Fuente Oficial:** Google Font `Lato` (Cargada asíncronamente mediante `expo-font`).
   - *Decisión del Humano (2026-09-04):* los mockups de Fase 1.5a usan una fuente serif/display en el título de marca; se respetará la constitución y el título se renderiza en **Lato Bold** (desviación aprobada y documentada en el spec de la feature).
@@ -79,6 +80,22 @@ Los tokens de Fase 1 (`guinda #6B142E`, `dorado #C4A35A`, `texto #1A1A1A`, `supe
 | `radar-ripple` | `#C4A35A` @ 35% | Anillos de la onda expansiva alrededor del pin seleccionado. |
 
 *Regla Absoluta:* textos del radar en `texto #1A1A1A` (sobre superficies claras) o `superficie #FFFFFF` (sobre `radar-chip-active`). Tipografía: **Lato / Lato Bold** exclusivamente. Paleta `auth-*` prohibida en el radar.
+
+## 2.5 Paleta de búsqueda (Fase 3 — muestreo 2026-10-15 de `Busqueda.png`)
+Los tokens de Fase 1 (`guinda #6B142E`, `texto #1A1A1A`, `texto-suave #5C534C`, `superficie #FFFFFF`), los `app-*` de §2.2 y los `radar-*` de §2.4 siguen vigentes. La pantalla `Search` (cuerpo, barra de búsqueda, tarjetas y estados) usa **exclusivamente** los tokens `search-*` extraídos de `spec/features/search-bar/mockups/Busqueda.png` (mockup 788×1494, muestreo Python stdlib por moda de regiones sobre fills sin texto):
+
+| Token | Hex | Uso |
+| --- | --- | --- |
+| `search-tag-obra` | `#5C7A3F` | Pill/tag «Obra» en la esquina superior izquierda de la imagen de la tarjeta. |
+| `search-tag-curso` | `#8B5E2F` | Pill/tag «Capacitación» en la esquina superior izquierda de la imagen de la tarjeta. |
+| `search-card-bg` | `#F5F0E8` | Fondo del cuerpo de la tarjeta de resultado. |
+| `search-screen-bg` | `#E8E4D9` | Fondo del cuerpo de la pantalla Search. |
+| `search-surface` | `#FFFFFF` | Pill de la barra de búsqueda. |
+| `search-text-muted` | `#777777` | Texto secundario de tarjeta (ubicación, avance), textos de estados (inicial/vacío) y del fallback «Sin imagen». |
+| `search-image-placeholder` | `#E4E0D5` | Fondo del contenedor del fallback «Sin imagen». |
+| `search-accent` | `#C97C33` | Acento dorado muestreado del texto «$3.1 MDP» del mockup. **RESERVADO — prohibido usarlo en Fase 3** (el DTO no trae monto; queda registrado para Fase 4). |
+
+*Regla Absoluta:* textos primarios en `texto #1A1A1A`; secundarios en `search-text-muted`; pills de tipo con texto `superficie #FFFFFF`. Tipografía: **Lato / Lato Bold** exclusivamente (el serif del mockup es artefacto del generador; precedente 1.5a). Icono de ubicación de tarjeta en guinda `#6B142E` (el pin morado `#7044BD` del mockup es artefacto; mismo veredicto que §2.4). Paleta `auth-*` prohibida en la búsqueda.
 
 ## 3. Biometría & Hardware APIs (Exclusivo Expo)
 > *Nota para Agentes: Todo puente de hardware se resuelve mediante APIs de Expo. Cero código nativo escrito a mano.*
