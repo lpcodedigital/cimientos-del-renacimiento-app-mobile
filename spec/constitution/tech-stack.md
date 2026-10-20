@@ -93,9 +93,22 @@ Los tokens de Fase 1 (`guinda #6B142E`, `texto #1A1A1A`, `texto-suave #5C534C`, 
 | `search-surface` | `#FFFFFF` | Pill de la barra de búsqueda. |
 | `search-text-muted` | `#777777` | Texto secundario de tarjeta (ubicación, avance), textos de estados (inicial/vacío) y del fallback «Sin imagen». |
 | `search-image-placeholder` | `#E4E0D5` | Fondo del contenedor del fallback «Sin imagen». |
-| `search-accent` | `#C97C33` | Acento dorado muestreado del texto «$3.1 MDP» del mockup. **RESERVADO — prohibido usarlo en Fase 3** (el DTO no trae monto; queda registrado para Fase 4). |
+| `search-accent` | `#C97C33` | Acento dorado muestreado del texto «$3.1 MDP» del mockup. **RESERVADO en Fase 3 — liberado el 2026-10-20:** el acento de Fase 4 usa su propio hex muestreado (`detail-accent #BC803C`, §2.6). `search-accent` permanece **prohibido en `search/**`** (histórico, sin uso). |
 
 *Regla Absoluta:* textos primarios en `texto #1A1A1A`; secundarios en `search-text-muted`; pills de tipo con texto `superficie #FFFFFF`. Tipografía: **Lato / Lato Bold** exclusivamente (el serif del mockup es artefacto del generador; precedente 1.5a). Icono de ubicación de tarjeta en guinda `#6B142E` (el pin morado `#7044BD` del mockup es artefacto; mismo veredicto que §2.4). Paleta `auth-*` prohibida en la búsqueda.
+
+## 2.6 Paleta del detalle ejecutivo (Fase 4 — muestreo 2026-10-20 de `Detalle_obra.jpg` y `Detalle_capacitacion.jpg`)
+Los tokens de Fase 1 (`guinda #6B142E`, `texto #1A1A1A`, `superficie #FFFFFF`), los `app-*` de §2.2, los `radar-*` de §2.4 y los `search-*` de §2.5 siguen vigentes. La pantalla `Detail` (cuerpo, tarjetas KPI, mapa, carrusel de evidencias, descripción y filas clave-valor) usa **exclusivamente** los tokens `detail-*` extraídos de ambos mockups (muestreo Python stdlib por moda de regiones sobre fills sin texto; ambos mockups arrojaron los mismos hex):
+
+| Token | Hex | Uso |
+| --- | --- | --- |
+| `detail-screen-bg` | `#E4E4D8` | Fondo del cuerpo de la pantalla Detail. |
+| `detail-card-bg` | `#F4F0E8` | Fondo de las tarjetas KPI y de las filas clave-valor (pills). |
+| `detail-accent` | `#BC803C` | Iconos dorados de KPI (Finanzas/Avance/Estatus/Fecha/Municipio) e icono del heading «Ubicación». Es el acento liberado de Fase 4 (sucede al `search-accent` reservado de §2.5, con hex propio muestreado de estos mockups). |
+| `detail-kpi-label` | `#545454` | Label principal de tarjeta KPI («Finanzas», «Avance», «Estatus», «Fecha», «Municipio»). |
+| `detail-text-muted` | `#7C7C78` | Sublabels de KPI («Inversión», «Completado», «Estado de la obra», «Fecha del curso», «Sede»), captions `evidencia N` del carrusel, labels de las filas clave-valor y mensaje «Sin evidencias fotográficas.». |
+
+*Regla Absoluta:* valores de KPI y de las filas clave-valor en `texto #1A1A1A` (Lato Bold). Pin del mapa de «Ubicación» en guinda `#6B142E` (token Fase 1; el pin verde del mockup es artefacto del generador, mismo veredicto que §2.4/§2.5). Tipografía: **Lato / Lato Bold** exclusivamente (el serif de títulos y headings del mockup es artefacto; precedente 1.5a). Paleta `auth-*` prohibida en el detalle. `search-accent` prohibido (§2.5): el acento del detalle es `detail-accent`.
 
 ## 3. Biometría & Hardware APIs (Exclusivo Expo)
 > *Nota para Agentes: Todo puente de hardware se resuelve mediante APIs de Expo. Cero código nativo escrito a mano.*

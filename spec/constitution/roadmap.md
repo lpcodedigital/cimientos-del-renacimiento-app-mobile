@@ -41,9 +41,22 @@
 * **Arquitectura:** feature `src/features/search/{domain,application,infrastructure,presentation}` (4 capas, puertos, use case closure, DTO espejo) + `SearchProvider`/`useSearch` (calco `HomeProvider`) + `useInfiniteQuery` de TanStack Query (server state) + `compositionRoot` único importador de infra + fences ESLint. Cero cambio de píxel en chrome 2a y radar 2b (solo acciones de navegación nuevas).
 * **Regla de bloqueo:** TASK-01 no inicia hasta que el Humano apruebe `spec/features/search-bar/spec.md`. Fase 4 permanece bloqueada hasta que el Revisor audite y el Tester Visual Humano apruebe Fase 3 en dispositivo.
 
-## Fase 4: Ficha Final (Resumen Ejecutivo) y Evidencias
-* **Objetivo:** Interfaz de solo-lectura con alto impacto visual y carga asíncrona de medios.
+## Fase 4: Ficha Final (Resumen Ejecutivo) y Evidencias (detail-obra-curso)
+* **Reescrita el 2026-10-20** contra los contratos reales del backend (`GET /api/v1/app-mobile/obra/{id}` y `GET /api/v1/app-mobile/curso/{id}`) y los mockups `spec/features/detail-obra-curso/mockups/Detalle_obra.jpg` y `Detalle_capacitacion.jpg`. Este párrafo **supersede** la versión original (KPI «Empleo Local (% Personal Local)», monto en «$ MDP» y carrusel cronológico «Antes / En Proceso / Después»: el DTO real no trae empleo local ni fase de evidencia, y el mockup manda el monto completo formateado). Decisiones del Humano (2026-10-20) asentadas en `progress/history.md` y en `spec/features/detail-obra-curso/spec.md` §2.
+* **Objetivo:** Detalle ejecutivo de solo-lectura de una Obra o Capacitación, con evidencias fotográficas servidas vía Cloudflare Images.
 * **Alcance:**
-  - Pantalla 4: Detalle Ejecutivo de la Obra/Capacitación[cite: 1].
-  - Tarjetas KPI: Finanzas ($ MDP), Avance (%) y Empleo Local (% Personal Local)[cite: 1].
-  - Carrusel de evidencias cronológicas (Imágenes: Antes, En Proceso, Después)[cite: 1] integradas de forma nativa a través de **Cloudflare Images**.
+  - Pantalla `Detail` en el AppStack. **Entrada única:** tap en tarjeta del explorador (Fase 3) con `{ tipo: "OBRA" | "CURSO", id: idOriginal }`; la app elige el endpoint por `tipo`. El «Ver más» del popup KPI municipal (2b) se **oculta** (código intacto) — su flujo se aplaza a Fase 5.
+  - **Header del chrome con título dinámico** (decisión Humano 2026-10-20): `DETALLE` en detalle, `BÚSQUEDA` en Search, `INICIO` en Home, vía `HeaderTitleProvider` en `app-shell` (default `INICIO`, cero cambio de píxel en Home). Back arrow en el cuerpo (patrón Fase 3). Search retira el título redundante `BÚSQUEDA` de su cuerpo.
+  - **Contratos reales (producción):** `GET /api/v1/app-mobile/obra/{id}` → `AppMobileObraDetailDTO` (`name`, `municipality`, `locality`, `agency`, `investment: String`, `progress: Integer`, `description`, `latitude/longitude`, `status`, `galeryUrls` opcional); `GET /api/v1/app-mobile/curso/{id}` → `AppMobileCursoDetailDTO` (`title`, `description`, `municipality`, `courseDate`, `latitude/longitude`, `coverImageUrl` — **no se renderiza**, `galeryUrls` la incluye).
+  - **Tarjetas KPI:** OBRA = Finanzas (`investment` formateado `$10,495,378.41`), Avance (`{progress}%`), Estatus (`status`); CURSO = Fecha (`courseDate` formateada `4 de julio de 2026`) y Municipio.
+  - **Ubicación:** mapa **interactivo** `react-native-maps` (`PROVIDER_GOOGLE` homologado, pin guinda `#6B142E`, pitch/rotate off) centrado en `latitude/longitude` del DTO.
+  - **Evidencias:** carrusel `FlashList` horizontal (lazy real vía reciclado) + `expo-image` (caché `memory-disk`) con captions `evidencia N`; tap → visor `Modal` nativo RN (sin zoom/pan); galería vacía/ausente → mensaje institucional. URLs consumidas tal cual las entrega el DTO (Cloudflare, tech-stack §4).
+  - Descripción verbatim + filas clave-valor por tipo (OBRA: Municipio/Localidad/Dependencia/Estatus; CURSO: Municipio/Fecha del curso).
+  - **Cero dependencias nuevas** (FlashList, `expo-image`, `react-native-maps` y `Modal` de RN ya autorizados).
+* **Arquitectura:** feature `src/features/detail/{domain,application,infrastructure,presentation}` (4 capas, puertos por tipo, use cases closures, DTOs espejo, entidad `galleryUrls` mapeada desde el wire `galeryUrls`) + `DetailProvider`/`useDetail` + TanStack Query (`useQuery` por tipo) + `compositionRoot` único importador + fences ESLint vigentes. Cambios en features cerradas limitados a: `HeaderTitleProvider` en `app-shell`, tap de tarjeta + header `BÚSQUEDA` en `search`, ocultar «Ver más» en `home`.
+* **Regla de bloqueo:** TASK-01 no inicia hasta que el Humano apruebe `spec/features/detail-obra-curso/spec.md`. Fase 5 permanece bloqueada hasta que el Revisor audite y el Tester Visual Humano apruebe Fase 4 en dispositivo.
+
+## Fase 5: Detalle Municipal (PLACEHOLDER)
+* **Estado:** placeholder sin spec — se planeará en su propio Paso 0 SDD tras cerrar Fase 4.
+* **Objetivo (preliminar):** reactivar el flujo «Ver más» del popup KPI municipal del radar 2b (oculto durante Fase 4 por decisión del Humano 2026-10-20): detalle/ficha del agregado municipal (obras y capacitaciones del municipio). Alcance, mockup y contrato por confirmar con el Humano en su fase de planeación.
+* **Regla de bloqueo:** bloqueada hasta que el Revisor audite y el Tester Visual Humano apruebe Fase 4 en dispositivo.
