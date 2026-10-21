@@ -7,6 +7,7 @@ export type AuthStackParamList = {
 export type AppStackParamList = {
   Home: undefined;
   Search: undefined;
+  Detail: { tipo: "OBRA" | "CURSO"; id: number };
 };
 
 export type RootStackParamList = {

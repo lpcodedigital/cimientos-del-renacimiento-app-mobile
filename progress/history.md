@@ -1179,3 +1179,40 @@
 - **Cierre:** `spec/features/detail-obra-curso/task.md` → TASK-03 `- [x]` / `Status: COMPLETED` con validación Humana; TASK-04 marcada `TODO (desbloqueada; se ejecuta en nueva sesión)`.
 - **Estado vivo:** `progress/current-task.json` → `active_task: TASK-04` (`TODO`), `current_roadmap_phase` actualizado, `fase_4_task_03_run` y `last_run` con el cierre, `blockers_or_errors` apuntando a TASK-04.
 - **Gobernanza:** TASK-04 (11 archivos presentation + `src/app/navigation/types.ts`, sin wire al navigator) **NO iniciada**: se autoriza en **NUEVA SESIÓN** con el prompt de ejecución. TASK-05…06 bloqueadas. Sin commit (lo decide el Humano).
+
+### 2026-10-20 — TASK-04 (componentes del detalle, Fase 4) — READY_FOR_REVIEW (Trabajador)
+
+- **Alcance:** SOLO `presentation/` de `detail-obra-curso` (10 archivos nuevos, verbatim de plan §8) + el edit de `src/app/navigation/types.ts`. Cero `domain`/`application`/`infrastructure`, cero `DetailProvider.tsx`/`useDetail.ts` (ya creados en TASK-03, no tocados), cero `src/app/**` salvo `types.ts`, cero `RootNavigator.tsx`, cero `eslint.config.js`, cero nativos, cero `package.json`/lock, cero `app.json`/`app.config.js`, cero `global.css`/`tokens.ts`, cero `App.tsx`/`compositionRoot.ts`. No se instaló nada (`npx expo install`/`npm i` no ejecutados), no se ejecutó `npx expo start`/`prebuild`/`run:*`, cero commit.
+- **Archivos creados (10 de código, plan §8 verbatim):**
+  - `src/features/detail/presentation/format.ts` (§8.1): `MONEY_FORMATTER` y `MESES` hoisted; `toTitleCase` duplicado deliberado; `formatInversion("10495378.41")` → `$10,495,378.41`; `formatFechaCurso("2026-07-04")` → `4 de julio de 2026`.
+  - `KpiCard.tsx` (§8.2): `memo`, card `detail-card-bg` radio 28, icono 28 `detail-accent`, label 13 `detail-kpi-label`, valor Lato Bold 18 (`compact` → 13 + `numberOfLines={1}`), sublabel 11 `detail-text-muted`.
+  - `DetailSectionHeading.tsx` (§8.3): icono 24 `detail-accent` opcional + título Lato Bold 20 `texto`.
+  - `DetailInfoRows.tsx` (§8.4): pills apiladas `detail-card-bg` radio 30, label 14 `detail-text-muted`, valor Bold 14 `texto` a la derecha con `flexShrink`/`numberOfLines={2}`, `key={row.label}`.
+  - `DetailMapCard.tsx` (§8.5): **único** archivo de detail con `react-native-maps`; contenedor radio 20/altura 200; `MapView` `PROVIDER_GOOGLE`, `initialRegion` delta 0.02, `scrollEnabled`/`zoomEnabled`, `pitchEnabled={false}`, `rotateEnabled={false}`; `Marker` con `pinColor={palette.guinda}` (`#6B142E`, patrón copiado de `RadarMap.tsx`, duplicado deliberado).
+  - `EvidenceCarousel.tsx` (§8.6): **único** con `@shopify/flash-list`; horizontal SIN `estimatedItemSize`; `keyExtractor`/`renderItem` hoisted (`useCallback`); tarjeta 240/aspectRatio 4:3 radio 20 en `Pressable` (`accessibilityLabel="Ver evidencia"`, pressed opacity 0.9); `expo-image` con `recyclingKey`, `cachePolicy="memory-disk"`, `transition={0}`; caption `evidencia N`; vacío → «Sin evidencias fotográficas.».
+  - `EvidenceViewerModal.tsx` (§8.7): `Modal` nativo `transparent`/`animationType="fade"`, fondo `rgba(0,0,0,0.92)`, `expo-image` `contentFit="contain"` con `uri: url ?? ""` y ternario estricto `url !== null`, X Ionicons `close` 28 `palette.superficie` con `accessibilityLabel="Cerrar"` + `hitSlop={12}` y `top` desde `useSafeAreaInsets`.
+  - `ObraDetailContent.tsx` (§8.8): título `toTitleCase(obra.name)` 24; 3 `KpiCard` (Finanzas `cash-outline`/`formatInversion`/«Inversión»; Avance `pie-chart-outline`/`{obra.progress}%` (template literal, `0` se pinta)/«Completado»; Estatus `flag-outline`/`obra.status`/«Estado de la obra» `compact`); secciones Ubicación (`location-outline`)/Evidencias/Descripción; filas Municipio/Localidad/Dependencia/Estatus (`rows` en `useMemo`).
+  - `CursoDetailContent.tsx` (§8.9): título `curso.title` verbatim; 2 `KpiCard` (Fecha `calendar-outline`/`formatFechaCurso`/«Fecha del curso»; Municipio `location-outline`/`curso.municipality`/«Sede»); mismas secciones; filas Municipio/«Fecha del curso».
+  - `DetailScreen.tsx` (§8.10): dos `useQuery` con `enabled` por `tipo`, `queryKey` `["detail","obra",id]`/`["detail","curso",id]` y `signal` al use case; `isPending`/`isError` por ternario; back arrow en el cuerpo (`arrow-back`, `accessibilityLabel="Volver"`), spinner `palette.guinda`, error «No se pudo cargar el detalle.»; `ScrollView` + contenido por rama con narrow por `data !== undefined` (cero `any`); `EvidenceViewerModal` al final; **SIN** `useHeaderTitle` (TASK-05).
+- **Archivo editado (1):**
+  - `src/app/navigation/types.ts` (§8.11): `Detail: { tipo: "OBRA" | "CURSO"; id: number };` literal inline en `AppStackParamList` (sin importar `SearchCardTipo`). `RootNavigator.tsx` **INTACTO** (`git diff` vacío).
+- **Arnés — typecheck:** `npx tsc --noEmit` → **exit 0**.
+- **Arnés — linter:** `npx eslint .` → **exit 0** (0 errores, 0 warnings).
+- **Greps (evidencia):**
+  - `react-native-maps` en `detail` → SOLO `DetailMapCard.tsx:2`.
+  - `expo-image` en `detail` → SOLO `EvidenceCarousel.tsx:2` y `EvidenceViewerModal.tsx:2`.
+  - `@shopify/flash-list` en `detail` → SOLO `EvidenceCarousel.tsx:1`.
+  - `FlatList`/`estimatedItemSize`/`any`/`TouchableOpacity`/`className` en `detail/presentation` → **NONE**.
+  - `search-accent`/`auth-*` en `detail/**` → **NONE**.
+  - `infrastructure`/`@/shared/infrastructure`/`axios` en `detail/presentation` → **NONE**.
+- **Gate de deps:** `git diff -- package.json app.json app.config.js` → **VACÍO**. Cero instalaciones.
+- **Working tree:** `git status --porcelain` muestra `M src/app/navigation/types.ts`, los 10 archivos nuevos `?? src/features/detail/presentation/*.tsx|format.ts` y los 3 archivos de memoria/permitidos (`task.md`, `current-task.json`, `history.md`). Sin otros cambios (la modificación preexistente de `Instructions/fase_4/fase_4.md` ya no aparece en el working tree en esta sesión).
+- **Estado:** `spec/features/detail-obra-curso/task.md` TASK-04 → pasos `- [x]` / `Status: READY_FOR_REVIEW` (NO COMPLETED; TASK-05 permanece `TODO`). `progress/current-task.json` → `active_task: TASK-04` `READY_FOR_REVIEW`, `harness_status.typecheck_passed: true`, nota `fase_4_task_04_run`.
+- **PARADA CONTROLADA (gate Humano):** el Humano valida los 10 archivos nuevos + el edit de `navigation/types.ts`, firmas/copy/orden de secciones verbatim, `RootNavigator` intacto, que la pantalla aún NO se ve (sin ruta montada), `npx tsc --noEmit`/`npx eslint .` en verde, los greps de UI/deps y `git diff -- package.json app.json app.config.js` **VACÍO**, y da el cierre formal **COMPLETED**. **TASK-05 NO se inicia en esa sesión.** Sin commit (lo decide el Humano).
+
+### 2026-10-20 — TASK-04 APROBADA por el Humano — COMPLETED
+
+- **Validación del Humano:** TASK-04 validada y aprobada; los 10 archivos nuevos de `presentation/` (`format.ts`, `KpiCard.tsx`, `DetailSectionHeading.tsx`, `DetailInfoRows.tsx`, `DetailMapCard.tsx`, `EvidenceCarousel.tsx`, `EvidenceViewerModal.tsx`, `ObraDetailContent.tsx`, `CursoDetailContent.tsx`, `DetailScreen.tsx`) + el edit de `src/app/navigation/types.ts` (`Detail: { tipo: "OBRA" | "CURSO"; id: number }`), con `RootNavigator.tsx` intacto, arnés en verde (`npx tsc --noEmit` y `npx eslint .` exit 0), greps de UI/deps limpios y `git diff -- package.json app.json app.config.js` **VACÍO**. Cierre formal **COMPLETED** registrado.
+- **Cierre:** `spec/features/detail-obra-curso/task.md` → TASK-04 `- [x]` / `Status: COMPLETED` con validación Humana; TASK-05 marcada `TODO (desbloqueada; se ejecuta en nueva sesión)`.
+- **Estado vivo:** `progress/current-task.json` → `active_task: TASK-05` (`TODO`), `current_roadmap_phase` actualizado, `fase_4_task_04_run` y `last_run` con el cierre, `blockers_or_errors` apuntando a TASK-05.
+- **Gobernanza:** TASK-05 (wire navigator + título dinámico + entradas, plan §9) **NO iniciada**: se autoriza en **NUEVA SESIÓN** con el prompt de ejecución. Incluye la primera validación visual real de la Fase 4 (CA-01…09 Android + iOS). TASK-06 bloqueada. Sin commit (lo decide el Humano).

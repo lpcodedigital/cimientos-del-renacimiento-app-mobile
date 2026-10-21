@@ -93,21 +93,21 @@
 
 ## TASK-04 — Componentes del detalle (sin wire al navigator)
 
-**Status:** TODO (desbloqueada; se ejecuta en nueva sesión)
+**Status:** COMPLETED (aprobada por el Humano 2026-10-20)
 **assigned_role:** Trabajador
 
 **Pasos**
 
-- [ ] Crear `src/features/detail/presentation/format.ts` (plan §8.1 verbatim).
-- [ ] Crear `KpiCard.tsx`, `DetailSectionHeading.tsx`, `DetailInfoRows.tsx` (plan §8.2–§8.4).
-- [ ] Crear `DetailMapCard.tsx` (plan §8.5; pin guinda con el patrón copiado de `RadarMap.tsx`, duplicado deliberado).
-- [ ] Crear `EvidenceCarousel.tsx` y `EvidenceViewerModal.tsx` (plan §8.6–§8.7; FlashList horizontal SIN `estimatedItemSize`; `expo-image` con `recyclingKey`/`memory-disk`).
-- [ ] Crear `ObraDetailContent.tsx` y `CursoDetailContent.tsx` (plan §8.8–§8.9; copy y orden de secciones de spec §4.5/§4.6).
-- [ ] Crear `DetailScreen.tsx` (plan §8.10: dos `useQuery` con `enabled` por `tipo`; back arrow; spinner; error «No se pudo cargar el detalle.»; **SIN** `useHeaderTitle` — eso es TASK-05).
-- [ ] Editar `src/app/navigation/types.ts`: añadir `Detail: { tipo: "OBRA" | "CURSO"; id: number }` (plan §8.11 verbatim). `RootNavigator` INTACTO.
-- [ ] `npx tsc --noEmit` → exit 0. `npx eslint .` → exit 0.
-- [ ] Greps (evidencia): `react-native-maps` solo en `DetailMapCard.tsx`; `expo-image` solo en `EvidenceCarousel.tsx`/`EvidenceViewerModal.tsx`; `@shopify/flash-list` solo en `EvidenceCarousel.tsx`; cero `FlatList`/`estimatedItemSize`/`any`/`TouchableOpacity`/`className` en `detail/presentation`; cero `search-accent`/`auth-*` en `detail/**`.
-- [ ] `git diff -- package.json app.json app.config.js` → VACÍO.
+- [x] Crear `src/features/detail/presentation/format.ts` (plan §8.1 verbatim).
+- [x] Crear `KpiCard.tsx`, `DetailSectionHeading.tsx`, `DetailInfoRows.tsx` (plan §8.2–§8.4).
+- [x] Crear `DetailMapCard.tsx` (plan §8.5; pin guinda con el patrón copiado de `RadarMap.tsx`, duplicado deliberado).
+- [x] Crear `EvidenceCarousel.tsx` y `EvidenceViewerModal.tsx` (plan §8.6–§8.7; FlashList horizontal SIN `estimatedItemSize`; `expo-image` con `recyclingKey`/`memory-disk`).
+- [x] Crear `ObraDetailContent.tsx` y `CursoDetailContent.tsx` (plan §8.8–§8.9; copy y orden de secciones de spec §4.5/§4.6).
+- [x] Crear `DetailScreen.tsx` (plan §8.10: dos `useQuery` con `enabled` por `tipo`; back arrow; spinner; error «No se pudo cargar el detalle.»; **SIN** `useHeaderTitle` — eso es TASK-05).
+- [x] Editar `src/app/navigation/types.ts`: añadir `Detail: { tipo: "OBRA" | "CURSO"; id: number }` (plan §8.11 verbatim). `RootNavigator` INTACTO.
+- [x] `npx tsc --noEmit` → exit 0. `npx eslint .` → exit 0.
+- [x] Greps (evidencia): `react-native-maps` solo en `DetailMapCard.tsx`; `expo-image` solo en `EvidenceCarousel.tsx`/`EvidenceViewerModal.tsx`; `@shopify/flash-list` solo en `EvidenceCarousel.tsx`; cero `FlatList`/`estimatedItemSize`/`any`/`TouchableOpacity`/`className` en `detail/presentation`; cero `search-accent`/`auth-*` en `detail/**`.
+- [x] `git diff -- package.json app.json app.config.js` → VACÍO.
 
 **allowed_files**
 
@@ -123,7 +123,7 @@
 
 ## TASK-05 — Wire navigator + título dinámico + entradas (features congeladas)
 
-**Status:** TODO
+**Status:** TODO (desbloqueada; se ejecuta en nueva sesión)
 **assigned_role:** Trabajador
 
 **Pasos**
