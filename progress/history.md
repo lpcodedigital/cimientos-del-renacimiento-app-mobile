@@ -1247,3 +1247,38 @@
 - **Cierre:** `spec/features/detail-obra-curso/task.md` → TASK-05 `Status: COMPLETED (aprobada por el Humano 2026-10-20)`; TASK-06 marcada `TODO (desbloqueada; se ejecuta en nueva sesión)`.
 - **Estado vivo:** `progress/current-task.json` → `active_task: TASK-05` (`COMPLETED`), `current_roadmap_phase` actualizado con el cierre y TASK-06 desbloqueada, `fase_4_task_05_run` y `last_run` con el cierre, `blockers_or_errors` apuntando a TASK-06.
 - **Gobernanza:** TASK-06 (arnés/auditoría CA-10, solo lectura de código + memoria) **NO iniciada**: se autoriza en **NUEVA SESIÓN** con el Worker/Revisor. Sin commit (lo decide el Humano). Fase 5 permanece cerrada hasta la aprobación formal de la Fase 4.
+
+### 2026-10-20 — TASK-06 (arnés/auditoría CA-10, Fase 4) — READY_FOR_REVIEW (Trabajador + Revisor)
+
+- **Alcance:** auditoría/arnés de **solo lectura**. Cero código de producto modificado; solo se actualizaron `spec/features/detail-obra-curso/task.md`, `progress/current-task.json` y `progress/history.md`. Cero `npx expo install`/`npm i`, cero `npx expo start`/`prebuild`/`run:*`, cero commit. Fase 5 NO abierta.
+- **Baseline verificado:** `git log --oneline -8` → `2dd697c feat(ai):Plan phase 4 done` es el commit inmediatamente anterior a TASK-01; `HEAD = 4c834d8 feat(detail-obra-curso): TASK-05 DONE`. `git status --porcelain -uall` inicial = SOLO `M Instructions/fase_4/fase_4.md` (preexistente, fuera de `allowed_files`, no tocado). Sin untracked de código.
+- **Arnés (verde):**
+  - `npx tsc --noEmit` → **exit 0**.
+  - `npx eslint .` → **exit 0, cero errores y cero warnings**.
+- **Bans (`git grep -nE` sobre `src/**/*.ts`, `src/**/*.tsx`, `App.tsx`):**
+  - `any`=0, `TouchableOpacity`=0, `FlatList`=0, `expo-router`=0, `estimatedItemSize`=0.
+  - `className`: en features solo `auth/presentation/screens/LoginScreen.tsx` y `src/shared/ui/*` (preexistentes aceptados); **0** en `detail/**`, `search/**`, `home/**`, `app-shell/**`.
+  - `auth-*`: en features solo dentro de `auth`; fuera de auth solo preexistentes aceptados en `src/shared/ui/*` (BiometricMethodCard, TextField, Button, GoldButton, InstitutionalText) y `src/shared/theme/tokens.ts`; **0** en `detail/**`, `search/**`, `home/**` y `App.tsx`.
+  - `searchPalette.accent` fuera de `tokens.ts` = **0**. `detailPalette` solo en `src/features/detail/presentation/*` (KpiCard, DetailSectionHeading, DetailInfoRows, EvidenceCarousel, DetailScreen) + `tokens.ts:57`; **0** fuera.
+- **DIP:**
+  - Único importador de `detail/infrastructure` = `src/app/compositionRoot.ts:16-17` (`AxiosCursoDetailApi`, `AxiosObraDetailApi`); ningún otro import absoluto/relativo (los únicos `infrastructure` dentro de detail son `@/shared/infrastructure/http/axiosClient` en los 2 Axios*Api).
+  - `react-native-maps`/`@shopify/*`/`expo-image`/`axios`/`@tanstack` **ausentes** de `detail/domain` y `detail/application`.
+  - `react-native-maps` solo en `detail/presentation/DetailMapCard.tsx:2` (más `home/presentation/RadarMap.tsx:2`, preexistente Fase 2b).
+  - `expo-image` solo en `detail/presentation/EvidenceCarousel.tsx:2` y `EvidenceViewerModal.tsx:2` (más `search/presentation/SearchResultCard.tsx:4`, preexistente Fase 3).
+  - `@shopify/flash-list` solo en `detail/presentation/EvidenceCarousel.tsx:1` (más `search/presentation/SearchScreen.tsx:4`, preexistente Fase 3).
+- **Deps/config:** `git diff 2dd697c -- package.json app.json app.config.js` → **VACÍO**; `git diff 2dd697c -- eslint.config.js` → **VACÍO** (Fase 4 = cero deps y fences intactas). Cero instalaciones.
+- **Contratos:**
+  - `/api/v1/app-mobile/obra` aparece **una sola vez** en código: `AxiosObraDetailApi.ts:9` (`OBRA_DETAIL_PATH`).
+  - `/api/v1/app-mobile/curso` aparece **una sola vez**: `AxiosCursoDetailApi.ts:9` (`CURSO_DETAIL_PATH`).
+  - `infrastructure/dto.ts` espejo de spec §4.7: `ObraDetailDTO`/`CursoDetailDTO` con `galeryUrls?: string[]` **sic** opcional; `coverImageUrl?: string` documentado e ignorado; mappers `galeryUrls → galleryUrls: string[] | null` y sin consumir `coverImageUrl`.
+  - `coverImageUrl` solo aparece en `infrastructure/dto.ts:24`; **cero** en entidades de dominio/application.
+- **Features congeladas:** `git diff --name-status 2dd697c -- src/features/app-shell src/features/home src/features/search` = AppHeader.tsx (M), AppShell.tsx (M), HeaderTitleProvider.tsx (A), useHeaderTitle.ts (A), HomeScreen.tsx (M), MunicipioCallout.tsx (M), SearchResultCard.tsx (M), SearchScreen.tsx (M) → 8 files changed, 116 insertions(+), 37 deletions(-). Exactamente los archivos de TASK-05; **cero otro cambio** y sin untracked en esas rutas.
+- **Hallazgos:** ninguno bloqueante. Único hallazgo no bloqueante: `M Instructions/fase_4/fase_4.md` (preexistente, ajeno a la feature, no tocado). El agente NO modificó código de producto ni arregló nada fuera de `allowed_files`.
+- **Estado:** `spec/features/detail-obra-curso/task.md` TASK-06 → pasos `- [x]` / `Status: READY_FOR_REVIEW` (NO COMPLETED; el cierre formal es del Humano). `progress/current-task.json` → `active_task: TASK-06` `READY_FOR_REVIEW`, `harness_status.typecheck_passed/linter_passed: true`, nota `fase_4_task_06_run` y `last_run`.
+- **PARADA CONTROLADA:** el Humano revisa la evidencia y firma el cierre formal **COMPLETED** de TASK-06/Fase 4. **Fase 5 NO abierta.** Sin commit (lo decide el Humano).
+
+### 2026-10-20 — TASK-06 APROBADA por el Humano — COMPLETED; Fase 4 CERRADA
+
+- **Validación del Humano:** el Humano dio por completa TASK-06 (2026-10-20). Arnés y auditoría aprobados: `npx tsc --noEmit` exit 0, `npx eslint .` exit 0 sin warnings, bans=0, DIP correcto, deps/config vs baseline `2dd697c` **VACÍO**, contratos únicos y features congeladas solo con los archivos de TASK-05. Cierre formal **COMPLETED** registrado.
+- **Cierre:** `spec/features/detail-obra-curso/task.md` → TASK-06 `- [x]` / `Status: COMPLETED (aprobada por el Humano 2026-10-20)`. `progress/current-task.json` → `active_task: TASK-06` `COMPLETED`, `current_roadmap_phase` con **Fase 4 CERRADA**, `fase_4_task_06_run`/`last_run` con el cierre y `blockers_or_errors` apuntando a Fase 5.
+- **Gobernanza:** **FASE 4 (detail-obra-curso) CERRADA**: TASK-01…TASK-06 **COMPLETED**. **Fase 5 (Detalle Municipal, placeholder) NO abierta**; requiere autorización expresa del Humano. Sin commit (lo decide el Humano).

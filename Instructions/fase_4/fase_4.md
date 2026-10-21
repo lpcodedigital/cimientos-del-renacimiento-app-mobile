@@ -638,3 +638,108 @@ tsc/eslint en verde y git diff de configs VACÍO. El Humano ejecuta el checklist
 CA-01…09 en Android + iOS (con el binario/dev client existente basta `npx expo start`
 + reload; NO se requiere prebuild: cerá deps ni config nativa) y da el cierre COMPLETED.
 TASK-06 NO se inicia en esa sesión.
+
+## Prompt para la nueva sesión (TASK-06):
+
+MODO: TRABAJADOR + REVISOR (Arnés). Ejecutas EXACTAMENTE UNA TASK: TASK-06
+de la feature detail-obra-curso (Fase 4). Es una auditoría/arnés de solo
+lectura de código: NO escribes código de producto, NO instalas nada, NO
+compilas, NO haces commit y NO abres Fase 5.
+
+Proyecto: Cimientos del Renacimiento — Gabinete Móvil (Expo SDK 57 + RN +
+TS strict + NativeWind v5 + React Navigation + Clean Architecture por
+features).
+Raíz: /Users/macbookair/Documents/Projects/React-Native/CIMIENTOS-DEL-RENACIMIENTO-APP-MOBILE
+
+LEE EN ESTE ORDEN (obligatorio, nada más al inicio):
+1. AGENTS.md (roles, leyes absolutas, arnés).
+2. progress/current-task.json (estado vivo: TASK-05 COMPLETED, TASK-06
+   TODO desbloqueada).
+3. progress/history.md — SOLO las últimas entradas 2026-10-20 (TASK-01…
+   TASK-05 y cierres). Están al final (usa offset).
+4. spec/features/detail-obra-curso/task.md — SOLO TASK-06.
+5. spec/features/detail-obra-curso/plan.md — §10, §11 y §12.
+6. spec/features/detail-obra-curso/spec.md — §4.7 (contratos verbatim) y
+   §4.8 (artefactos), solo como referencia.
+7. Referencias de código (solo lectura): src/features/detail/** completo
+   (domain, application, infrastructure, presentation), src/app/
+   compositionRoot.ts, App.tsx, src/app/navigation/RootNavigator.tsx y
+   types.ts, src/shared/theme/tokens.ts, global.css, eslint.config.js,
+   src/features/app-shell/**, src/features/home/**, src/features/search/**.
+
+CONTEXTO YA VALIDADO (no re-planifiques):
+- Fase 4 = detalle de Obra/Capacitación. spec.md APROBADA (2026-10-20).
+- TASK-01…05 COMPLETED (2026-10-20). TASK-05 validada visualmente por el
+  Humano (CA-01…09 en Android + iOS).
+- Baseline pre-Fase-4 = commit 2dd697c (el inmediatamente anterior a
+  TASK-01). Verifícalo con `git log --oneline -8` antes de usarlo.
+- Los cambios de TASK-05 pueden estar commiteados o en el working tree:
+  usa `git status --porcelain -uall` y `git diff 2dd697c -- …` (recuerda
+  que `git diff` no muestra archivos untracked; para esos usa git status).
+
+TU TRABAJO EN ESTA SESIÓN — TASK-06 (verbatim de task.md):
+1. Arnés:
+   - `npx tsc --noEmit` → exit 0.
+   - `npx eslint .` → exit 0, CERO warnings.
+2. Bans (`git grep -nE` sobre `src/**/*.ts`, `src/**/*.tsx` y `App.tsx`):
+   - `any` (ojo: `@typescript-eslint/no-explicit-any` ya lo cubre), 
+     `TouchableOpacity`, `FlatList`, `expo-router`, `estimatedItemSize`.
+   - `className` en features (solo coincidencias preexistentes en auth y
+     shared/ui son aceptadas; cero en detail/search/home/app-shell).
+   - `auth-*` fuera de auth: ACEPTADO preexistente 1.5b en
+     src/shared/ui/* y tokens.ts (falso positivo del arnés); cero en
+     detail/**/search/**/home/**.
+   - `searchPalette.accent` fuera de tokens.ts → 0.
+   - `detailPalette` solo en `src/features/detail/**` + tokens.ts → 0
+     fuera.
+3. DIP:
+   - Único importador de `detail/infrastructure` = src/app/
+     compositionRoot.ts (grep global; incluye imports relativos).
+   - `react-native-maps`/`@shopify/*`/`expo-image` ausentes de
+     detail/domain y detail/application.
+   - `react-native-maps` solo en `DetailMapCard.tsx`.
+   - `expo-image` solo en `EvidenceCarousel.tsx` y
+     `EvidenceViewerModal.tsx`.
+   - `@shopify/flash-list` solo en `EvidenceCarousel.tsx`.
+4. Deps/config:
+   - `git diff 2dd697c -- package.json app.json app.config.js` → VACÍO
+     (Fase 4 = cero deps).
+   - `git diff 2dd697c -- eslint.config.js` → VACÍO.
+5. Contratos:
+   - `/api/v1/app-mobile/obra` aparece una sola vez en código:
+     AxiosObraDetailApi.ts.
+   - `/api/v1/app-mobile/curso` una sola vez: AxiosCursoDetailApi.ts.
+   - `infrastructure/dto.ts` espejo de spec §4.7 (`galeryUrls` sic
+     opcional, `coverImageUrl` documentado e ignorado).
+   - `coverImageUrl` NO aparece en entidades de dominio.
+6. Features congeladas:
+   - `git diff --stat 2dd697c -- src/features/app-shell src/features/home
+     src/features/search` → SOLO los archivos de TASK-05
+     (AppHeader.tsx, AppShell.tsx, HomeScreen.tsx, MunicipioCallout.tsx,
+     SearchScreen.tsx, SearchResultCard.tsx + los nuevos
+     HeaderTitleProvider.tsx y useHeaderTitle.ts).
+   - Cualquier otro cambio en esas features = hallazgo bloqueante.
+
+REGLAS:
+- allowed_files SOLO: spec/features/detail-obra-curso/task.md,
+  progress/current-task.json, progress/history.md.
+- NO toques código, domain/application/infrastructure, DetailProvider/
+  useDetail, App.tsx, compositionRoot.ts, tokens.ts, global.css,
+  eslint.config.js, app.json, app.config.js, package.json/lock ni nativos.
+- CERO: npx expo install, npm i, npx expo start, prebuild, run:*,
+  commit.
+- Si tsc/eslint fallan por algo ajeno o aparece un hallazgo: NO arregles
+  fuera de allowed_files; repórtalo en history.md, deja el estado
+  READY_FOR_REVIEW con el bloqueo documentado y DETENTE. Solo si el
+  Humano autoriza expresamente, corrige en archivos de TASK-01…05.
+
+CIERRE:
+- Marca los pasos de TASK-06 como `- [x]` y `Status: READY_FOR_REVIEW`
+  en task.md (NO COMPLETED: el cierre formal es del Humano).
+- Actualiza progress/current-task.json: active_task TASK-06
+  READY_FOR_REVIEW, harness_status.typecheck_passed/linter_passed,
+  nota `fase_4_task_06_run` con evidencia (comandos, greps, DIP, deps,
+  contratos, diff de features congeladas) y last_run.
+- Añade la entrada de TASK-06 en progress/history.md (alcance, evidencia,
+  hallazgos, PARADA CONTROLADA).
+- NO inicies Fase 5 ni ninguna otra TASK. Detente en el gate Humano.

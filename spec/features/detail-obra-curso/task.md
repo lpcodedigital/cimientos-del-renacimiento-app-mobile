@@ -162,18 +162,18 @@
 
 ## TASK-06 — Arnés
 
-**Status:** TODO (desbloqueada; se ejecuta en nueva sesión)
+**Status:** COMPLETED (aprobada por el Humano 2026-10-20)
 **assigned_role:** Trabajador + Revisor
 
 **Pasos**
 
-- [ ] `npx tsc --noEmit` → exit 0. `npx eslint .` → exit 0, cero warnings.
-- [ ] Grep `src/**/*.ts(x)` + `App.tsx`: cero `any`, `TouchableOpacity`, `FlatList`, `expo-router`, `estimatedItemSize`, paleta `auth-*` fuera de auth, `searchPalette.accent` fuera de `tokens.ts`, `detailPalette` fuera de `detail/**` + `tokens.ts` (excepción permitida: ninguna).
-- [ ] DIP: único importador de `detail/infrastructure` = `compositionRoot.ts`; `react-native-maps`/`@shopify/*`/`expo-image` ausentes de domain/application; `react-native-maps` solo en `DetailMapCard.tsx`; `expo-image` solo en `Evidence*`; `@shopify/flash-list` solo en `EvidenceCarousel.tsx`.
-- [ ] Deps: `git diff <baseline-pre-Fase-4> -- package.json` → VACÍO; `git diff -- package.json app.json app.config.js` → VACÍO (Fase 4 = cero deps).
-- [ ] Contrato: `/api/v1/app-mobile/obra` único en `AxiosObraDetailApi.ts`; `/api/v1/app-mobile/curso` único en `AxiosCursoDetailApi.ts`; `dto.ts` espejo de spec §4.7; `coverImageUrl` no aparece en entidades de dominio.
-- [ ] Features congeladas: `git diff --stat <baseline-pre-Fase-4> -- src/features/app-shell src/features/home src/features/search` → SOLO los archivos de TASK-05.
-- [ ] `eslint.config.js` sin cambios por la feature.
+- [x] `npx tsc --noEmit` → exit 0. `npx eslint .` → exit 0, cero warnings.
+- [x] Grep `src/**/*.ts(x)` + `App.tsx`: cero `any`, `TouchableOpacity`, `FlatList`, `expo-router`, `estimatedItemSize`, paleta `auth-*` fuera de auth, `searchPalette.accent` fuera de `tokens.ts`, `detailPalette` fuera de `detail/**` + `tokens.ts` (excepción permitida: ninguna).
+- [x] DIP: único importador de `detail/infrastructure` = `compositionRoot.ts`; `react-native-maps`/`@shopify/*`/`expo-image` ausentes de domain/application; `react-native-maps` solo en `DetailMapCard.tsx`; `expo-image` solo en `Evidence*`; `@shopify/flash-list` solo en `EvidenceCarousel.tsx`.
+- [x] Deps: `git diff <baseline-pre-Fase-4> -- package.json` → VACÍO; `git diff -- package.json app.json app.config.js` → VACÍO (Fase 4 = cero deps).
+- [x] Contrato: `/api/v1/app-mobile/obra` único en `AxiosObraDetailApi.ts`; `/api/v1/app-mobile/curso` único en `AxiosCursoDetailApi.ts`; `dto.ts` espejo de spec §4.7; `coverImageUrl` no aparece en entidades de dominio.
+- [x] Features congeladas: `git diff --stat <baseline-pre-Fase-4> -- src/features/app-shell src/features/home src/features/search` → SOLO los archivos de TASK-05.
+- [x] `eslint.config.js` sin cambios por la feature.
 
 **allowed_files**
 
