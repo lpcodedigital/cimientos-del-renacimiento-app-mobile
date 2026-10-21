@@ -1119,3 +1119,31 @@
 - **Validación del Humano:** TASK-01 validada; diff aprobado (solo los 5 tokens `--color-detail-*` en `global.css` + `detailPalette` en `src/shared/theme/tokens.ts`; `package.json`/`app.json`/`app.config.js` **VACÍO**). Cierre formal **COMPLETED** registrado.
 - **Cierre:** `spec/features/detail-obra-curso/task.md` → TASK-01 `- [x]` / `Status: COMPLETED` con validación Humana; TASK-02 marcada `TODO (desbloqueada; se ejecuta en nueva sesión)`. `progress/current-task.json` → `active_task: TASK-02` (`TODO`), `current_roadmap_phase` actualizado, `fase_4_task_01_run` y `last_run` con el cierre, `blockers_or_errors` apuntando a TASK-02.
 - **Gobernanza:** TASK-02 (domain + application, 8 archivos) **NO iniciada**: se autoriza en **NUEVA SESIÓN** con el prompt de ejecución. TASK-03…06 bloqueadas. Sin commit (lo decide el Humano).
+
+### 2026-10-20 — TASK-02 (domain + application de detail, Fase 4) — READY_FOR_REVIEW (Trabajador)
+
+- **Alcance:** SOLO Domain + Application de `detail-obra-curso`, 8 archivos nuevos, firmas **verbatim** de plan §4.1–§5.3. Cero consumidores, cero `infrastructure/`/`presentation/`, cero componentes/navegación/providers, cero `src/app/**`/`App.tsx`/`eslint.config.js`, cero nativos, cero `package.json`/lock, cero `app.json`/`app.config.js`, cero tokens. No se instaló nada (`npx expo install`/`npm i` no ejecutados), no se ejecutó `npx expo start`/`prebuild`/`run:*`, cero commit.
+- **Archivos creados (8 de código):**
+  - `src/features/detail/domain/entities/ObraDetail.ts` (plan §4.1): `ObraDetail` con `id`, `name`, `municipality`, `locality`, `agency`, `investment`, `progress`, `description`, `latitude`, `longitude`, `status`, `galleryUrls: string[] | null`.
+  - `src/features/detail/domain/entities/CursoDetail.ts` (plan §4.2): `CursoDetail` con `id`, `title`, `description`, `municipality`, `courseDate`, `latitude`, `longitude`, `galleryUrls: string[] | null`.
+  - `src/features/detail/domain/errors/DetailError.ts` (plan §4.3, calco de `SearchError`): `DetailErrorKind` (`"network" | "server" | "unexpected"`), `DetailError`, `DETAIL_ERROR_MESSAGES` (copy verbatim), `detailError(kind)` e `isDetailError(error)`.
+  - `src/features/detail/domain/ports/ObraDetailRepository.ts` (plan §4.4): `getObraById(id: number, signal?: AbortSignal): Promise<ObraDetail>`.
+  - `src/features/detail/domain/ports/CursoDetailRepository.ts` (plan §4.5): `getCursoById(id: number, signal?: AbortSignal): Promise<CursoDetail>`.
+  - `src/features/detail/application/types.ts` (plan §5.1): `DetailUseCases` con `getObraDetail`/`getCursoDetail` `(id: number, signal?: AbortSignal) => Promise<...>`.
+  - `src/features/detail/application/obraDetail.ts` (plan §5.2): `createObraDetail(deps)` → `DetailUseCases["getObraDetail"]`.
+  - `src/features/detail/application/cursoDetail.ts` (plan §5.3): `createCursoDetail(deps)` → `DetailUseCases["getCursoDetail"]`.
+  - Los use cases dejan subir `DetailError` sin `catch` (patrón 2b/3). En domain el campo es `galleryUrls` (el typo `galeryUrls` del backend queda para `infrastructure/dto.ts` en TASK-03; no usado aquí).
+- **Arnés — typecheck:** `npx tsc --noEmit` → **exit 0**.
+- **Arnés — linter:** `npx eslint .` → **exit 0** (0 errores, 0 warnings).
+- **Grep de capas:** imports de `src/features/detail` = SOLO relativos: domain → `../entities/*`; application → `../domain/ports/*` + `./types`. Cero `react`, `react-native`, `axios`, `@tanstack`, `expo-*`, `react-native-maps`, `@shopify`, `expo-image`, `@/shared`, `@/app`; cero `any`.
+- **Gate de deps:** `git diff -- package.json app.json app.config.js` → **VACÍO**. Cero instalaciones.
+- **Working tree:** `git status --porcelain` muestra `?? src/features/detail/` (los 8 archivos nuevos) y la modificación **preexistente** `M Instructions/fase_4/fase_4.md` (fuera de `allowed_files`, ajena a TASK-02, no tocada por el agente).
+- **Estado:** `spec/features/detail-obra-curso/task.md` TASK-02 → pasos `- [x]` / `Status: READY_FOR_REVIEW` (NO COMPLETED; TASK-03 permanece `TODO`). `progress/current-task.json` → `active_task: TASK-02` `READY_FOR_REVIEW`, `harness_status.typecheck_passed: true`, nota `fase_4_task_02_run`.
+- **PARADA CONTROLADA (gate Humano):** el Humano valida los 8 archivos domain/application (firmas verbatim), cero imports de framework, `npx tsc --noEmit`/`npx eslint .` en verde y `git diff -- package.json app.json app.config.js` **VACÍO**, y da el cierre formal **COMPLETED**. **TASK-03 NO se inicia en esa sesión.** Sin commit (lo decide el Humano).
+
+### 2026-10-20 — TASK-02 APROBADA por el Humano — COMPLETED
+
+- **Validación del Humano:** TASK-02 validada; los 8 archivos domain/application con firmas verbatim, arnés en verde (`npx tsc --noEmit` y `npx eslint .` exit 0) y gate de deps **VACÍO** aprobados. Cierre formal **COMPLETED** registrado.
+- **Cierre:** `spec/features/detail-obra-curso/task.md` → TASK-02 `- [x]` / `Status: COMPLETED` con validación Humana; TASK-03 marcada `TODO (desbloqueada; se ejecuta en nueva sesión)`.
+- **Estado vivo:** `progress/current-task.json` → `active_task: TASK-03` (`TODO`), `current_roadmap_phase` actualizado, `fase_4_task_02_run` y `last_run` con el cierre, `blockers_or_errors` apuntando a TASK-03.
+- **Gobernanza:** TASK-03 (infrastructure + compositionRoot + DetailProvider) **NO iniciada**: se autoriza en **NUEVA SESIÓN** con el prompt de ejecución. TASK-04…06 bloqueadas. Sin commit (lo decide el Humano).

@@ -170,3 +170,92 @@ REGLAS ESTRICTAS:
 PARADA CONTROLADA (gate Humano): al terminar, TASK-01 queda READY_FOR_REVIEW. Le dices al humano lo que espera de la task ejecutada y que es lo que debe de validar.
 El Humano valida el diff (solo tokens; configs vacías) y da el cierre COMPLETED.
 TASK-02 NO se inicia en esta sesión.
+
+## Prompt para la nueva sesión del Worker TASK-02:
+
+MODO: TRABAJADOR (Execution Agent). Ejecutas EXACTAMENTE UNA TASK: TASK-02 de la
+feature detail-obra-curso (Fase 4). Código quirúrgico en React Native. SOLO tocas
+los archivos listados en allowed_files. El Orquestador ya escribió la SDD; tú NO
+planificas, NO improvisas y NO lees imágenes.
+
+Proyecto: Cimientos del Renacimiento — Gabinete Móvil (Expo SDK 57 + RN + TS strict
++ NativeWind v5 + React Navigation + Clean Architecture por features).
+Raíz: /Users/macbookair/Documents/Projects/React-Native/CIMIENTOS-DEL-RENACIMIENTO-APP-MOBILE
+
+LEE EN ESTE ORDEN (obligatorio, nada más al inicio):
+1. AGENTS.md (roles, leyes absolutas, arnés).
+2. progress/current-task.json (estado vivo: active_task = TASK-02 TODO desbloqueada).
+3. progress/history.md — SOLO las 3 últimas entradas 2026-10-20 (TASK-01 RUN,
+   TASK-01 APROBADA/COMPLETED y cierre). Están al final del archivo (usa offset).
+4. spec/features/detail-obra-curso/task.md — SOLO TASK-02 (incluye allowed_files).
+5. spec/features/detail-obra-curso/plan.md — SOLO §4 (Domain, §4.1–§4.5) y §5
+   (Application, §5.1–§5.3). Todo es VERBATIM.
+6. Referencias de patrón (solo lectura): src/features/search/domain/ y
+   src/features/search/application/ (calco de estilo/estructura de Fase 3).
+
+CONTEXTO MÍNIMO (ya validado por el Orquestador, no re-verifiques):
+- Fase 3 (search-bar) CERRADA. Fase 4 = pantalla detalle Obra/Capacitación;
+  spec.md APROBADA (2026-10-20).
+- TASK-01 COMPLETED (2026-10-20): tokens --color-detail-* y detailPalette ya
+  registrados. NO los toques.
+- TASK-02 = Domain + Application, CERO consumidores y CERO dependencias nuevas.
+  NO se instala nada.
+- En domain el campo es galleryUrls: string[] | null (el typo del backend
+  "galeryUrls" es SOLO de infrastructure/dto.ts en TASK-03; NO lo uses aquí).
+- TASK-03+ NO se inician en esta sesión.
+
+TU TRABAJO EN ESTA SESIÓN — TASK-02 (8 archivos, verbatim plan §4–§5):
+Crear EXACTAMENTE estos 8 archivos nuevos:
+1. src/features/detail/domain/entities/ObraDetail.ts        (plan §4.1)
+2. src/features/detail/domain/entities/CursoDetail.ts       (plan §4.2)
+3. src/features/detail/domain/errors/DetailError.ts         (plan §4.3, calco SearchError)
+4. src/features/detail/domain/ports/ObraDetailRepository.ts (plan §4.4)
+5. src/features/detail/domain/ports/CursoDetailRepository.ts(plan §4.5)
+6. src/features/detail/application/types.ts                 (plan §5.1)
+7. src/features/detail/application/obraDetail.ts            (plan §5.2)
+8. src/features/detail/application/cursoDetail.ts           (plan §5.3)
+
+Puntos obligatorios:
+- Copia las firmas y tipos EXACTAMENTE del plan (cero hex, cero nombres nuevos,
+  cero campos añadidos, cero `any`).
+- Imports SOLO relativos: domain importa sus entities/errors/ports relativos;
+  application importa ../domain y ./types. PROHIBIDO react, react-native, axios,
+  @tanstack, expo-*, react-native-maps, @shopify, expo-image, @/shared, @/app.
+- Los use cases dejan subir DetailError sin catch (patrón 2b/3).
+- NO crees infrastructure/, presentation/, componentes, navegación, providers ni wiring.
+
+ARNÉS OBLIGATORIO:
+- npx tsc --noEmit → exit 0.
+- npx eslint . → exit 0.
+- Grep de capas (evidencia para history): domain/application solo imports relativos;
+  cero imports de framework/alias prohibidos.
+- Gate de deps: git diff -- package.json app.json app.config.js → VACÍO.
+  PROHIBIDO npx expo install / npm i / cualquier instalación.
+- Si tsc/eslint fallan por algo ajeno a tus 8 archivos, NO arregles nada fuera de
+  allowed_files: repórtalo como hallazgo en history.md y detente.
+
+CIERRE:
+- Marca TASK-02 como - [x] / Status: READY_FOR_REVIEW en
+  spec/features/detail-obra-curso/task.md (NO COMPLETED — el cierre es del Humano;
+  deja TASK-03 en TODO).
+- Actualiza progress/current-task.json (active_task: TASK-02 READY_FOR_REVIEW,
+  harness_status.typecheck_passed: true y nota fase_4_task_02_run con archivos,
+  arnés, grep de capas y gate de deps).
+- Añade la entrada de TASK-02 en progress/history.md (formato calco de Fase 3:
+  alcance, 8 archivos, arnés, grep de capas, gate de deps, PARADA CONTROLADA).
+- NO inicies TASK-03.
+
+REGLAS ESTRICTAS:
+- allowed_files: src/features/detail/domain/**, src/features/detail/application/**,
+  spec/features/detail-obra-curso/task.md, progress/current-task.json,
+  progress/history.md. NINGÚN otro archivo.
+- CERO components/presentation/infrastructure, cero src/app/**, App.tsx,
+  eslint.config.js, nativos, package.json/lock, app.json, app.config.js,
+  global.css, tokens.ts.
+- CERO npx expo start / prebuild / run:* (reservado al Humano). CERO commit.
+- CERO vibe coding: todo verbatim del plan §4–§5.
+
+PARADA CONTROLADA (gate Humano): al terminar, TASK-02 queda READY_FOR_REVIEW.
+Informa al Humano qué esperar de esta task y validar: los 8 archivos domain/application, firmas verbatim,
+cero imports de framework, tsc/eslint en verde y git diff de configs VACÍO.
+El Humano da el cierre COMPLETED. TASK-03 NO se inicia en esa sesión.

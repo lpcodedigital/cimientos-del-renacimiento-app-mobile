@@ -33,16 +33,17 @@
 
 ## TASK-02 — Domain + Application de detail
 
-**Status:** TODO (desbloqueada; se ejecuta en nueva sesión)
+**Status:** COMPLETED
 **assigned_role:** Trabajador
+**Validación Humana:** firmas verbatim, arnés en verde y gate de deps VACÍO aprobados (2026-10-20); cierre COMPLETED.
 
 **Pasos**
 
-- [ ] Crear los 5 archivos de `src/features/detail/domain/` (plan §4.1–§4.5 verbatim: `entities/ObraDetail.ts`, `entities/CursoDetail.ts`, `errors/DetailError.ts`, `ports/ObraDetailRepository.ts`, `ports/CursoDetailRepository.ts`).
-- [ ] Crear los 3 archivos de `src/features/detail/application/` (plan §5.1–§5.3 verbatim: `types.ts`, `obraDetail.ts`, `cursoDetail.ts`).
-- [ ] `npx tsc --noEmit` → exit 0. `npx eslint .` → exit 0.
-- [ ] Grep de capas (evidencia en history): domain/application solo imports relativos; cero `react`/`react-native`/`axios`/`@tanstack`/`expo-*`/`react-native-maps`/`@shopify`/`expo-image`/`@/shared`/`@/app`.
-- [ ] `git diff -- package.json app.json app.config.js` → VACÍO.
+- [x] Crear los 5 archivos de `src/features/detail/domain/` (plan §4.1–§4.5 verbatim: `entities/ObraDetail.ts`, `entities/CursoDetail.ts`, `errors/DetailError.ts`, `ports/ObraDetailRepository.ts`, `ports/CursoDetailRepository.ts`).
+- [x] Crear los 3 archivos de `src/features/detail/application/` (plan §5.1–§5.3 verbatim: `types.ts`, `obraDetail.ts`, `cursoDetail.ts`).
+- [x] `npx tsc --noEmit` → exit 0. `npx eslint .` → exit 0.
+- [x] Grep de capas (evidencia en history): domain/application solo imports relativos; cero `react`/`react-native`/`axios`/`@tanstack`/`expo-*`/`react-native-maps`/`@shopify`/`expo-image`/`@/shared`/`@/app`.
+- [x] `git diff -- package.json app.json app.config.js` → VACÍO.
 
 **allowed_files**
 
@@ -58,7 +59,7 @@
 
 ## TASK-03 — Infrastructure + compositionRoot + DetailProvider
 
-**Status:** TODO
+**Status:** TODO (desbloqueada; se ejecuta en nueva sesión)
 **assigned_role:** Trabajador
 
 **Pasos**
