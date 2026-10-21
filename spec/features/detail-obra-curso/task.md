@@ -8,15 +8,16 @@
 
 ## TASK-01 — Tokens `detail-*`
 
-**Status:** TODO (bloqueada hasta aprobación de la spec)
+**Status:** COMPLETED
 **assigned_role:** Trabajador
+**Validación Humana:** diff aprobado (2026-10-20); cierre COMPLETED.
 
 **Pasos**
 
-- [ ] `global.css`: añadir los 5 tokens `--color-detail-*` dentro del `@theme` existente, tras los `search-*` (plan §3 verbatim).
-- [ ] `src/shared/theme/tokens.ts`: añadir `detailPalette` al final (plan §3 verbatim), sin tocar las paletas existentes.
-- [ ] `npx tsc --noEmit` → exit 0.
-- [ ] `git diff -- package.json app.json app.config.js` → VACÍO. **Cero instalaciones.**
+- [x] `global.css`: añadir los 5 tokens `--color-detail-*` dentro del `@theme` existente, tras los `search-*` (plan §3 verbatim).
+- [x] `src/shared/theme/tokens.ts`: añadir `detailPalette` al final (plan §3 verbatim), sin tocar las paletas existentes.
+- [x] `npx tsc --noEmit` → exit 0.
+- [x] `git diff -- package.json app.json app.config.js` → VACÍO. **Cero instalaciones.**
 
 **allowed_files**
 
@@ -32,7 +33,7 @@
 
 ## TASK-02 — Domain + Application de detail
 
-**Status:** TODO
+**Status:** TODO (desbloqueada; se ejecuta en nueva sesión)
 **assigned_role:** Trabajador
 
 **Pasos**

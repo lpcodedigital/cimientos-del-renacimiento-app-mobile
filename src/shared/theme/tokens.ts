@@ -53,3 +53,11 @@ export const searchPalette = {
   imagePlaceholder: "#E4E0D5",
   accent: "#C97C33",
 } as const;
+
+export const detailPalette = {
+  screenBg: "#E4E4D8",
+  cardBg: "#F4F0E8",
+  accent: "#BC803C",
+  kpiLabel: "#545454",
+  textMuted: "#7C7C78",
+} as const;

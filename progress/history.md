@@ -1090,3 +1090,32 @@
 - **Decisión del Humano:** el Worker (DeepSeek) ejecuta TASK-01 en **nueva sesión**, puesto en contexto por el propio Humano con el prompt de ejecución preparado por el Orquestador. Cero TASK iniciada en la sesión del Orquestador.
 - `progress/current-task.json` → `active_task: TASK-01` (`TODO`, desbloqueada), `current_roadmap_phase` y `blockers_or_errors` actualizados; `spec_file` marcada APROBADA.
 - **Gate restante tras TASK-01:** el Humano valida el diff (solo los 5 tokens en `global.css` + `detailPalette` en `tokens.ts`; `package.json`/`app.json`/`app.config.js` **VACÍO** — Fase 4 no requiere rebuild nativo: cero deps nuevas).
+
+### 2026-10-20 — TASK-01 (tokens detail-*, Fase 4) — READY_FOR_REVIEW (Trabajador)
+
+- **Alcance:** SOLO tokens de la feature `detail-obra-curso`. Cero componentes, cero `src/features/detail/**`, cero `src/app/**`/`App.tsx`/navegación, cero `eslint.config.js`, cero nativos, cero `package.json`/lock, cero `app.json`/`app.config.js`. No se instaló nada (`npx expo install`/`npm i` no ejecutados), no se ejecutó `npx expo start`/`prebuild`/`run:*`, cero commit.
+- **Archivos editados (2 de código + 3 de memoria):**
+  - `global.css`: añadidos los 5 tokens dentro del `@theme` existente, inmediatamente tras los `search-*` (plan §3 verbatim): `--color-detail-screen-bg: #e4e4d8;`, `--color-detail-card-bg: #f4f0e8;`, `--color-detail-accent: #bc803c;`, `--color-detail-kpi-label: #545454;`, `--color-detail-text-muted: #7c7c78;`.
+  - `src/shared/theme/tokens.ts`: añadido al FINAL, sin tocar las paletas existentes (plan §3 verbatim):
+    ```ts
+    export const detailPalette = {
+      screenBg: "#E4E4D8",
+      cardBg: "#F4F0E8",
+      accent: "#BC803C",
+      kpiLabel: "#545454",
+      textMuted: "#7C7C78",
+    } as const;
+    ```
+  - `spec/features/detail-obra-curso/task.md`, `progress/current-task.json` y `progress/history.md` (memoria/cierre).
+- **Diff de tokens:** `git diff -- global.css src/shared/theme/tokens.ts` → SOLO las 6 líneas de `global.css` (5 tokens + línea en blanco de separación) y las 8 líneas de `detailPalette` en `tokens.ts`. `palette`/`fontFamily`/`authPalette`/`appPalette`/`radarPalette`/`searchPalette` intactas. `detail-accent` = `#BC803C` (NO se usó `#C97C33`, histórico de `search-accent`).
+- **Arnés — typecheck:** `npx tsc --noEmit` → **exit 0**.
+- **Gate de deps:** `git diff -- package.json app.json app.config.js` → **VACÍO**. Cero instalaciones.
+- **Working tree:** `git status --porcelain` muestra `M global.css`, `M src/shared/theme/tokens.ts` y la modificación **preexistente** `M Instructions/fase_4/fase_4.md` (fuera de `allowed_files`, ajena a TASK-01, no tocada por el agente). Sin untracked.
+- **Estado:** `spec/features/detail-obra-curso/task.md` TASK-01 → pasos `- [x]` / `Status: READY_FOR_REVIEW` (NO COMPLETED). `progress/current-task.json` → `active_task: TASK-01` `READY_FOR_REVIEW`, `harness_status.typecheck_passed: true`, nota `fase_4_task_01_run`.
+- **PARADA CONTROLADA (gate Humano):** el Humano valida el diff (solo los 5 tokens `detail-*` y `detailPalette`; `package.json`/`app.json`/`app.config.js` **VACÍO**) y da el cierre formal **COMPLETED**. **TASK-02 NO iniciada** (nueva sesión). Sin commit (lo decide el Humano).
+
+### 2026-10-20 — TASK-01 APROBADA por el Humano — COMPLETED
+
+- **Validación del Humano:** TASK-01 validada; diff aprobado (solo los 5 tokens `--color-detail-*` en `global.css` + `detailPalette` en `src/shared/theme/tokens.ts`; `package.json`/`app.json`/`app.config.js` **VACÍO**). Cierre formal **COMPLETED** registrado.
+- **Cierre:** `spec/features/detail-obra-curso/task.md` → TASK-01 `- [x]` / `Status: COMPLETED` con validación Humana; TASK-02 marcada `TODO (desbloqueada; se ejecuta en nueva sesión)`. `progress/current-task.json` → `active_task: TASK-02` (`TODO`), `current_roadmap_phase` actualizado, `fase_4_task_01_run` y `last_run` con el cierre, `blockers_or_errors` apuntando a TASK-02.
+- **Gobernanza:** TASK-02 (domain + application, 8 archivos) **NO iniciada**: se autoriza en **NUEVA SESIÓN** con el prompt de ejecución. TASK-03…06 bloqueadas. Sin commit (lo decide el Humano).

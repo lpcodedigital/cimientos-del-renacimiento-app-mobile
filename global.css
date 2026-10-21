@@ -51,6 +51,12 @@
   --color-search-image-placeholder: #e4e0d5;
   --color-search-accent: #c97c33;
 
+  --color-detail-screen-bg: #e4e4d8;
+  --color-detail-card-bg: #f4f0e8;
+  --color-detail-accent: #bc803c;
+  --color-detail-kpi-label: #545454;
+  --color-detail-text-muted: #7c7c78;
+
   --font-lato: "Lato";
   --font-lato-bold: "Lato-Bold";
 }

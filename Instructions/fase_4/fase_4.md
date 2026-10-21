@@ -97,3 +97,76 @@ FlashList, Expo SDK 57); actualiza progress/current-task.json y
 progress/history.md al cerrar la sesión de planeación. NO arranques Fase 4
 sin mockup + endpoints confirmados por el Humano.
 Dos cosas que conviene que prepares antes de esa sesión (el prompt ya las exige, pero te las adelanto): (1) la ruta donde versionarás el mockup del detalle (sugiero spec/features/ficha-detalle/mockups/ o el nombre que prefieras), y (2) los JSON de ejemplo reales + DTOs Java de los endpoints de detalle de obra y curso, como hiciste con global-search. Con eso el Orquestador podrá hacer la adjudicación mockup↔contrato sin bloqueos.
+
+## Prompt para la nueva sesión (TASK-01):
+
+MODO: TRABAJADOR (Execution Agent). Ejecutas EXACTAMENTE UNA TASK: TASK-01 de la
+feature detail-obra-curso (Fase 4). Código quirúrgico en React Native. SOLO tocas
+los archivos listados en allowed_files. El Orquestador ya escribió la SDD; tú NO
+planificas, NO improvisas y NO lees imágenes.
+
+Proyecto: Cimientos del Renacimiento — Gabinete Móvil (Expo SDK 57 + RN + TS strict
++ NativeWind v5 + React Navigation + Clean Architecture por features).
+Raíz: /Users/macbookair/Documents/Projects/React-Native/CIMIENTOS-DEL-RENACIMIENTO-APP-MOBILE
+
+LEE EN ESTE ORDEN (obligatorio, nada más al inicio):
+1. AGENTS.md (roles, leyes absolutas, arnés)
+2. progress/current-task.json (estado vivo: active_task = TASK-01, TODO desbloqueada)
+3. progress/history.md — SOLO las 3 últimas entradas 2026-10-20 (planeación Fase 4,
+   Paso 0 SDD y aprobación de la spec; están al final del archivo, usa offset)
+4. spec/constitution/tech-stack.md — SOLO §2.6 (paleta detail-*) y §2.5 (nota de
+   search-accent)
+5. spec/features/detail-obra-curso/task.md — SOLO TASK-01
+6. spec/features/detail-obra-curso/plan.md — SOLO §2 (orden) y §3 (tokens verbatim)
+7. src/shared/theme/tokens.ts y global.css (estado actual de las paletas; verás
+   palette/fontFamily/authPalette/appPalette/radarPalette/searchPalette — NO las toques)
+
+CONTEXTO MÍNIMO (ya validado por el Orquestador, no re-verifiques):
+- Fase 3 (search-bar) CERRADA y aprobada en físico. Fase 4 = pantalla de detalle
+  Obra/Capacitación. spec.md APROBADA por el Humano (2026-10-20).
+- Fase 4 = CERO dependencias nuevas. TASK-01 NO instala nada.
+
+TU TRABAJO EN ESTA SESIÓN — TASK-01 (tokens detail-*):
+1. Editar global.css: añadir los 5 tokens --color-detail-* dentro del @theme
+   existente, INMEDIATAMENTE DESPUÉS de los --color-search-* (copia verbatim de
+   plan §3):
+   --color-detail-screen-bg: #e4e4d8;
+   --color-detail-card-bg: #f4f0e8;
+   --color-detail-accent: #bc803c;
+   --color-detail-kpi-label: #545454;
+   --color-detail-text-muted: #7c7c78;
+2. Editar src/shared/theme/tokens.ts: añadir al FINAL del archivo (copia verbatim
+   de plan §3), sin tocar las paletas existentes:
+   export const detailPalette = {
+     screenBg: "#E4E4D8",
+     cardBg: "#F4F0E8",
+     accent: "#BC803C",
+     kpiLabel: "#545454",
+     textMuted: "#7C7C78",
+   } as const;
+3. Arnés: npx tsc --noEmit → debe dar exit 0.
+4. Gate de deps: git diff -- package.json app.json app.config.js → debe quedar
+   VACÍO. PROHIBIDO npx expo install / npm i / cualquier instalación.
+5. Cierre: marca TASK-01 como - [x] / Status: READY_FOR_REVIEW en
+   spec/features/detail-obra-curso/task.md (NO COMPLETED — el cierre es del Humano).
+   Actualiza progress/current-task.json (active_task: TASK-01 READY_FOR_REVIEW,
+   harness_status.typecheck_passed: true, nota fase_4_task_01_run) y añade la
+   entrada de TASK-01 en progress/history.md (formato calco de las entradas de
+   Fase 3: alcance, diff de tokens, arnés, gate de deps, PARADA CONTROLADA).
+
+REGLAS ESTRICTAS:
+- allowed_files: global.css, src/shared/theme/tokens.ts,
+  spec/features/detail-obra-curso/task.md, progress/current-task.json,
+  progress/history.md. NINGÚN otro archivo.
+- CERO componentes, cero src/features/detail/**, cero src/app/**, App.tsx,
+  eslint.config.js, nativos, package.json/lock, app.json, app.config.js.
+- CERO npx expo start / prebuild / run:* (reservado al Humano). CERO commit.
+- CERO vibe coding: los tokens se copian verbatim de plan §3; no inventes hex ni
+  nombres. detail-accent es #BC803C (NO uses #C97C33 — ese es search-accent,
+  histórico prohibido).
+- Si npx tsc --noEmit falla por algo ajeno a tus 2 archivos, NO arregles nada
+  fuera de allowed_files: repórtalo como hallazgo en history.md y detente.
+
+PARADA CONTROLADA (gate Humano): al terminar, TASK-01 queda READY_FOR_REVIEW. Le dices al humano lo que espera de la task ejecutada y que es lo que debe de validar.
+El Humano valida el diff (solo tokens; configs vacías) y da el cierre COMPLETED.
+TASK-02 NO se inicia en esta sesión.
