@@ -1147,3 +1147,35 @@
 - **Cierre:** `spec/features/detail-obra-curso/task.md` → TASK-02 `- [x]` / `Status: COMPLETED` con validación Humana; TASK-03 marcada `TODO (desbloqueada; se ejecuta en nueva sesión)`.
 - **Estado vivo:** `progress/current-task.json` → `active_task: TASK-03` (`TODO`), `current_roadmap_phase` actualizado, `fase_4_task_02_run` y `last_run` con el cierre, `blockers_or_errors` apuntando a TASK-03.
 - **Gobernanza:** TASK-03 (infrastructure + compositionRoot + DetailProvider) **NO iniciada**: se autoriza en **NUEVA SESIÓN** con el prompt de ejecución. TASK-04…06 bloqueadas. Sin commit (lo decide el Humano).
+
+### 2026-10-20 — TASK-03 (infrastructure + compositionRoot + DetailProvider, Fase 4) — READY_FOR_REVIEW (Trabajador)
+
+- **Alcance:** SOLO Infrastructure + Providers/wiring de `detail-obra-curso`, verbatim de plan §6–§7. Cero componentes de pantalla, cero navegación (`src/app/navigation/**`), cero `format.ts`/`KpiCard`/UI, cero `domain`/`application`, cero `eslint.config.js`, cero nativos, cero `package.json`/lock, cero `app.json`/`app.config.js`, cero tokens. No se instaló nada (`npx expo install`/`npm i` no ejecutados), no se ejecutó `npx expo start`/`prebuild`/`run:*`, cero commit.
+- **Archivos creados (5 de código):**
+  - `src/features/detail/infrastructure/dto.ts` (plan §6.1): `ObraDetailDTO` con `galeryUrls?: string[]` **sic** (typo del backend) y `CursoDetailDTO` con `coverImageUrl?: string` documentado; espejo de spec §4.7.
+  - `src/features/detail/infrastructure/AxiosObraDetailApi.ts` (plan §6.2): `OBRA_DETAIL_PATH = "/api/v1/app-mobile/obra"` (única aparición), `mapObra` con `galleryUrls: dto.galeryUrls ?? null`, `createAxiosObraDetailApi(): ObraDetailRepository`; cancelación `ERR_CANCELED` re-lanzada intacta y mapeo a `DetailError` (`server`/`network`/`unexpected`).
+  - `src/features/detail/infrastructure/AxiosCursoDetailApi.ts` (plan §6.3): `CURSO_DETAIL_PATH = "/api/v1/app-mobile/curso"` (única aparición), `mapCurso` **sin `coverImageUrl`** (ignorado deliberadamente) y `galleryUrls: dto.galeryUrls ?? null`; misma estructura de cancelación/errores.
+  - `src/features/detail/presentation/DetailProvider.tsx` (plan §7.1): contexto ligero con `useCases: DetailUseCases`, sin estado propio; exporta `DetailContext` y `DetailContextValue`.
+  - `src/features/detail/presentation/useDetail.ts` (plan §7.2): `useContext` + `throw` si se usa fuera de `DetailProvider`.
+- **Archivos editados (2 de wiring):**
+  - `src/app/compositionRoot.ts` (plan §7.3): imports de `createCursoDetail`/`createObraDetail`/`DetailUseCases`/`createAxiosCursoDetailApi`/`createAxiosObraDetailApi` + `createDetailUseCases()` al final. Factories existentes (`createAuthUseCases`, `createHomeUseCases`, `createSearchUseCases`) intactas.
+  - `App.tsx` (plan §7.4): `createDetailUseCases` en el import, `detailUseCases` a nivel de módulo y `<DetailProvider useCases={detailUseCases}>` **dentro** de `<SearchProvider>`, envolviendo `<RootNavigator />` + `<StatusBar />`.
+- **Arnés — typecheck:** `npx tsc --noEmit` → **exit 0**.
+- **Arnés — linter:** `npx eslint .` → **exit 0** (0 errores, 0 warnings).
+- **Grep DIP (evidencia):**
+  - `detail/infrastructure` importado **SOLO** por `src/app/compositionRoot.ts:16-17`; ningún otro import (incluido relativo) fuera de `infrastructure/` ni en `presentation/`.
+  - Paths únicos: `/api/v1/app-mobile/obra` solo en `AxiosObraDetailApi.ts:9`; `/api/v1/app-mobile/curso` solo en `AxiosCursoDetailApi.ts:9`.
+  - `react-native-maps`/`@shopify`/`expo-image`/`axios`/`@tanstack` ausentes de `detail/domain` y `detail/application` → **NONE**.
+  - `any` en `src/features/detail` + `App.tsx` + `compositionRoot.ts` → **NONE**.
+  - `eslint.config.js` sin cambios (`git diff` vacío); los bans por glob cubren `detail`.
+- **Gate de deps:** `git diff -- package.json app.json app.config.js` → **VACÍO**. Cero instalaciones.
+- **Working tree:** `git status --porcelain` muestra `M App.tsx`, `M src/app/compositionRoot.ts`, `?? src/features/detail/infrastructure/`, `?? src/features/detail/presentation/` y la modificación **preexistente** `M Instructions/fase_4/fase_4.md` (fuera de `allowed_files`, ajena a TASK-03, no tocada por el agente).
+- **Estado:** `spec/features/detail-obra-curso/task.md` TASK-03 → pasos `- [x]` / `Status: READY_FOR_REVIEW` (NO COMPLETED; TASK-04 permanece `TODO`). `progress/current-task.json` → `active_task: TASK-03` `READY_FOR_REVIEW`, `harness_status.typecheck_passed: true`, nota `fase_4_task_03_run`.
+- **PARADA CONTROLADA (gate Humano):** el Humano valida los 5 archivos nuevos + los 2 edits de wiring, los DTOs/paths verbatim, el DIP (`detail/infrastructure` solo en `compositionRoot.ts`), `npx tsc --noEmit`/`npx eslint .` en verde, `git diff -- package.json app.json app.config.js` **VACÍO** y `eslint.config.js` intacto, y da el cierre formal **COMPLETED**. **TASK-04 NO se inicia en esa sesión.** Sin commit (lo decide el Humano).
+
+### 2026-10-20 — TASK-03 APROBADA por el Humano — COMPLETED
+
+- **Validación del Humano:** TASK-03 validada; los 5 archivos nuevos de `infrastructure`/`presentation` (`dto.ts`, `AxiosObraDetailApi.ts`, `AxiosCursoDetailApi.ts`, `DetailProvider.tsx`, `useDetail.ts`) + los 2 edits de wiring (`src/app/compositionRoot.ts`, `App.tsx`), los DTOs/paths verbatim, el DIP (infrastructure solo importado por `compositionRoot.ts`), el arnés en verde (`npx tsc --noEmit` y `npx eslint .` exit 0), `git diff -- package.json app.json app.config.js` **VACÍO** y `eslint.config.js` intacto aprobados. Cierre formal **COMPLETED** registrado.
+- **Cierre:** `spec/features/detail-obra-curso/task.md` → TASK-03 `- [x]` / `Status: COMPLETED` con validación Humana; TASK-04 marcada `TODO (desbloqueada; se ejecuta en nueva sesión)`.
+- **Estado vivo:** `progress/current-task.json` → `active_task: TASK-04` (`TODO`), `current_roadmap_phase` actualizado, `fase_4_task_03_run` y `last_run` con el cierre, `blockers_or_errors` apuntando a TASK-04.
+- **Gobernanza:** TASK-04 (11 archivos presentation + `src/app/navigation/types.ts`, sin wire al navigator) **NO iniciada**: se autoriza en **NUEVA SESIÓN** con el prompt de ejecución. TASK-05…06 bloqueadas. Sin commit (lo decide el Humano).

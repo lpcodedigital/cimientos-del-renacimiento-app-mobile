@@ -259,3 +259,109 @@ PARADA CONTROLADA (gate Humano): al terminar, TASK-02 queda READY_FOR_REVIEW.
 Informa al Humano qué esperar de esta task y validar: los 8 archivos domain/application, firmas verbatim,
 cero imports de framework, tsc/eslint en verde y git diff de configs VACÍO.
 El Humano da el cierre COMPLETED. TASK-03 NO se inicia en esa sesión.
+
+## Prompt para la nueva sesión del Worker TASK-03:
+
+MODO: TRABAJADOR (Execution Agent). Ejecutas EXACTAMENTE UNA TASK: TASK-03 de la
+feature detail-obra-curso (Fase 4). Código quirúrgico en React Native. SOLO tocas
+los archivos listados en allowed_files. El Orquestador ya escribió la SDD; tú NO
+planificas, NO improvisas y NO lees imágenes.
+
+Proyecto: Cimientos del Renacimiento — Gabinete Móvil (Expo SDK 57 + RN + TS strict
++ NativeWind v5 + React Navigation + Clean Architecture por features).
+Raíz: /Users/macbookair/Documents/Projects/React-Native/CIMIENTOS-DEL-RENACIMIENTO-APP-MOBILE
+
+LEE EN ESTE ORDEN (obligatorio, nada más al inicio):
+1. AGENTS.md (roles, leyes absolutas, arnés).
+2. progress/current-task.json (estado vivo: active_task = TASK-03 TODO desbloqueada).
+3. progress/history.md — SOLO las 4 últimas entradas 2026-10-20 (TASK-02 RUN,
+   TASK-02 APROBADA/COMPLETED y cierre). Están al final del archivo (usa offset).
+4. spec/features/detail-obra-curso/task.md — SOLO TASK-03 (incluye allowed_files).
+5. spec/features/detail-obra-curso/plan.md — SOLO §6 (Infrastructure, §6.1–§6.3) y
+   §7 (Providers y wiring, §7.1–§7.5). Todo es VERBATIM.
+6. Referencias de patrón (solo lectura): src/features/search/infrastructure/
+   (dto.ts, AxiosGlobalSearchApi.ts), src/features/search/presentation/
+   (SearchProvider.tsx), src/app/compositionRoot.ts y App.tsx (estado actual).
+
+CONTEXTO MÍNIMO (ya validado por el Orquestador, no re-verifiques):
+- Fase 3 (search-bar) CERRADA. Fase 4 = pantalla detalle Obra/Capacitación;
+  spec.md APROBADA (2026-10-20).
+- TASK-01 COMPLETED: tokens --color-detail-* y detailPalette ya registrados. NO los toques.
+- TASK-02 COMPLETED (Humano 2026-10-20): ya existen los 8 archivos verbatim de
+  src/features/detail/domain/ y src/features/detail/application/ (contratos
+  ObraDetail/CursoDetail con galleryUrls: string[] | null, DetailError,
+  ObraDetailRepository.getObraById, CursoDetailRepository.getCursoById,
+  DetailUseCases, createObraDetail, createCursoDetail). NO los toques.
+- TASK-03 = Infrastructure + compositionRoot + DetailProvider. CERO dependencias
+  nuevas. NO se instala nada.
+- El typo del backend "galeryUrls" es SOLO de infrastructure/dto.ts (sin corregir);
+  el dominio ya expone galleryUrls.
+- TASK-04+ NO se inician en esta sesión.
+
+TU TRABAJO EN ESTA SESIÓN — TASK-03 (verbatim plan §6–§7):
+Crear EXACTAMENTE:
+1. src/features/detail/infrastructure/dto.ts          (plan §6.1; galeryUrls sic)
+2. src/features/detail/infrastructure/AxiosObraDetailApi.ts  (plan §6.2)
+3. src/features/detail/infrastructure/AxiosCursoDetailApi.ts (plan §6.3)
+4. src/features/detail/presentation/DetailProvider.tsx (plan §7.1, calco SearchProvider)
+5. src/features/detail/presentation/useDetail.ts       (plan §7.2)
+
+Editar SOLO:
+6. src/app/compositionRoot.ts → añadir createDetailUseCases() al final, sin tocar las
+   factories existentes (plan §7.3).
+7. App.tsx → detailUseCases a nivel de módulo + <DetailProvider> dentro de
+   <SearchProvider> (plan §7.4).
+
+Puntos obligatorios:
+- Copia firmas, DTOs, paths (/api/v1/app-mobile/obra, /api/v1/app-mobile/curso,
+  únicos), mappers, cancelación (calco de AxiosGlobalSearchApi) y providers
+  EXACTAMENTE del plan (cero hex, cero nombres nuevos, cero campos añadidos, cero any).
+- dto.ts es espejo de spec §4.7; coverImageUrl se ignora en el mapper de curso;
+  galeryUrls → galleryUrls en Obra.
+- DIP: infrastructure solo la importa compositionRoot.ts; infrastructure importa
+  axiosClient de @/shared/infrastructure/http/axiosClient.
+- NO crees componentes de pantalla, navegación, format.ts, KpiCard, etc.
+  (eso es TASK-04). NO toques domain/application.
+- PROHIBIDO react-native-maps, FlashList, expo-image y cualquier UI en esta TASK.
+- Verificar eslint.config.js SIN CAMBIOS.
+
+ARNÉS OBLIGATORIO:
+- npx tsc --noEmit → exit 0.
+- npx eslint . → exit 0.
+- Greps DIP (evidencia para history): detail/infrastructure importado SOLO por
+  compositionRoot.ts; paths de endpoints únicos; @shopify/expo-image/
+  react-native-maps ausentes de domain/application; cero any.
+- Gate de deps: git diff -- package.json app.json app.config.js → VACÍO.
+  PROHIBIDO npx expo install / npm i / cualquier instalación.
+- Si tsc/eslint fallan por algo ajeno a esta TASK, NO arregles nada fuera de
+  allowed_files: repórtalo como hallazgo en history.md y detente.
+
+CIERRE:
+- Marca TASK-03 como - [x] / Status: READY_FOR_REVIEW en
+  spec/features/detail-obra-curso/task.md (NO COMPLETED — el cierre es del Humano;
+  deja TASK-04 en TODO).
+- Actualiza progress/current-task.json (active_task: TASK-03 READY_FOR_REVIEW,
+  harness_status.typecheck_passed: true y nota fase_4_task_03_run con archivos,
+  arnés, greps DIP y gate de deps).
+- Añade la entrada de TASK-03 en progress/history.md (alcance, archivos, arnés,
+  greps DIP/endpoints, gate de deps, PARADA CONTROLADA).
+- NO inicies TASK-04.
+
+REGLAS ESTRICTAS:
+- allowed_files: src/features/detail/infrastructure/**,
+  src/features/detail/presentation/DetailProvider.tsx,
+  src/features/detail/presentation/useDetail.ts,
+  src/app/compositionRoot.ts, App.tsx,
+  spec/features/detail-obra-curso/task.md, progress/current-task.json,
+  progress/history.md. NINGÚN otro archivo.
+- CERO domain/application, componentes/pantalla, src/app/navigation/**,
+  eslint.config.js, nativos, package.json/lock, app.json, app.config.js,
+  global.css, tokens.ts.
+- CERO npx expo start / prebuild / run:* (reservado al Humano). CERO commit.
+- CERO vibe coding: todo verbatim del plan §6–§7.
+
+PARADA CONTROLADA (gate Humano): al terminar, TASK-03 queda READY_FOR_REVIEW.
+Informa al Humano qué validar: los 5 archivos nuevos + los 2 edits de wiring,
+DTOs/paths verbatim, DIP (infrastructure solo en compositionRoot.ts), tsc/eslint
+en verde, git diff de configs VACÍO y eslint.config.js intacto.
+El Humano da el cierre COMPLETED. TASK-04 NO se inicia en esa sesión.

@@ -8,10 +8,12 @@ import "./global.css";
 
 import {
   createAuthUseCases,
+  createDetailUseCases,
   createHomeUseCases,
   createSearchUseCases,
 } from "@/app/compositionRoot";
 import { AuthProvider } from "@/features/auth/presentation/AuthProvider";
+import { DetailProvider } from "@/features/detail/presentation/DetailProvider";
 import { HomeProvider } from "@/features/home/presentation/HomeProvider";
 import { SearchProvider } from "@/features/search/presentation/SearchProvider";
 import { RootNavigator } from "@/app/navigation/RootNavigator";
@@ -22,6 +24,7 @@ const queryClient = new QueryClient();
 const authUseCases = createAuthUseCases();
 const homeUseCases = createHomeUseCases();
 const searchUseCases = createSearchUseCases();
+const detailUseCases = createDetailUseCases();
 
 export default function App() {
   const [loaded, error] = useFonts({
@@ -43,8 +46,10 @@ export default function App() {
       <AuthProvider useCases={authUseCases}>
         <HomeProvider useCases={homeUseCases}>
           <SearchProvider useCases={searchUseCases}>
-            <RootNavigator />
-            <StatusBar style="light" />
+            <DetailProvider useCases={detailUseCases}>
+              <RootNavigator />
+              <StatusBar style="light" />
+            </DetailProvider>
           </SearchProvider>
         </HomeProvider>
       </AuthProvider>

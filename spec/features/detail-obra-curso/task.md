@@ -59,21 +59,22 @@
 
 ## TASK-03 — Infrastructure + compositionRoot + DetailProvider
 
-**Status:** TODO (desbloqueada; se ejecuta en nueva sesión)
+**Status:** COMPLETED
 **assigned_role:** Trabajador
+**Validación Humana:** 5 archivos de infrastructure/presentation + 2 edits de wiring validados; DTOs/paths verbatim, DIP correcto, arnés en verde (`npx tsc --noEmit` y `npx eslint .` exit 0), `git diff -- package.json app.json app.config.js` VACÍO y `eslint.config.js` intacto (2026-10-20); cierre COMPLETED.
 
 **Pasos**
 
-- [ ] Crear `src/features/detail/infrastructure/dto.ts` (plan §6.1 verbatim; `galeryUrls` sic).
-- [ ] Crear `src/features/detail/infrastructure/AxiosObraDetailApi.ts` (plan §6.2; path `/api/v1/app-mobile/obra` único; import de `axiosClient` y patrón de cancelación **copiados de `AxiosGlobalSearchApi.ts`**).
-- [ ] Crear `src/features/detail/infrastructure/AxiosCursoDetailApi.ts` (plan §6.3; path `/api/v1/app-mobile/curso` único; `coverImageUrl` ignorado en el mapper).
-- [ ] Crear `src/features/detail/presentation/DetailProvider.tsx` y `useDetail.ts` (plan §7.1–§7.2 verbatim).
-- [ ] Editar `src/app/compositionRoot.ts`: `+createDetailUseCases()` (plan §7.3 verbatim; cero cambios en las factories existentes).
-- [ ] Editar `App.tsx`: `detailUseCases` a nivel de módulo + `<DetailProvider>` dentro de `<SearchProvider>` (plan §7.4).
-- [ ] `npx tsc --noEmit` → exit 0. `npx eslint .` → exit 0.
-- [ ] Grep DIP (evidencia): `detail/infrastructure` importado SOLO por `compositionRoot.ts`; paths de endpoints únicos; `@shopify`/`expo-image`/`react-native-maps` ausentes de domain/application.
-- [ ] Verificar `eslint.config.js` SIN CAMBIOS (los bans por glob ya cubren a `detail`).
-- [ ] `git diff -- package.json app.json app.config.js` → VACÍO.
+- [x] Crear `src/features/detail/infrastructure/dto.ts` (plan §6.1 verbatim; `galeryUrls` sic).
+- [x] Crear `src/features/detail/infrastructure/AxiosObraDetailApi.ts` (plan §6.2; path `/api/v1/app-mobile/obra` único; import de `axiosClient` y patrón de cancelación **copiados de `AxiosGlobalSearchApi.ts`**).
+- [x] Crear `src/features/detail/infrastructure/AxiosCursoDetailApi.ts` (plan §6.3; path `/api/v1/app-mobile/curso` único; `coverImageUrl` ignorado en el mapper).
+- [x] Crear `src/features/detail/presentation/DetailProvider.tsx` y `useDetail.ts` (plan §7.1–§7.2 verbatim).
+- [x] Editar `src/app/compositionRoot.ts`: `+createDetailUseCases()` (plan §7.3 verbatim; cero cambios en las factories existentes).
+- [x] Editar `App.tsx`: `detailUseCases` a nivel de módulo + `<DetailProvider>` dentro de `<SearchProvider>` (plan §7.4).
+- [x] `npx tsc --noEmit` → exit 0. `npx eslint .` → exit 0.
+- [x] Grep DIP (evidencia): `detail/infrastructure` importado SOLO por `compositionRoot.ts`; paths de endpoints únicos; `@shopify`/`expo-image`/`react-native-maps` ausentes de domain/application.
+- [x] Verificar `eslint.config.js` SIN CAMBIOS (los bans por glob ya cubren a `detail`).
+- [x] `git diff -- package.json app.json app.config.js` → VACÍO.
 
 **allowed_files**
 
@@ -92,7 +93,7 @@
 
 ## TASK-04 — Componentes del detalle (sin wire al navigator)
 
-**Status:** TODO
+**Status:** TODO (desbloqueada; se ejecuta en nueva sesión)
 **assigned_role:** Trabajador
 
 **Pasos**

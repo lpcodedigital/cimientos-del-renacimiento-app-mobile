@@ -10,6 +10,11 @@ import { createAxiosAuthApi } from "@/features/auth/infrastructure/AxiosAuthApi"
 import { createAxiosAuthTokenHolder } from "@/features/auth/infrastructure/AxiosAuthTokenHolder";
 import { createExpoBiometricGateway } from "@/features/auth/infrastructure/ExpoBiometricGateway";
 import { createSecureStoreSessionRepository } from "@/features/auth/infrastructure/SecureStoreSessionRepository";
+import { createCursoDetail } from "@/features/detail/application/cursoDetail";
+import { createObraDetail } from "@/features/detail/application/obraDetail";
+import type { DetailUseCases } from "@/features/detail/application/types";
+import { createAxiosCursoDetailApi } from "@/features/detail/infrastructure/AxiosCursoDetailApi";
+import { createAxiosObraDetailApi } from "@/features/detail/infrastructure/AxiosObraDetailApi";
 import { createGetCurrentLocation } from "@/features/home/application/getCurrentLocation";
 import { createLoadRadarMap } from "@/features/home/application/loadRadarMap";
 import { createRequestLocationAccess } from "@/features/home/application/requestLocationAccess";
@@ -68,5 +73,14 @@ export function createSearchUseCases(): SearchUseCases {
   const searchRepository = createAxiosGlobalSearchApi();
   return {
     globalSearch: createGlobalSearch({ searchRepository }),
+  };
+}
+
+export function createDetailUseCases(): DetailUseCases {
+  const obraDetailRepository = createAxiosObraDetailApi();
+  const cursoDetailRepository = createAxiosCursoDetailApi();
+  return {
+    getObraDetail: createObraDetail({ obraDetailRepository }),
+    getCursoDetail: createCursoDetail({ cursoDetailRepository }),
   };
 }
