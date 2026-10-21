@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { FlashList, type ListRenderItem } from "@shopify/flash-list";
 import {
@@ -11,6 +11,7 @@ import { useCallback } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
 import type { AppStackParamList } from "@/app/navigation/types";
+import { useHeaderTitle } from "@/features/app-shell/presentation/useHeaderTitle";
 import { fontFamily as font, palette, searchPalette } from "@/shared/theme/tokens";
 import type { SearchCard } from "../domain/entities/SearchCard";
 import type { SearchPage } from "../domain/entities/SearchPage";
@@ -35,6 +36,14 @@ const renderCard: ListRenderItem<SearchCard> = ({ item }) => (
 const keyExtractor = (item: SearchCard): string => `${item.tipo}-${item.id}`;
 
 export function SearchScreen() {
+  const { setTitle } = useHeaderTitle();
+
+  useFocusEffect(
+    useCallback(() => {
+      setTitle("BÚSQUEDA");
+    }, [setTitle]),
+  );
+
   const { useCases, debouncedQuery, isActive } = useSearch();
 
   const navigation =
@@ -91,15 +100,6 @@ export function SearchScreen() {
         >
           <Ionicons name="arrow-back" size={24} color={palette.texto} />
         </Pressable>
-        <Text
-          style={{
-            fontFamily: font["lato-bold"],
-            fontSize: 20,
-            color: palette.texto,
-          }}
-        >
-          BÚSQUEDA
-        </Text>
       </View>
 
       <SearchInputBar />

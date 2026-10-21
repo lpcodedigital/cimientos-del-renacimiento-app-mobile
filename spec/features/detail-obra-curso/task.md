@@ -123,22 +123,22 @@
 
 ## TASK-05 — Wire navigator + título dinámico + entradas (features congeladas)
 
-**Status:** TODO (desbloqueada; se ejecuta en nueva sesión)
+**Status:** COMPLETED (aprobada por el Humano 2026-10-20)
 **assigned_role:** Trabajador
 
 **Pasos**
 
-- [ ] Crear `src/features/app-shell/presentation/HeaderTitleProvider.tsx` y `useHeaderTitle.ts` (plan §9.1–§9.2 verbatim).
-- [ ] Editar `AppHeader.tsx` (consume contexto, `{title}` en vez del literal `INICIO`) y `AppShell.tsx` (envuelve con `HeaderTitleProvider`) — plan §9.3–§9.4. Cero otro cambio de píxel.
-- [ ] Editar `home/presentation/HomeScreen.tsx`: set `INICIO` al foco (plan §9.5).
-- [ ] Editar `home/presentation/MunicipioCallout.tsx`: `SHOW_SEE_MORE = false` + ternario que oculta el botón «Ver más» (plan §9.8; código intacto).
-- [ ] Editar `search/presentation/SearchScreen.tsx`: set `BÚSQUEDA` al foco (plan §9.5) + eliminar el `<Text>` del título del cuerpo (plan §9.6; back arrow conservado).
-- [ ] Editar `search/presentation/SearchResultCard.tsx`: `onPress` navega a `Detail` con `{ tipo: card.tipo, id: card.id }` (plan §9.7; `accessibilityLabel="Ver detalle"`).
-- [ ] Editar `detail/presentation/DetailScreen.tsx`: añadir set `DETALLE` al foco (plan §9.5). Cero otro cambio.
-- [ ] Editar `src/app/navigation/RootNavigator.tsx`: import + `<AppStack.Screen name="Detail" ... />` tras `Search` (plan §9.9).
-- [ ] `npx tsc --noEmit` → exit 0. `npx eslint .` → exit 0.
-- [ ] `git diff --stat -- src/features/app-shell src/features/home src/features/search` → SOLO los 6 archivos listados (evidencia en history).
-- [ ] `git diff -- package.json app.json app.config.js` → VACÍO.
+- [x] Crear `src/features/app-shell/presentation/HeaderTitleProvider.tsx` y `useHeaderTitle.ts` (plan §9.1–§9.2 verbatim).
+- [x] Editar `AppHeader.tsx` (consume contexto, `{title}` en vez del literal `INICIO`) y `AppShell.tsx` (envuelve con `HeaderTitleProvider`) — plan §9.3–§9.4. Cero otro cambio de píxel.
+- [x] Editar `home/presentation/HomeScreen.tsx`: set `INICIO` al foco (plan §9.5).
+- [x] Editar `home/presentation/MunicipioCallout.tsx`: `SHOW_SEE_MORE = false` + ternario que oculta el botón «Ver más» (plan §9.8; código intacto).
+- [x] Editar `search/presentation/SearchScreen.tsx`: set `BÚSQUEDA` al foco (plan §9.5) + eliminar el `<Text>` del título del cuerpo (plan §9.6; back arrow conservado).
+- [x] Editar `search/presentation/SearchResultCard.tsx`: `onPress` navega a `Detail` con `{ tipo: card.tipo, id: card.id }` (plan §9.7; `accessibilityLabel="Ver detalle"`).
+- [x] Editar `detail/presentation/DetailScreen.tsx`: añadir set `DETALLE` al foco (plan §9.5). Cero otro cambio.
+- [x] Editar `src/app/navigation/RootNavigator.tsx`: import + `<AppStack.Screen name="Detail" ... />` tras `Search` (plan §9.9).
+- [x] `npx tsc --noEmit` → exit 0. `npx eslint .` → exit 0.
+- [x] `git diff --stat -- src/features/app-shell src/features/home src/features/search` → SOLO los 6 archivos listados (evidencia en history).
+- [x] `git diff -- package.json app.json app.config.js` → VACÍO.
 
 **allowed_files**
 
@@ -162,7 +162,7 @@
 
 ## TASK-06 — Arnés
 
-**Status:** TODO
+**Status:** TODO (desbloqueada; se ejecuta en nueva sesión)
 **assigned_role:** Trabajador + Revisor
 
 **Pasos**

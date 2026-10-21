@@ -5,12 +5,15 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { appPalette, fontFamily, palette } from "@/shared/theme/tokens";
 
+import { useHeaderTitle } from "./useHeaderTitle";
+
 type AppHeaderProps = {
   onMenuPress: () => void;
 };
 
 export function AppHeader({ onMenuPress }: AppHeaderProps) {
   const insets = useSafeAreaInsets();
+  const { title } = useHeaderTitle();
 
   return (
     <View style={{ backgroundColor: appPalette.crema, paddingTop: insets.top }}>
@@ -49,7 +52,7 @@ export function AppHeader({ onMenuPress }: AppHeaderProps) {
             color: palette.texto,
           }}
         >
-          INICIO
+          {title}
         </Text>
       </View>
     </View>

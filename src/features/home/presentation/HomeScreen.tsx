@@ -1,3 +1,4 @@
+import { useFocusEffect } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
@@ -8,6 +9,7 @@ import {
 } from "../domain/errors/RadarError";
 import type { GeoPosition } from "../domain/entities/GeoPosition";
 import type { MunicipioRadar } from "../domain/entities/MunicipioRadar";
+import { useHeaderTitle } from "@/features/app-shell/presentation/useHeaderTitle";
 import { appPalette, fontFamily as font, palette } from "@/shared/theme/tokens";
 import { DeviceMunicipioLabel } from "./DeviceMunicipioLabel";
 import { MunicipioCallout } from "./MunicipioCallout";
@@ -36,6 +38,14 @@ const messageStyle = {
 };
 
 export function HomeScreen() {
+  const { setTitle } = useHeaderTitle();
+
+  useFocusEffect(
+    useCallback(() => {
+      setTitle("INICIO");
+    }, [setTitle]),
+  );
+
   const {
     useCases,
     selectedChip,

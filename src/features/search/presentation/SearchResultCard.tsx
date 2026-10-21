@@ -1,8 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Image } from "expo-image";
-import { memo } from "react";
+import { memo, useCallback } from "react";
 import { Pressable, Text, View } from "react-native";
 
+import type { AppStackParamList } from "@/app/navigation/types";
 import { fontFamily as font, palette, searchPalette } from "@/shared/theme/tokens";
 import type { SearchCard } from "../domain/entities/SearchCard";
 import { formatProgreso, formatUbicacion, toTitleCase } from "./format";
@@ -11,14 +14,19 @@ type Props = {
   card: SearchCard;
 };
 
-const handleCardPress = (): void => {};
-
 function SearchResultCardBase({ card }: Props) {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<AppStackParamList>>();
+
+  const handlePress = useCallback(() => {
+    navigation.navigate("Detail", { tipo: card.tipo, id: card.id });
+  }, [navigation, card.tipo, card.id]);
+
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel="Ver detalle (disponible en la siguiente fase)"
-      onPress={handleCardPress}
+      accessibilityLabel="Ver detalle"
+      onPress={handlePress}
       style={({ pressed }) => ({
         flex: 1,
         backgroundColor: searchPalette.cardBg,

@@ -365,3 +365,276 @@ Informa al Humano qué validar: los 5 archivos nuevos + los 2 edits de wiring,
 DTOs/paths verbatim, DIP (infrastructure solo en compositionRoot.ts), tsc/eslint
 en verde, git diff de configs VACÍO y eslint.config.js intacto.
 El Humano da el cierre COMPLETED. TASK-04 NO se inicia en esa sesión.
+
+## Prompt para la nueva sesión del Worker (TASK-04):
+
+MODO: TRABAJADOR (Execution Agent). Ejecutas EXACTAMENTE UNA TASK: TASK-04 de la
+feature detail-obra-curso (Fase 4). Código quirúrgico en React Native. SOLO tocas
+los archivos listados en allowed_files. El Orquestador ya escribió la SDD; tú NO
+planificas, NO improvisas y NO lees imágenes.
+
+Proyecto: Cimientos del Renacimiento — Gabinete Móvil (Expo SDK 57 + RN + TS strict
++ NativeWind v5 + React Navigation + Clean Architecture por features).
+Raíz: /Users/macbookair/Documents/Projects/React-Native/CIMIENTOS-DEL-RENACIMIENTO-APP-MOBILE
+
+LEE EN ESTE ORDEN (obligatorio, nada más al inicio):
+1. AGENTS.md (roles, leyes absolutas, arnés).
+2. progress/current-task.json (estado vivo: active_task = TASK-04 TODO desbloqueada).
+3. progress/history.md — SOLO las últimas entradas 2026-10-20 (TASK-03 RUN,
+   TASK-03 APROBADA/COMPLETED y cierre). Están al final del archivo (usa offset).
+4. spec/features/detail-obra-curso/task.md — SOLO TASK-04 (incluye allowed_files).
+5. spec/features/detail-obra-curso/plan.md — SOLO §8 completo (§8.1–§8.11). Todo es
+   VERBATIM.
+6. Referencias de patrón (solo lectura): src/features/home/presentation/RadarMap.tsx
+   (pin guinda + MapView), src/features/search/presentation/SearchScreen.tsx
+   (useQuery/FlashList back arrow/estados), src/features/search/presentation/
+   SearchResultCard.tsx (expo-image), src/features/detail/presentation/
+   DetailProvider.tsx y useDetail.ts (ya creados), src/shared/theme/tokens.ts
+   (detailPalette) y src/app/navigation/types.ts (estado actual).
+
+CONTEXTO MÍNIMO (ya validado por el Orquestador, no re-verifiques):
+- Fase 4 = pantalla detalle Obra/Capacitación; spec.md APROBADA (2026-10-20).
+- TASK-01 COMPLETED: tokens --color-detail-* y detailPalette ya registrados. NO los toques.
+- TASK-02 COMPLETED: domain/application ya existen (ObraDetail/CursoDetail con
+  galleryUrls: string[] | null, DetailError, puertos, DetailUseCases,
+  createObraDetail, createCursoDetail). NO los toques.
+- TASK-03 COMPLETED: infrastructure (dto + 2 AxiosApi), DetailProvider/useDetail,
+  compositionRoot y App.tsx ya cableados. NO los toques.
+- TASK-04 = SOLO componentes presentation + la ruta en navigation/types.ts.
+  RootNavigator INTACTO (el wire real es TASK-05). CERO dependencias nuevas;
+  NO se instala nada. NO se hace prebuild ni compilación (eso es TASK-05/Humano).
+- La pantalla aún NO se verá en la app (sin ruta montada).
+- `coverImageUrl` NO se usa; el dominio expone `galleryUrls`.
+- `progress: 0` es válido (ternario estricto, nunca `&&`).
+
+TU TRABAJO EN ESTA SESIÓN — TASK-04 (verbatim plan §8):
+Crear EXACTAMENTE estos 10 archivos nuevos:
+1. src/features/detail/presentation/format.ts              (§8.1)
+2. src/features/detail/presentation/KpiCard.tsx            (§8.2)
+3. src/features/detail/presentation/DetailSectionHeading.tsx (§8.3)
+4. src/features/detail/presentation/DetailInfoRows.tsx     (§8.4)
+5. src/features/detail/presentation/DetailMapCard.tsx      (§8.5)
+6. src/features/detail/presentation/EvidenceCarousel.tsx   (§8.6)
+7. src/features/detail/presentation/EvidenceViewerModal.tsx (§8.7)
+8. src/features/detail/presentation/ObraDetailContent.tsx  (§8.8)
+9. src/features/detail/presentation/CursoDetailContent.tsx (§8.9)
+10. src/features/detail/presentation/DetailScreen.tsx      (§8.10)
+
+Editar SOLO:
+11. src/app/navigation/types.ts → añadir `Detail: { tipo: "OBRA" | "CURSO"; id: number }`
+    al AppStackParamList (§8.11 verbatim; literal inline, sin importar SearchCardTipo).
+    RootNavigator NO se toca.
+
+Puntos obligatorios:
+- Copia firmas, copy, props, colores (detailPalette), tamaños de fuente, radios,
+  iconos Ionicons y orden de secciones EXACTAMENTE del plan §8 (cero hex, cero
+  nombres nuevos, cero campos añadidos, cero any, cero TouchableOpacity).
+- format.ts: MONEY_FORMATTER y MESES hoisted; toTitleCase duplicado deliberado
+  (prohibido importar entre features). formatInversion("10495378.41") →
+  "$10,495,378.41"; formatFechaCurso("2026-07-04") → "4 de julio de 2026".
+- DetailMapCard.tsx: ÚNICO archivo de detail con react-native-maps; copia el
+  patrón de pin guinda de RadarMap.tsx (duplicado deliberado, prohibido importar
+  entre features); PROVIDER_GOOGLE; pitch/rotate off; altura 200.
+- EvidenceCarousel.tsx: ÚNICO con @shopify/flash-list; horizontal; PROHIBIDO
+  estimatedItemSize; expo-image con recyclingKey y cachePolicy="memory-disk";
+  caption "evidencia N"; vacío → "Sin evidencias fotográficas.".
+- EvidenceViewerModal.tsx: Modal nativo RN, expo-image, ternario estricto para
+  url (nunca `{url && ...}`), X con accessibilityLabel="Cerrar".
+- DetailScreen.tsx: dos useQuery con enabled por tipo, queryKey ["detail","obra",id]
+  / ["detail","curso",id], signal al use case; back arrow en el cuerpo con
+  accessibilityLabel="Volver"; SIN useHeaderTitle (eso es TASK-05); spinner guinda;
+  error "No se pudo cargar el detalle."; ScrollView + contenido por tipo;
+  EvidenceViewerModal al final. Cero any (narrow por rama del ternario).
+- ObraDetailContent: 3 KpiCard (Finanzas/Avance/Estatus compact), secciones
+  Ubicación/Evidencias/Descripción, filas Municipio/Localidad/Dependencia/Estatus.
+- CursoDetailContent: 2 KpiCard (Fecha/Municipio), mismas secciones, filas
+  Municipio/"Fecha del curso"; título verbatim (sin Title Case).
+- Estilos hoisted; memo donde el plan lo indique; claves estables.
+- DIP: presentation NO importa @/features/*/infrastructure ni @/shared/infrastructure.
+- NO crees navegación, providers, pantallas fuera de presentation, app-shell,
+  home, search (eso es TASK-05). NO toques domain/application/infrastructure,
+  eslint.config.js, nativos, package.json/lock, app.json, app.config.js,
+  global.css ni tokens.ts.
+
+ARNÉS OBLIGATORIO:
+- npx tsc --noEmit → exit 0.
+- npx eslint . → exit 0.
+- Greps (evidencia para history): react-native-maps solo en DetailMapCard.tsx;
+  expo-image solo en EvidenceCarousel.tsx/EvidenceViewerModal.tsx; @shopify/flash-list
+  solo en EvidenceCarousel.tsx; cero FlatList/estimatedItemSize/any/TouchableOpacity/
+  className en detail/presentation; cero search-accent/auth-* en detail/**;
+  cero infrastructure/@/shared/infrastructure/axios en detail/presentation.
+- Gate de deps: git diff -- package.json app.json app.config.js → VACÍO.
+  PROHIBIDO npx expo install / npm i / cualquier instalación.
+- Si tsc/eslint fallan por algo ajeno a esta TASK, NO arregles nada fuera de
+  allowed_files: repórtalo como hallazgo en history.md y detente.
+
+CIERRE:
+- Marca TASK-04 como - [x] / Status: READY_FOR_REVIEW en
+  spec/features/detail-obra-curso/task.md (NO COMPLETED — el cierre es del Humano;
+  deja TASK-05 en TODO).
+- Actualiza progress/current-task.json (active_task: TASK-04 READY_FOR_REVIEW,
+  harness_status.typecheck_passed: true y nota fase_4_task_04_run con archivos,
+  arnés, greps y gate de deps).
+- Añade la entrada de TASK-04 en progress/history.md (alcance, archivos, arnés,
+  greps, gate de deps, PARADA CONTROLADA).
+- NO inicies TASK-05.
+
+REGLAS ESTRICTAS:
+- allowed_files: src/features/detail/presentation/** (excepto DetailProvider.tsx y
+  useDetail.ts, ya creados), src/app/navigation/types.ts,
+  spec/features/detail-obra-curso/task.md, progress/current-task.json,
+  progress/history.md. NINGÚN otro archivo.
+- CERO domain/application, components fuera de detail/presentation,
+  src/app/navigation/RootNavigator.tsx, eslint.config.js, nativos,
+  package.json/lock, app.json, app.config.js, global.css, tokens.ts.
+- CERO npx expo start / prebuild / run:* (reservado al Humano). CERO commit.
+- CERO vibe coding: todo verbatim del plan §8.
+
+PARADA CONTROLADA (gate Humano): al terminar, TASK-04 queda READY_FOR_REVIEW.
+Informa al Humano qué validar: los 10 archivos nuevos + el edit de
+navigation/types.ts, firmas/copy/orden de secciones verbatim, RootNavigator
+intacto, la pantalla aún NO visible, tsc/eslint en verde, greps de UI/deps y
+git diff de configs VACÍO. El Humano da el cierre COMPLETED. TASK-05 NO se
+inicia en esa sesión.
+
+## Prompt para la nueva sesión del Worker (TASK-05):
+
+MODO: TRABAJADOR (Execution Agent). Ejecutas EXACTAMENTE UNA TASK: TASK-05 de la
+feature detail-obra-curso (Fase 4). Código quirúrgico en React Native. SOLO tocas
+los archivos listados en allowed_files. El Orquestador ya escribió la SDD; tú NO
+planificas, NO improvisas y NO lees imágenes.
+
+Proyecto: Cimientos del Renacimiento — Gabinete Móvil (Expo SDK 57 + RN + TS strict
++ NativeWind v5 + React Navigation + Clean Architecture por features).
+Raíz: /Users/macbookair/Documents/Projects/React-Native/CIMIENTOS-DEL-RENACIMIENTO-APP-MOBILE
+
+LEE EN ESTE ORDEN (obligatorio, nada más al inicio):
+1. AGENTS.md (roles, leyes absolutas, arnés).
+2. progress/current-task.json (estado vivo: active_task = TASK-05 TODO desbloqueada).
+3. progress/history.md — SOLO las últimas entradas 2026-10-20 (TASK-03 RUN/APROBADA,
+   TASK-04 RUN/APROBADA y cierre). Están al final del archivo (usa offset).
+4. spec/features/detail-obra-curso/task.md — SOLO TASK-05 (incluye allowed_files).
+5. spec/features/detail-obra-curso/plan.md — SOLO §9 completo (§9.1–§9.9). VERBATIM.
+6. Referencias de patrón (solo lectura): src/features/app-shell/presentation/AppShell.tsx,
+   AppHeader.tsx y AppDrawer.tsx; src/features/home/presentation/HomeScreen.tsx y
+   MunicipioCallout.tsx; src/features/search/presentation/SearchScreen.tsx y
+   SearchResultCard.tsx; src/features/detail/presentation/DetailScreen.tsx (creado en
+   TASK-04); src/app/navigation/RootNavigator.tsx y types.ts; src/features/detail/
+   presentation/DetailProvider.tsx y useDetail.ts; src/shared/theme/tokens.ts.
+
+CONTEXTO MÍNIMO (ya validado, no re-verifiques):
+- Fase 4 = detalle de Obra/Capacitación; spec.md APROBADA (2026-10-20).
+- TASK-01 COMPLETED: tokens --color-detail-* + detailPalette. NO los toques.
+- TASK-02 COMPLETED: domain/application de detail. NO los toques.
+- TASK-03 COMPLETED: infrastructure + compositionRoot + DetailProvider/useDetail
+  (DetailProvider YA envuelve RootNavigator en App.tsx). NO los toques.
+- TASK-04 COMPLETED: 10 archivos de presentation + `Detail: { tipo: "OBRA" | "CURSO";
+  id: number }` en navigation/types.ts. La pantalla existe pero AÚN NO está montada.
+- TASK-05 = wire real: header dinámico + navegación Search→Detail + montar la ruta.
+  CERO dependencias nuevas; NO se instala nada. NO prebuild ni compilación ni
+  `npx expo start` (eso es Humano). CERO commit (los cambios de TASK-04 siguen en el
+  working tree sin commitear: NO los revviertas ni los commitees).
+
+TU TRABAJO EN ESTA SESIÓN — TASK-05 (verbatim plan §9):
+Crear EXACTAMENTE 2 archivos nuevos:
+1. src/features/app-shell/presentation/HeaderTitleProvider.tsx   (§9.1)
+2. src/features/app-shell/presentation/useHeaderTitle.ts          (§9.2)
+
+Editar EXACTAMENTE 8 archivos:
+3. src/features/app-shell/presentation/AppHeader.tsx      (§9.3)
+4. src/features/app-shell/presentation/AppShell.tsx       (§9.4)
+5. src/features/home/presentation/HomeScreen.tsx          (§9.5: set "INICIO")
+6. src/features/home/presentation/MunicipioCallout.tsx    (§9.8)
+7. src/features/search/presentation/SearchScreen.tsx      (§9.5 "BÚSQUEDA" + §9.6)
+8. src/features/search/presentation/SearchResultCard.tsx  (§9.7)
+9. src/features/detail/presentation/DetailScreen.tsx      (§9.5: set "DETALLE")
+10. src/app/navigation/RootNavigator.tsx                  (§9.9)
+
+Puntos obligatorios:
+- HeaderTitleProvider: copia VERBATIM §9.1 (HEADER_TITLE_DEFAULT = "INICIO",
+  context, useCallback/useMemo, exports HeaderTitleContext y HeaderTitleContextValue).
+- useHeaderTitle: VERBATIM §9.2 (useContext + throw "useHeaderTitle debe usarse dentro
+  de HeaderTitleProvider").
+- AppHeader: añade `const { title } = useHeaderTitle();` y reemplaza el literal INICIO
+  del <Text> por `{title}`. CERO otro cambio (mismo estilo, hamburguesa, pointerEvents).
+- AppShell: envuelve con <HeaderTitleProvider> el contenido (AppHeader + AppBrandBar +
+  children + AppDrawer) dentro del View raíz. CERO otro cambio.
+- Setters §9.5 en HomeScreen/SearchScreen/DetailScreen con useFocusEffect de
+  @react-navigation/native + useCallback([setTitle]); literal local por archivo:
+  "INICIO" / "BÚSQUEDA" / "DETALLE" (cero imports entre features; HEADER_TITLE_DEFAULT
+  solo lo usa el provider).
+- SearchScreen: añade el setter y ELIMINA el <Text> con BÚSQUEDA de la fila 1
+  (conserva el Pressable del back arrow y la fila con su padding). Cero otro cambio.
+- SearchResultCard: elimina `const handleCardPress = (): void => {};`; dentro de
+  SearchResultCardBase usa `useNavigation<NativeStackNavigationProp<AppStackParamList>>()`
+  y `const handlePress = useCallback(() => { navigation.navigate("Detail", { tipo:
+  card.tipo, id: card.id }); }, [navigation, card.tipo, card.id]);` → `onPress={handlePress}`.
+  accessibilityLabel pasa a "Ver detalle". Cero otro cambio visual (mismo memo/estilos).
+- MunicipioCallout: añade a nivel de módulo `const SHOW_SEE_MORE = false;` con el
+  comentario «Fase 4: oculto por decisión del Humano 2026-10-20; su flujo = Fase 5
+  Detalle Municipal»; envuelve el <View style={footerStyle}> del botón «Ver más» en
+  ternario estricto `{SHOW_SEE_MORE ? (<View style={footerStyle}>…</View>) : null}`.
+  Código del botón INTACTO (no se elimina); footerStyle/seeMoreStyle/seeMoreTextStyle
+  permanecen referenciados dentro del branch.
+- DetailScreen: SOLO añade el setter "DETALLE" al foco. Cero otro cambio.
+- RootNavigator: import { DetailScreen } y <AppStack.Screen name="Detail"
+  component={DetailScreen} /> tras Search. AppShell/NavigationContainer key={status}/
+  AuthStackNavigator INTACTOS.
+- Cero any, cero TouchableOpacity, cero FlatList, cero estimatedItemSize, cero
+  className, cero imports entre features, cero barrels. Estilos/orden de imports
+  siguiendo el estilo existente.
+
+allowed_files: src/features/app-shell/presentation/HeaderTitleProvider.tsx,
+src/features/app-shell/presentation/useHeaderTitle.ts,
+src/features/app-shell/presentation/AppHeader.tsx,
+src/features/app-shell/presentation/AppShell.tsx,
+src/features/home/presentation/HomeScreen.tsx,
+src/features/home/presentation/MunicipioCallout.tsx,
+src/features/search/presentation/SearchScreen.tsx,
+src/features/search/presentation/SearchResultCard.tsx,
+src/features/detail/presentation/DetailScreen.tsx,
+src/app/navigation/RootNavigator.tsx,
+spec/features/detail-obra-curso/task.md, progress/current-task.json, progress/history.md.
+NINGÚN otro archivo.
+
+CERO: domain/application/infrastructure, DetailProvider/useDetail, App.tsx,
+compositionRoot.ts, tokens.ts, global.css, eslint.config.js, app.json,
+app.config.js, package.json/lock, nativos. CERO npx expo install / npm i /
+npx expo start / prebuild / run:* / commit.
+
+ARNÉS OBLIGATORIO:
+- npx tsc --noEmit → exit 0.
+- npx eslint . → exit 0 (cero warnings).
+- git diff --stat -- src/features/app-shell src/features/home src/features/search →
+  SOLO los archivos de TASK-05 listados (HeaderTitleProvider, useHeaderTitle,
+  AppHeader, AppShell, HomeScreen, MunicipioCallout, SearchScreen, SearchResultCard);
+  ningún otro cambio en features congeladas.
+- git diff --stat -- src/app/navigation → SOLO RootNavigator.tsx (y types.ts de TASK-04
+  ya existente, sin tocarlo).
+- Gate de deps: git diff -- package.json app.json app.config.js → VACÍO.
+- Greps: cero any/TouchableOpacity/FlatList/estimatedItemSize/expo-router/className en
+  los archivos editados; cero imports entre features; `DetailScreen` importado solo en
+  RootNavigator.tsx.
+- Si tsc/eslint fallan por algo ajeno a esta TASK, NO arregles nada fuera de
+  allowed_files: repórtalo como hallazgo en history.md y detente.
+
+CIERRE:
+- Marca TASK-05 como - [x] / Status: READY_FOR_REVIEW en
+  spec/features/detail-obra-curso/task.md (NO COMPLETED — el cierre y el checklist
+  visual CA-01…09 en Android + iOS son del Humano; deja TASK-06 en TODO).
+- Actualiza progress/current-task.json (active_task: TASK-05 READY_FOR_REVIEW,
+  harness_status.typecheck_passed: true y nota fase_4_task_05_run con archivos, arnés,
+  diff acotado, greps y gate de deps).
+- Añade la entrada de TASK-05 en progress/history.md (alcance, archivos, arnés, diff de
+  features congeladas, gate de deps, PARADA CONTROLADA).
+- NO inicies TASK-06.
+
+PARADA CONTROLADA (gate Humano): al terminar, TASK-05 queda READY_FOR_REVIEW. Informa
+al Humano qué validar: los 2 archivos nuevos + 8 edits, HeaderTitleProvider verbatim,
+título dinámico INICIO/BÚSQUEDA/DETALLE, navegación Search→Detail por tipo, «Ver más»
+oculto, RootNavigator con Detail montado, features congeladas sin cambios extra,
+tsc/eslint en verde y git diff de configs VACÍO. El Humano ejecuta el checklist visual
+CA-01…09 en Android + iOS (con el binario/dev client existente basta `npx expo start`
++ reload; NO se requiere prebuild: cerá deps ni config nativa) y da el cierre COMPLETED.
+TASK-06 NO se inicia en esa sesión.

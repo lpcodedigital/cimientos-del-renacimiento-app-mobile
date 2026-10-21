@@ -1,12 +1,13 @@
 import { Ionicons } from "@expo/vector-icons";
 import {
+  useFocusEffect,
   useNavigation,
   useRoute,
   type RouteProp,
 } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -16,6 +17,7 @@ import {
 } from "react-native";
 
 import type { AppStackParamList } from "@/app/navigation/types";
+import { useHeaderTitle } from "@/features/app-shell/presentation/useHeaderTitle";
 import {
   detailPalette,
   fontFamily as font,
@@ -59,6 +61,14 @@ const scrollContentStyle = {
 } as const;
 
 export function DetailScreen() {
+  const { setTitle } = useHeaderTitle();
+
+  useFocusEffect(
+    useCallback(() => {
+      setTitle("DETALLE");
+    }, [setTitle]),
+  );
+
   const { useCases } = useDetail();
   const navigation =
     useNavigation<NativeStackNavigationProp<AppStackParamList>>();

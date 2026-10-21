@@ -13,6 +13,7 @@ import { AppShell } from "@/features/app-shell/presentation/AppShell";
 import { LoginScreen } from "@/features/auth/presentation/screens/LoginScreen";
 import { BiometricOptInScreen } from "@/features/auth/presentation/screens/BiometricOptInScreen";
 import { BiometricUnlockScreen } from "@/features/auth/presentation/screens/BiometricUnlockScreen";
+import { DetailScreen } from "@/features/detail/presentation/DetailScreen";
 import { HomeScreen } from "@/features/home/presentation/HomeScreen";
 import { SearchScreen } from "@/features/search/presentation/SearchScreen";
 
@@ -68,6 +69,7 @@ function AppStackNavigator() {
       <AppStack.Navigator screenOptions={{ headerShown: false }}>
         <AppStack.Screen name="Home" component={HomeScreen} />
         <AppStack.Screen name="Search" component={SearchScreen} />
+        <AppStack.Screen name="Detail" component={DetailScreen} />
       </AppStack.Navigator>
     </AppShell>
   );

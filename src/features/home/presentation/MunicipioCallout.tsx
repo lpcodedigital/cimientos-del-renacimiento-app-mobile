@@ -110,6 +110,10 @@ const tailStyle: ViewStyle = {
   marginBottom: -8,
 };
 
+const SHOW_SEE_MORE = false;
+
+// Fase 4: oculto por decisión del Humano 2026-10-20; su flujo = Fase 5 Detalle Municipal
+
 export function MunicipioCallout({
   municipio,
   onClose,
@@ -152,19 +156,21 @@ export function MunicipioCallout({
           </View>
         </View>
 
-        <View style={footerStyle}>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Ver más (disponible en la siguiente fase)"
-            onPress={() => undefined}
-            style={({ pressed }) => [
-              seeMoreStyle,
-              pressed ? { opacity: 0.8 } : null,
-            ]}
-          >
-            <Text style={seeMoreTextStyle}>Ver más</Text>
-          </Pressable>
-        </View>
+        {SHOW_SEE_MORE ? (
+          <View style={footerStyle}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Ver más (disponible en la siguiente fase)"
+              onPress={() => undefined}
+              style={({ pressed }) => [
+                seeMoreStyle,
+                pressed ? { opacity: 0.8 } : null,
+              ]}
+            >
+              <Text style={seeMoreTextStyle}>Ver más</Text>
+            </Pressable>
+          </View>
+        ) : null}
 
         <View style={tailStyle} />
       </View>
