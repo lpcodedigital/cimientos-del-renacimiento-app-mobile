@@ -110,6 +110,12 @@ Los tokens de Fase 1 (`guinda #6B142E`, `texto #1A1A1A`, `superficie #FFFFFF`), 
 
 *Regla Absoluta:* valores de KPI y de las filas clave-valor en `texto #1A1A1A` (Lato Bold). Pin del mapa de «Ubicación» en guinda `#6B142E` (token Fase 1; el pin verde del mockup es artefacto del generador, mismo veredicto que §2.4/§2.5). Tipografía: **Lato / Lato Bold** exclusivamente (el serif de títulos y headings del mockup es artefacto; precedente 1.5a). Paleta `auth-*` prohibida en el detalle. `search-accent` prohibido (§2.5): el acento del detalle es `detail-accent`.
 
+## 2.7 Header con navegación de regreso y herramientas de mapa (Fase 4.5 — 2026-10-28)
+**Cero tokens nuevos.** Decisiones del Humano (2026-10-28) asentadas en `spec/features/nav-back-mapa-tools/spec.md`:
+- **Header del chrome con modo de acción izquierda:** `leftMode: "menu" | "back"` (default `"menu"`) en `HeaderTitleProvider` (app-shell). En Search/Detail el slot izquierdo del header muestra **back arrow** (`arrow-back`, `texto #1A1A1A`, mismo tamaño/hitSlop/posición que la hamburguesa) y el drawer queda **inalcanzable** (la hamburguesa es su única puerta). Home conserva `"menu"`.
+- **Mapa de Detail:** botón flotante de recentrado (círculo blanco `superficie`, icono `locate` guinda `#6B142E`) y fila «Abrir en Maps» (icono `navigate-outline` + texto Lato Bold guinda) integrados en `DetailMapCard`.
+- **Apertura de apps de mapas externas:** `Linking` de React Native core (no es dependencia nueva). iOS: `Alert` selector con Apple Maps (siempre) + Google Maps/Waze solo si `canOpenURL` — requiere `ios.infoPlist.LSApplicationQueriesSchemes = ["comgooglemaps", "waze"]` en `app.json` (edición autorizada 2026-10-28; no es archivo nativo). Android: `geo:` URI que dispara el chooser nativo del sistema (cero configuración).
+
 ## 3. Biometría & Hardware APIs (Exclusivo Expo)
 > *Nota para Agentes: Todo puente de hardware se resuelve mediante APIs de Expo. Cero código nativo escrito a mano.*
 - **Autenticación Biométrica:** `expo-local-authentication` (Implementada como fallback o acceso rápido post-login tradicional).
@@ -137,3 +143,8 @@ Los tokens de Fase 1 (`guinda #6B142E`, `texto #1A1A1A`, `superficie #FFFFFF`), 
   - **DIP:** `presentation` y `application` dependen de abstracciones del `domain`, inyectadas en el composition root.
   - **ISP/OCP/LSP:** interfaces pequeñas por capacidad (`SessionRepository`, `BiometricGateway`, `AuthApi`); extensión por nuevas implementaciones, no por modificación de casos de uso.
 - **Prohibido:** dependencias circulares entre features, imports de `infrastructure` desde `domain`/`application`, estado de servidor duplicado fuera de TanStack Query, y el tipo `any` (regla ya vigente).
+
+## 6. Tooling de Dev Build (Fase 4.5 — autorización 2026-10-28)
+- **`expo-dev-client`:** autorizado por el Humano (2026-10-28), instalación EXCLUSIVA vía `npx expo install expo-dev-client`. Motivo documentado: el debug build sin dev-client depende de Metro alcanzable en el cold start iOS (`RCTBundleURLProvider` devuelve `nil` → «No script URL provided» en el primer arranque; se curaba recargando). El dev-client resuelve la URL del packager de forma robusta. El rebuild nativo (`npx expo prebuild` + `npx expo run:ios` / `run:android`) es EXCLUSIVO del Humano.
+- **Procedimiento iOS (permanente):** en development builds, el primer arranque tras instalar se hace con `npx expo start` corriendo (o vía el launcher del dev-client). Este procedimiento no sustituye al fix: es práctica de arranque documentada.
+- *Regla Absoluta:* `expo-dev-client` es tooling de desarrollo; no añade UI de producto ni cambia el runtime de release.
