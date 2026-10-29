@@ -1,6 +1,6 @@
 # TASKS — nav-back-mapa-tools (Fase 4.5)
 
-> **Estado global:** spec.md **APROBADA por el Humano (2026-10-28)** → TASK-01 **COMPLETED (2026-10-28)** (rebuild nativo + CA-08 validados por el Humano) → TASK-02 **DESBLOQUEADA**, pendiente de inicio en nueva sesión del Worker con autorización del Humano. El Trabajador SOLO puede tocar los `allowed_files` de la TASK activa. El Revisor ejecuta el arnés al cierre de cada TASK (tsc + eslint) y la auditoría completa en TASK-04. El rebuild nativo y la validación visual/funcional en físico son EXCLUSIVOS del Humano.
+> **Estado global:** spec.md **APROBADA por el Humano (2026-10-28)** → TASK-01 **COMPLETED (2026-10-28)** (rebuild nativo + CA-08 validados por el Humano) → TASK-02 **COMPLETED (2026-10-28)** (header back implementado; arnés verde; CA-01…CA-05 validados en Android + iOS; limitación de timing Android aceptada por el Humano). TASK-03 **BLOQUEADA** hasta autorización del Humano. El Trabajador SOLO puede tocar los `allowed_files` de la TASK activa. El Revisor ejecuta el arnés al cierre de cada TASK (tsc + eslint) y la auditoría completa en TASK-04. El rebuild nativo y la validación visual/funcional en físico son EXCLUSIVOS del Humano.
 
 ## TASK-01 — Config iOS: expo-dev-client + LSApplicationQueriesSchemes
 
@@ -18,20 +18,20 @@
 
 - **Objetivo:** extender `HeaderTitleProvider` con `leftMode "menu" | "back"`, renderizar el back arrow en `AppHeader` cuando `leftMode === "back"`, y actualizar los setters de Home/Search/Detail eliminando las flechas del cuerpo. Verbatim: plan §4.
 - **Secuencia:**
-  1. [ ] `HeaderTitleProvider.tsx`: añadir `HeaderLeftMode`, `leftMode`, `setLeftMode` (plan §4.1 verbatim).
-  2. [ ] `AppHeader.tsx`: ternario back/hamburguesa + `useNavigation` tipado (plan §4.3 verbatim).
-  3. [ ] `HomeScreen.tsx`: `useFocusEffect` setea `setTitle("INICIO")` + `setLeftMode("menu")` (plan §4.4).
-  4. [ ] `SearchScreen.tsx`: setea `setTitle("BÚSQUEDA")` + `setLeftMode("back")`; elimina la fila de back arrow del cuerpo y los imports huérfanos (plan §4.4).
-  5. [ ] `DetailScreen.tsx`: setea `setTitle("DETALLE")` + `setLeftMode("back")`; elimina la fila de back arrow del cuerpo y los imports huérfanos (plan §4.4).
-  6. [ ] Arnés: `npx tsc --noEmit` exit 0; `npx eslint .` exit 0 sin warnings (cero `no-unused-vars` por imports huérfanos).
-  7. [ ] Verificación: `git diff --stat -- src/features` = SOLO los 5 archivos de código de esta task; greps: cero `arrow-back` en cuerpos de Search/Detail; `AppStackParamList` importado solo en `AppHeader.tsx` (app-shell) y preexistentes.
+  1. [x] `HeaderTitleProvider.tsx`: añadir `HeaderLeftMode`, `leftMode`, `setLeftMode` (plan §4.1 verbatim).
+  2. [x] `AppHeader.tsx`: ternario back/hamburguesa + `useNavigation` tipado (plan §4.3 verbatim).
+  3. [x] `HomeScreen.tsx`: `useFocusEffect` setea `setTitle("INICIO")` + `setLeftMode("menu")` (plan §4.4).
+  4. [x] `SearchScreen.tsx`: setea `setTitle("BÚSQUEDA")` + `setLeftMode("back")`; elimina la fila de back arrow del cuerpo y los imports huérfanos (plan §4.4).
+  5. [x] `DetailScreen.tsx`: setea `setTitle("DETALLE")` + `setLeftMode("back")`; elimina la fila de back arrow del cuerpo y los imports huérfanos (plan §4.4).
+  6. [x] Arnés: `npx tsc --noEmit` exit 0; `npx eslint .` exit 0 sin warnings (cero `no-unused-vars` por imports huérfanos).
+  7. [x] Verificación: `git diff --stat -- src/features` = SOLO los 5 archivos de código de esta task; greps: cero `arrow-back` en cuerpos de Search/Detail; `AppStackParamList` importado solo en `AppHeader.tsx` (app-shell) y preexistentes.
 - **allowed_files_to_edit:**
   - `src/features/app-shell/presentation/HeaderTitleProvider.tsx`
   - `src/features/app-shell/presentation/AppHeader.tsx`
   - `src/features/home/presentation/HomeScreen.tsx`
   - `src/features/search/presentation/SearchScreen.tsx`
   - `src/features/detail/presentation/DetailScreen.tsx`
-- **Status:** TODO — DESBLOQUEADA (gate cumplido: TASK-01 COMPLETED 2026-10-28). Inicio en nueva sesión del Worker con autorización del Humano; NO iniciada aún.
+- **Status:** COMPLETED (2026-10-28) — 7/7 pasos ejecutados; tsc/eslint exit 0 sin warnings; diff acotado a los 5 archivos. Humano validó CA-01…CA-05 en Android + iOS. **Limitación conocida aceptada por el Humano (2026-10-28):** en Android el header puede mostrar por unos ms el estado anterior (hamburguesa + «INICIO») al entrar a Search/Detail y la flecha de volver se percibe lenta / requiere varios toques (causa: setters por `useFocusEffect` post-foco + transición nativa Android; iOS fluido). No se corrige en esta fase; queda documentada. TASK-03 NO inicia sin autorización del Humano.
 
 ## TASK-03 — Herramientas del mapa de Detail (recentrar + Abrir en Maps)
 

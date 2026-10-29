@@ -38,12 +38,13 @@ const messageStyle = {
 };
 
 export function HomeScreen() {
-  const { setTitle } = useHeaderTitle();
+  const { setTitle, setLeftMode } = useHeaderTitle();
 
   useFocusEffect(
     useCallback(() => {
       setTitle("INICIO");
-    }, [setTitle]),
+      setLeftMode("menu");
+    }, [setTitle, setLeftMode]),
   );
 
   const {

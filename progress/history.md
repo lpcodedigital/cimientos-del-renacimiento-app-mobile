@@ -1332,3 +1332,32 @@
 - **Cierre:** `spec/features/nav-back-mapa-tools/task.md` → TASK-01 `COMPLETED (2026-10-28)` (5/5 checkboxes); encabezado global actualizado; TASK-02 `TODO — DESBLOQUEADA` (gate TASK-01 COMPLETED cumplido), **NO iniciada**.
 - **Memoria:** `progress/current-task.json` → `active_task.status: COMPLETED` + `harness_status.fase_4_5_task_01_humano_validation`; `current_roadmap_phase` refleja el cierre de TASK-01 y que solo TASK-02…04 quedan en Fase 4.5.
 - **Siguiente:** TASK-02 (header con modo back: `HeaderTitleProvider`, `AppHeader`, setters de Home/Search/Detail) se iniciará en una sesión nueva del Worker con autorización del Humano. Sin commit (lo decide el Humano).
+
+### 2026-10-28 — TASK-02 (Fase 4.5) ejecutada por el Worker → READY_FOR_REVIEW (gate Humano)
+
+- **Qué se editó (5 archivos, verbatim de plan §4):**
+  - `app-shell/presentation/HeaderTitleProvider.tsx`: nuevo `HeaderLeftMode = "menu" | "back"`, estado `leftMode` (default `"menu"`), `setLeftMode` con `useCallback`, `useMemo` extendido; exports `HeaderTitleContext`/`HeaderTitleContextValue` intactos (sin romper imports).
+  - `app-shell/presentation/AppHeader.tsx`: `useNavigation<NativeStackNavigationProp<AppStackParamList>>()` (patrón `AppDrawer`) + ternario estricto `leftMode === "back"`: `Pressable` con `Ionicons arrow-back` (`accessibilityLabel="Volver"`, `navigation.goBack()`) en el MISMO slot 44×44/hitSlop 12/icono 28; hamburguesa intacta (`"Abrir menú"`, `onMenuPress`); título absoluto centrado intacto.
+  - `home/presentation/HomeScreen.tsx`: `useFocusEffect` ahora setea `setTitle("INICIO")` + `setLeftMode("menu")` (reset explícito).
+  - `search/presentation/SearchScreen.tsx`: setea `setTitle("BÚSQUEDA")` + `setLeftMode("back")`; eliminada la fila `View flexDirection: "row"` con `Pressable` «Volver» + `Ionicons arrow-back`; imports huérfanos eliminados (`Ionicons`, `useNavigation`, `NativeStackNavigationProp`, `AppStackParamList`, `Pressable`); `paddingTop: 12` conservado en el contenedor raíz (plan §4.4 «padding superior conservado»); FlashList/useInfiniteQuery/heading/contador/spinners intactos.
+  - `detail/presentation/DetailScreen.tsx`: setea `setTitle("DETALLE")` + `setLeftMode("back")`; eliminados `backRowStyle` y su `Pressable`/`Ionicons arrow-back`; imports huérfanos eliminados (`Ionicons`, `useNavigation`, `NativeStackNavigationProp`, `Pressable`); `route` + los dos `useQuery` intactos (`AppStackParamList` preexistente se conserva para `RouteProp`).
+- **Arnés:** `npx tsc --noEmit` → exit 0; `npx eslint .` → exit 0 (0 errores, 0 warnings).
+- **Gates (verbatim):**
+  - `git diff --stat -- src/features` → SOLO los 5 archivos de la task (67 insertions, 80 deletions).
+  - `git diff -- package.json app.json app.config.js eslint.config.js metro.config.js babel.config.js tsconfig.json` → VACÍO.
+  - `git status --porcelain` → SOLO los 5 archivos `M` de esta task.
+  - Greps: cero `arrow-back` en `src/features/search` + `src/features/detail` (solo `AppHeader.tsx:48` en app-shell); `AppStackParamList` importado en `AppHeader.tsx` + preexistentes (`RadarSearchBar`, `SearchResultCard`, `AppDrawer`, `RootNavigator`, `DetailScreen` para `route`); `setLeftMode` presente en los 3 screens.
+  - Bans `any`/`TouchableOpacity`/`FlatList`/`expo-router`/`estimatedItemSize`/`className` en los 5 archivos → NONE.
+- **Hallazgo:** `useHeaderTitle.ts` sin diff; mensaje «useHeaderTitle debe usarse dentro de HeaderTitleProvider» intacto. Cero dependencias, cero configs, cero archivos nativos, cero `npx expo start`/`prebuild`/`run:*`, cero commit.
+- **PARADA CONTROLADA / HANDOFF AL HUMANO:** la validación física de CA-01…CA-05 (header back en Search/Detail, drawer inalcanzable en esas pantallas, Home intacto con hamburguesa + `INICIO`, títulos `INICIO`/`BÚSQUEDA`/`DETALLE`, cuerpo limpio sin fila de flecha) es EXCLUSIVA del Humano. **TASK-03 NO inicia sin su autorización.**
+
+### 2026-10-28 — Validación del Humano de TASK-02 + hallazgo de latencia en Android
+
+- **Validación funcional (Android + iOS):** la flecha de volver se aplica correctamente en Search y Detail; los títulos `INICIO`/`BÚSQUEDA`/`DETALLE` aparecen como se definió; CA-01…CA-05 funcionales. iOS se percibe fluido y natural.
+- **Hallazgo Android (Tester Visual):**
+  1. Al entrar a Search (y Detail) se alcanza a ver durante unos milisegundos el header anterior —hamburguesa + «INICIO»— antes de cambiar a flecha + `BÚSQUEDA`/`DETALLE`.
+  2. La flecha de volver se percibe lenta y requiere varios toques; el resto de iconos/botones responde rápido.
+- **Diagnóstico (read-only):** `AppHeader` vive en `AppShell` (fuera del navigator) y el estado `title`/`leftMode` se actualiza desde el `useFocusEffect` de cada pantalla, que se ejecuta cuando la pantalla recibe el foco (tras el dispatch de `navigate`/`goBack`), no en el dispatch. En Android la transición nativa hace visible ese frame obsoleto; en iOS el timing lo tapa. El «varios toques» encaja con tocar durante una transición en curso (el `goBack` puede ignorarse) o antes de que el slot cambie de hamburguesa a flecha.
+- **Fix recomendado (requiere enmienda de spec §4.1/plan §4.4):** derivar `title`/`leftMode` de la ruta activa (`useNavigationState` o equivalente en `AppShell`/`AppHeader`) para que el header cambie en el mismo dispatch de navegación, y retirar los setters por `useFocusEffect` de Home/Search/Detail (mismos 5 archivos de TASK-02). Alternativa menor (setear antes de cada `navigate`) no resuelve el lag al volver.
+- **Decisión del Humano (2026-10-28):** **ACEPTAR como limitación conocida**. No se enmienda `spec §4.1`/`plan §4.4`, no se deriva el header de la ruta y no se modifica código en esta fase. El comportamiento queda documentado en `task.md`, `progress/current-task.json` y este historial.
+- **Cierre:** TASK-02 → `COMPLETED (2026-10-28)` (CA-01…CA-05 validados en Android + iOS; limitación de timing Android aceptada). **TASK-03 NO iniciada**; requiere autorización del Humano.

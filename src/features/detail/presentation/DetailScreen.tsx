@@ -1,20 +1,11 @@
-import { Ionicons } from "@expo/vector-icons";
 import {
   useFocusEffect,
-  useNavigation,
   useRoute,
   type RouteProp,
 } from "@react-navigation/native";
-import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
-import {
-  ActivityIndicator,
-  Pressable,
-  ScrollView,
-  Text,
-  View,
-} from "react-native";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 import type { AppStackParamList } from "@/app/navigation/types";
 import { useHeaderTitle } from "@/features/app-shell/presentation/useHeaderTitle";
@@ -37,12 +28,6 @@ const rootStyle = {
   paddingHorizontal: 16,
 } as const;
 
-const backRowStyle = {
-  flexDirection: "row",
-  alignItems: "center",
-  paddingVertical: 12,
-} as const;
-
 const centeredStyle = {
   flex: 1,
   alignItems: "center",
@@ -61,17 +46,16 @@ const scrollContentStyle = {
 } as const;
 
 export function DetailScreen() {
-  const { setTitle } = useHeaderTitle();
+  const { setTitle, setLeftMode } = useHeaderTitle();
 
   useFocusEffect(
     useCallback(() => {
       setTitle("DETALLE");
-    }, [setTitle]),
+      setLeftMode("back");
+    }, [setTitle, setLeftMode]),
   );
 
   const { useCases } = useDetail();
-  const navigation =
-    useNavigation<NativeStackNavigationProp<AppStackParamList>>();
   const route = useRoute<RouteProp<AppStackParamList, "Detail">>();
   const { tipo, id } = route.params;
 
@@ -94,17 +78,6 @@ export function DetailScreen() {
 
   return (
     <View style={rootStyle}>
-      <View style={backRowStyle}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Volver"
-          hitSlop={12}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="arrow-back" size={24} color={palette.texto} />
-        </Pressable>
-      </View>
-
       {isPending ? (
         <View style={centeredStyle}>
           <ActivityIndicator size="large" color={palette.guinda} />

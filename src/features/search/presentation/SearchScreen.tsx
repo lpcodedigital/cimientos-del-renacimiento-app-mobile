@@ -1,6 +1,4 @@
-import { Ionicons } from "@expo/vector-icons";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useFocusEffect } from "@react-navigation/native";
 import { FlashList, type ListRenderItem } from "@shopify/flash-list";
 import {
   keepPreviousData,
@@ -8,9 +6,8 @@ import {
   type InfiniteData,
 } from "@tanstack/react-query";
 import { useCallback } from "react";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 
-import type { AppStackParamList } from "@/app/navigation/types";
 import { useHeaderTitle } from "@/features/app-shell/presentation/useHeaderTitle";
 import { fontFamily as font, palette, searchPalette } from "@/shared/theme/tokens";
 import type { SearchCard } from "../domain/entities/SearchCard";
@@ -36,18 +33,16 @@ const renderCard: ListRenderItem<SearchCard> = ({ item }) => (
 const keyExtractor = (item: SearchCard): string => `${item.tipo}-${item.id}`;
 
 export function SearchScreen() {
-  const { setTitle } = useHeaderTitle();
+  const { setTitle, setLeftMode } = useHeaderTitle();
 
   useFocusEffect(
     useCallback(() => {
       setTitle("BÚSQUEDA");
-    }, [setTitle]),
+      setLeftMode("back");
+    }, [setTitle, setLeftMode]),
   );
 
   const { useCases, debouncedQuery, isActive } = useSearch();
-
-  const navigation =
-    useNavigation<NativeStackNavigationProp<AppStackParamList>>();
 
   const result = useInfiniteQuery<
     SearchPage,
@@ -81,27 +76,9 @@ export function SearchScreen() {
         flex: 1,
         backgroundColor: searchPalette.screenBg,
         paddingHorizontal: 16,
+        paddingTop: 12,
       }}
     >
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 12,
-          paddingTop: 12,
-          paddingBottom: 12,
-        }}
-      >
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Volver"
-          hitSlop={12}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="arrow-back" size={24} color={palette.texto} />
-        </Pressable>
-      </View>
-
       <SearchInputBar />
 
       <View style={{ flex: 1, marginHorizontal: -16 }}>
