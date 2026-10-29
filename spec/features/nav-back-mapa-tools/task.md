@@ -1,18 +1,18 @@
 # TASKS — nav-back-mapa-tools (Fase 4.5)
 
-> **Estado global:** spec.md **APROBADA por el Humano (2026-10-28)** → TASK-01 **DESBLOQUEADA / IN_PROGRESS**. El Trabajador SOLO puede tocar los `allowed_files` de la TASK activa. El Revisor ejecuta el arnés al cierre de cada TASK (tsc + eslint) y la auditoría completa en TASK-04. El rebuild nativo y la validación visual/funcional en físico son EXCLUSIVOS del Humano.
+> **Estado global:** spec.md **APROBADA por el Humano (2026-10-28)** → TASK-01 **COMPLETED (2026-10-28)** (rebuild nativo + CA-08 validados por el Humano) → TASK-02 **DESBLOQUEADA**, pendiente de inicio en nueva sesión del Worker con autorización del Humano. El Trabajador SOLO puede tocar los `allowed_files` de la TASK activa. El Revisor ejecuta el arnés al cierre de cada TASK (tsc + eslint) y la auditoría completa en TASK-04. El rebuild nativo y la validación visual/funcional en físico son EXCLUSIVOS del Humano.
 
 ## TASK-01 — Config iOS: expo-dev-client + LSApplicationQueriesSchemes
 
 - **Objetivo:** corregir el «No script URL provided» del cold start iOS instalando `expo-dev-client` y habilitar la detección de apps de mapas (TASK-03) vía `LSApplicationQueriesSchemes`. Cero código de producto.
 - **Secuencia:**
-  1. [ ] `npx expo install expo-dev-client` (NUNCA `npm i`).
-  2. [ ] Editar `app.json`: en `ios.infoPlist` añadir `"LSApplicationQueriesSchemes": ["comgooglemaps", "waze"]` (junto a `NSFaceIDUsageDescription`, intacta). Plan §3.
-  3. [ ] `npx tsc --noEmit` → exit 0.
-  4. [ ] Verificar gates: `git diff -- app.config.js` VACÍO; `git diff -- package.json` = SOLO `expo-dev-client` (+ lockfile).
-  5. [ ] **PARADA Y HANDOFF AL HUMANO:** el Humano ejecuta `npx expo prebuild` + `npx expo run:ios` + `npx expo run:android` y valida CA-08 (instalación limpia → primer arranque en frío sin pantalla roja; Android sin regresión).
+  1. [x] `npx expo install expo-dev-client` (NUNCA `npm i`).
+  2. [x] Editar `app.json`: en `ios.infoPlist` añadir `"LSApplicationQueriesSchemes": ["comgooglemaps", "waze"]` (junto a `NSFaceIDUsageDescription`, intacta). Plan §3.
+  3. [x] `npx tsc --noEmit` → exit 0.
+  4. [x] Verificar gates: `git diff -- app.config.js` VACÍO; `git diff -- package.json` = SOLO `expo-dev-client` (+ lockfile).
+  5. [x] **PARADA Y HANDOFF AL HUMANO:** el Humano ejecuta `npx expo prebuild` + `npx expo run:ios` + `npx expo run:android` y valida CA-08 (instalación limpia → primer arranque en frío sin pantalla roja; Android sin regresión).
 - **allowed_files_to_edit:** `package.json`, `app.json` (+ lockfile vía expo install).
-- **Status:** IN_PROGRESS — DESBLOQUEADA (spec aprobada por el Humano 2026-10-28).
+- **Status:** COMPLETED (2026-10-28) — rebuild nativo iOS/Android OK y CA-08 validado por el Humano (cold start iOS sin pantalla roja; Android sin regresión).
 
 ## TASK-02 — Header con modo back (app-shell + 3 screens)
 
@@ -31,7 +31,7 @@
   - `src/features/home/presentation/HomeScreen.tsx`
   - `src/features/search/presentation/SearchScreen.tsx`
   - `src/features/detail/presentation/DetailScreen.tsx`
-- **Status:** TODO — BLOQUEADA (gate: TASK-01 COMPLETED + aprobación del Humano).
+- **Status:** TODO — DESBLOQUEADA (gate cumplido: TASK-01 COMPLETED 2026-10-28). Inicio en nueva sesión del Worker con autorización del Humano; NO iniciada aún.
 
 ## TASK-03 — Herramientas del mapa de Detail (recentrar + Abrir en Maps)
 

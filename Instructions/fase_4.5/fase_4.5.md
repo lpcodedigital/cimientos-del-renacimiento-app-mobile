@@ -72,3 +72,56 @@ AL TERMINAR (Fase Registro, obligatorio):
 2. Actualiza progress/current-task.json: harness_status con un campo `fase_4_5_task_01_run` (fecha, comandos ejecutados, salidas de tsc y de los git diff/gates); active_task status → READY_FOR_REVIEW.
 3. Añade entrada en progress/history.md bajo "## Fase 4.5" (qué se instaló, qué se editó, resultados del arnés y gates, hallazgos).
 4. PARADA CONTROLADA: reporta al Humano que el rebuild nativo (npx expo prebuild + npx expo run:ios + npx expo run:android) y la validación CA-08 (instalación limpia → primer arranque en frío sin pantalla roja; Android sin regresión) son suyos. TASK-02 NO inicia sin su autorización.
+
+# Prompt para iniciar TASK-02 en nueva sesión:
+MODO: TRABAJADOR (Execution Agent). Ejecutas UNA sola task de forma quirúrgica. NO planificas fases ni tocas archivos fuera de allowed_files.
+
+Proyecto: Cimientos del Renacimiento — Gabinete Móvil (Expo SDK 57 + RN 0.86 + TS strict + NativeWind v5 + React Navigation 7 + Clean Architecture por features).
+Raíz: /Users/macbookair/Documents/Projects/React-Native/CIMIENTOS-DEL-RENACIMIENTO-APP-MOBILE
+
+LEE EN ESTE ORDEN (obligatorio, nada más al inicio):
+1. AGENTS.md (roles, leyes absolutas, arnés de control)
+2. progress/current-task.json (estado vivo — active_feature: nav-back-mapa-tools; TASK-01 COMPLETED; TASK-02 DESBLOQUEADA)
+3. spec/features/nav-back-mapa-tools/spec.md (APROBADA 2026-10-28; §§4.1, 8, 9 CA-01…CA-05, CA-09, CA-10)
+4. spec/features/nav-back-mapa-tools/task.md — SOLO la sección TASK-02
+5. spec/features/nav-back-mapa-tools/plan.md — SOLO §4 (TASK-02 — Header con modo back) y §6 (skills) y §7 (criterio de hecho)
+6. Los 5 archivos que vas a editar, en su estado ACTUAL (leer completos antes de editar).
+
+TU ÚNICA MISIÓN: TASK-02 de Fase 4.5 — Header con modo back. Extender HeaderTitleProvider con leftMode "menu" | "back", renderizar arrow-back en AppHeader cuando leftMode === "back", y actualizar los setters de Home/Search/Detail eliminando las filas de flecha del cuerpo de Search y Detail.
+
+SECUENCIA (verbatim de plan §4):
+1. HeaderTitleProvider.tsx: añadir HeaderLeftMode, leftMode (default "menu") y setLeftMode; mantener exports existentes (HeaderTitleContext / HeaderTitleContextValue) sin romper imports. Snippet verbatim plan §4.1.
+2. AppHeader.tsx: importar useNavigation + NativeStackNavigationProp + AppStackParamList; ternario estricto leftMode === "back" ? back(arrow-back, accessibilityLabel="Volver", navigation.goBack()) : hamburguesa (intacta, accessibilityLabel="Abrir menú"). Mismo slot/estilos. Snippet verbatim plan §4.3.
+3. HomeScreen.tsx: useFocusEffect con setTitle("INICIO") + setLeftMode("menu").
+4. SearchScreen.tsx: useFocusEffect con setTitle("BÚSQUEDA") + setLeftMode("back"); ELIMINAR la fila de back arrow del cuerpo (View flexDirection row + Pressable "Volver" + Ionicons arrow-back) y limpiar imports huérfanos (useNavigation/Ionicons/Pressable) según eslint. Resto intacto.
+5. DetailScreen.tsx: useFocusEffect con setTitle("DETALLE") + setLeftMode("back"); ELIMINAR backRowStyle y su Pressable/Ionicons arrow-back; eliminar useNavigation si queda huérfano; conservar route y los dos useQuery intactos.
+6. Arnés: `npx tsc --noEmit` → exit 0; `npx eslint .` → exit 0 SIN warnings (cero no-unused-vars).
+7. Verificación/gates (pégalos en tu reporte):
+   - `git diff --stat -- src/features` → SOLO los 5 archivos de código de esta task.
+   - Greps: cero `arrow-back` en el cuerpo de Search/Detail; `AppStackParamList` importado solo en AppHeader.tsx (app-shell) + preexistentes; `setLeftMode` presente en los 3 screens.
+   - `git diff -- package.json app.json app.config.js eslint.config.js metro.config.js babel.config.js tsconfig.json` → VACÍO (cero deps/config en esta task).
+   - `git status --porcelain` → sin archivos fuera de allowed_files.
+
+allowed_files_to_edit (ESTRICTO):
+- src/features/app-shell/presentation/HeaderTitleProvider.tsx
+- src/features/app-shell/presentation/AppHeader.tsx
+- src/features/home/presentation/HomeScreen.tsx
+- src/features/search/presentation/SearchScreen.tsx
+- src/features/detail/presentation/DetailScreen.tsx
+
+PROHIBICIONES ABSOLUTAS EN ESTA TASK:
+- NO ejecutes `npx expo start`, `npx expo prebuild`, `npx expo run:ios` ni `npx expo run:android` (rebuild/pruebas nativas EXCLUSIVOS del Humano).
+- NO toques archivos nativos (`ios/**`, `android/**`, `.swift`, `.kt`, `.pbxproj`, `Info.plist`).
+- NO toques app.json, app.config.js, package.json, eslint.config.js, metro.config.js, babel.config.js, tsconfig.json.
+- NO toques AppDrawer.tsx, AppBrandBar.tsx, AppShell.tsx, menuItems.ts, RootNavigator.tsx, navigation/types.ts, useHeaderTitle.ts (solo verificar mensaje intacto), RadarMap.tsx, MunicipioCallout.tsx, DetailMapCard.tsx, openExternalMap.ts, componentes de detail/search, domain/application/infrastructure, compositionRoot.ts, App.tsx.
+- NO instales dependencias. NO hagas commit. NO inicies TASK-03.
+- Cero `any`, `TouchableOpacity`, `FlatList`, `expo-router`, `estimatedItemSize`, `className` en los archivos tocados. Usa Pressable + estilos hoisted `as const` (plan §6).
+- Prohibido entregar la task a medias: provider, AppHeader y setters se actualizan en la MISMA task.
+
+AL TERMINAR (Fase Registro, obligatorio):
+1. Marca `- [x]` los 7 pasos de TASK-02 en spec/features/nav-back-mapa-tools/task.md y cambia su Status a `READY_FOR_REVIEW (gate Humano)`.
+2. Actualiza progress/current-task.json: active_task.id/description/status → READY_FOR_REVIEW; añade `harness_status.fase_4_5_task_02_run` (fecha, comandos, tsc/eslint, diff acotado, greps).
+3. Añade entrada en progress/history.md bajo "## Fase 4.5" (qué se editó, resultados del arnés, hallazgos).
+4. PARADA CONTROLADA: reporta al Humano que la validación física CA-01…CA-05 (header back en Search/Detail, drawer inalcanzable ahí, Home intacto, títulos INICIO/BÚSQUEDA/DETALLE, cuerpo limpio) es suya. TASK-03 NO inicia sin su autorización.
+
+Contexto de cierre: TASK-01 (expo-dev-client + LSApplicationQueriesSchemes) está COMPLETED; el Humano ya validó prebuild + run:ios + run:android y CA-08. No reabras TASK-01.

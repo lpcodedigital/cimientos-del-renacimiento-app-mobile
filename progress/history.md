@@ -1311,3 +1311,24 @@
 - **Aprobación:** el Humano aprobó `spec/features/nav-back-mapa-tools/spec.md` (2026-10-28) y autorizó iniciar TASK-01 con el Worker en nueva sesión.
 - **Estado:** `spec/features/nav-back-mapa-tools/spec.md` → Estado: APROBADA (2026-10-28). `spec/features/nav-back-mapa-tools/task.md` → encabezado global y TASK-01 → `Status: IN_PROGRESS — DESBLOQUEADA`. `progress/current-task.json` → `current_roadmap_phase` con spec aprobada; `active_task: TASK-01` `IN_PROGRESS` con gate de cierre (tsc exit 0; `git diff -- package.json` = SOLO `expo-dev-client`; `git diff -- app.json` = SOLO `LSApplicationQueriesSchemes`; `git diff -- app.config.js` VACÍO) y handoff al Humano (prebuild + run:ios/run:android + CA-08).
 - **Alcance de TASK-01 (recordatorio):** `npx expo install expo-dev-client` + `app.json` → `ios.infoPlist.LSApplicationQueriesSchemes: ["comgooglemaps", "waze"]`; cero código de producto; cero `prebuild`/`run:*` por el Worker (rebuild nativo exclusivo del Humano).
+
+### 2026-10-28 — TASK-01 (Fase 4.5) ejecutada por el Worker → READY_FOR_REVIEW
+
+- **Qué se instaló:** `npx expo install expo-dev-client` (NUNCA `npm i`). Resultado: `up to date` — `expo-dev-client ~57.0.20` ya estaba resuelto en el worktree de una sesión previa y el diff contra HEAD refleja solo esa línea nueva (+ `package-lock.json`). Aviso de `patch-package` (`patches/expo-modules-jsi+57.1.1.patch` no aplica) es preexistente de Fase 3, ajeno a TASK-01.
+- **Qué se editó:** `app.json` → `ios.infoPlist` ahora incluye `"LSApplicationQueriesSchemes": ["comgooglemaps", "waze"]`; `NSFaceIDUsageDescription` queda INTACTA (solo se añadió la coma separadora). Cero código de producto, cero archivos nativos, cero `app.config.js`.
+- **Arnés:** `npx tsc --noEmit` → exit 0.
+- **Gates (verbatim):**
+  - `git diff -- package.json` → SOLO `+ "expo-dev-client": "~57.0.20"`.
+  - `git diff -- app.json` → SOLO `LSApplicationQueriesSchemes` (+ coma en `NSFaceIDUsageDescription`).
+  - `git diff -- app.config.js` → VACÍO.
+  - `git status --porcelain -uall` → SOLO `M app.json`, `M package-lock.json`, `M package.json` (ningún archivo de código).
+- **Hallazgo:** la dependencia ya estaba instalada en el worktree antes de esta sesión (TASK-01 había quedado a medias); el comando canónico confirmó idempotencia sin cambios adicionales. No se creó ningún archivo nuevo.
+- **PARADA CONTROLADA / HANDOFF AL HUMANO:** el rebuild nativo (`npx expo prebuild` + `npx expo run:ios` + `npx expo run:android`) y la validación de CA-08 (instalación limpia → primer arranque en frío iOS sin pantalla roja «No script URL provided»; Android sin regresión) son EXCLUSIVOS del Humano. **TASK-02 NO inicia sin su autorización.**
+
+### 2026-10-28 — TASK-01 COMPLETED (rebuild nativo + CA-08 validados por el Humano)
+
+- **Validación del Humano (Tester Visual):** ejecutó `npx expo prebuild`, `npx expo run:ios` y `npx expo run:android`; instalación y funcionamiento correctos en ambas plataformas.
+- **CA-08 VALIDADO:** primer arranque en frío en iOS sin la pantalla roja «No script URL provided»; Android sin regresión.
+- **Cierre:** `spec/features/nav-back-mapa-tools/task.md` → TASK-01 `COMPLETED (2026-10-28)` (5/5 checkboxes); encabezado global actualizado; TASK-02 `TODO — DESBLOQUEADA` (gate TASK-01 COMPLETED cumplido), **NO iniciada**.
+- **Memoria:** `progress/current-task.json` → `active_task.status: COMPLETED` + `harness_status.fase_4_5_task_01_humano_validation`; `current_roadmap_phase` refleja el cierre de TASK-01 y que solo TASK-02…04 quedan en Fase 4.5.
+- **Siguiente:** TASK-02 (header con modo back: `HeaderTitleProvider`, `AppHeader`, setters de Home/Search/Detail) se iniciará en una sesión nueva del Worker con autorización del Humano. Sin commit (lo decide el Humano).

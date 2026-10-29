@@ -13,7 +13,8 @@
         "usesNonExemptEncryption": false
       },
       "infoPlist": {
-        "NSFaceIDUsageDescription": "El Gabinete Móvil usa Face ID para desbloquear tu sesión institucional sin escribir la contraseña."
+        "NSFaceIDUsageDescription": "El Gabinete Móvil usa Face ID para desbloquear tu sesión institucional sin escribir la contraseña.",
+        "LSApplicationQueriesSchemes": ["comgooglemaps", "waze"]
       }
     },
     "android": {
