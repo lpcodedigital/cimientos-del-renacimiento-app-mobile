@@ -1,6 +1,6 @@
 # TASKS — nav-back-mapa-tools (Fase 4.5)
 
-> **Estado global:** spec.md **APROBADA por el Humano (2026-10-28)** → TASK-01 **COMPLETED (2026-10-28)** (rebuild nativo + CA-08 validados por el Humano) → TASK-02 **COMPLETED (2026-10-28)** (superseded por TASK-02b) → TASK-02b **COMPLETED (2026-10-28)** (header derivado por ruta activa; Humano validó Android sin flash + back al primer toque, iOS sin regresión, drawer operativo en Home; limitación residual Android aceptada y documentada en spec §6.1) → **TASK-03 DESBLOQUEADA, pendiente de ejecución por el Worker en nueva sesión** → TASK-04 BLOQUEADA hasta cerrar TASK-03. El Trabajador SOLO puede tocar los `allowed_files` de la TASK activa. El Revisor ejecuta el arnés al cierre de cada TASK (tsc + eslint) y la auditoría completa en TASK-04. El rebuild nativo y la validación visual/funcional en físico son EXCLUSIVOS del Humano.
+> **Estado global:** spec.md **APROBADA por el Humano (2026-10-28)** → TASK-01 **COMPLETED (2026-10-28)** (rebuild nativo + CA-08 validados por el Humano) → TASK-02 **COMPLETED (2026-10-28)** (superseded por TASK-02b) → TASK-02b **COMPLETED (2026-10-28)** (header derivado por ruta activa; Humano validó Android sin flash + back al primer toque, iOS sin regresión, drawer operativo en Home; limitación residual Android aceptada y documentada en spec §6.1) → TASK-03 **COMPLETED (2026-10-29)** (CA-06/CA-07 validados por el Humano en Android + iOS) → **TASK-04 COMPLETED (2026-10-29)** (auditoría de solo lectura sin desviaciones) → **FASE 4.5 CERRADA**. El Trabajador SOLO puede tocar los `allowed_files` de la TASK activa. El Revisor ejecuta el arnés al cierre de cada TASK (tsc + eslint) y la auditoría completa en TASK-04. El rebuild nativo y la validación visual/funcional en físico son EXCLUSIVOS del Humano. **FASE 5 (detalle-municipal) NO abierta** (contrato §4.2 PENDIENTE; requiere autorización del Humano).
 
 ## TASK-01 — Config iOS: expo-dev-client + LSApplicationQueriesSchemes
 
@@ -74,18 +74,17 @@
 
 - **Objetivo:** auditoría completa de la fase, cero cambios de código de producto. Criterios: spec §9 (CA-01…CA-10) y plan §7.
 - **Secuencia:**
-  1. [ ] `npx tsc --noEmit` → exit 0; `npx eslint .` → exit 0 sin warnings.
-  2. [ ] Bans (git grep sobre `src/**/*.ts(x)` + `App.tsx`): `any` = 0, `TouchableOpacity` = 0, `FlatList` = 0, `expo-router` = 0, `estimatedItemSize` = 0, `className` en archivos tocados = 0.
-  3. [ ] Gates deps/config vs baseline pre-Fase-4.5: `package.json` = SOLO `expo-dev-client`; `app.json` = SOLO `LSApplicationQueriesSchemes`; `app.config.js`/`eslint.config.js`/`metro.config.js`/`babel.config.js` VACÍO.
-  4. [ ] Features congeladas: diff acotado EXACTO a los allowed_files de TASK-01…03 (incluyendo las 2 eliminaciones de TASK-02b); `AppDrawer.tsx`, `AppBrandBar.tsx`, `menuItems.ts`, `RootNavigator.tsx`, `navigation/types.ts`, radar, contenidos de detail, componentes de search, domain/application/infrastructure, `compositionRoot.ts`, `App.tsx` SIN CAMBIOS. `AppShell.tsx` solo con el cambio de TASK-02b (retiro del wrapper).
-  5. [ ] Confirmar CA-01…CA-05 por inspección de código; CA-06…CA-08 quedan firmados por el Humano en físico.
-  6. [ ] Actualizar `progress/current-task.json` + `progress/history.md` con el resultado de la auditoría.
+  1. [x] `npx tsc --noEmit` → exit 0; `npx eslint .` → exit 0 sin warnings.
+  2. [x] Bans (git grep sobre `src/**/*.ts(x)` + `App.tsx`): `any` = 0, `TouchableOpacity` = 0, `FlatList` = 0, `expo-router` = 0, `estimatedItemSize` = 0, `className` en archivos tocados = 0.
+  3. [x] Gates deps/config vs baseline pre-Fase-4.5: `package.json` = SOLO `expo-dev-client`; `app.json` = SOLO `LSApplicationQueriesSchemes`; `app.config.js`/`eslint.config.js`/`metro.config.js`/`babel.config.js` VACÍO.
+  4. [x] Features congeladas: diff acotado EXACTO a los allowed_files de TASK-01…03 (incluyendo las 2 eliminaciones de TASK-02b); `AppDrawer.tsx`, `AppBrandBar.tsx`, `menuItems.ts`, `RootNavigator.tsx`, `navigation/types.ts`, radar, contenidos de detail, componentes de search, domain/application/infrastructure, `compositionRoot.ts`, `App.tsx` SIN CAMBIOS. `AppShell.tsx` solo con el cambio de TASK-02b (retiro del wrapper).
+  5. [x] Confirmar CA-01…CA-05 por inspección de código; CA-06…CA-08 quedan firmados por el Humano en físico.
+  6. [x] Actualizar `progress/current-task.json` + `progress/history.md` con el resultado de la auditoría.
 - **allowed_files_to_edit:** `spec/features/nav-back-mapa-tools/task.md`, `progress/current-task.json`, `progress/history.md`.
-- **Status:** TODO — DESBLOQUEADA (gate cumplido: TASK-03 COMPLETED + validación física del Humano 2026-10-29; pendiente de autorización explícita para iniciar).
+- **Status:** COMPLETED (2026-10-29) — auditoría de solo lectura cerrada sin desviaciones. Baseline verificado: `d9f9f3a` (commit inmediatamente anterior a TASK-01, `85d35b2`). Arnés: `npx tsc --noEmit` exit 0; `npx eslint .` exit 0 (0 errores, 0 warnings). Bans en `src/**/*.ts(x)` + `App.tsx`: `any`=0, `TouchableOpacity`=0, `FlatList`=0, `expo-router`=0, `estimatedItemSize`=0; `className` solo preexistentes en `auth/LoginScreen.tsx` y `src/shared/ui/*` (0 en los 7 archivos tocados). Gates: `package.json` solo `expo-dev-client ~57.0.20` (+lockfile); `app.json` solo `LSApplicationQueriesSchemes: ["comgooglemaps","waze"]` (+coma); `app.config.js`/`eslint.config.js`/`metro.config.js`/`babel.config.js`/`tsconfig.json` VACÍO. `git diff --name-status d9f9f3a -- src/` = EXACTAMENTE 9 rutas: M AppHeader.tsx, M AppShell.tsx, D HeaderTitleProvider.tsx, D useHeaderTitle.ts, M DetailMapCard.tsx, M DetailScreen.tsx, A openExternalMap.ts, M HomeScreen.tsx, M SearchScreen.tsx; features congeladas (drawer/brand bar/menuItems/RootNavigator/types/radar/contenidos detail/search/domain/application/infrastructure/compositionRoot/App.tsx) SIN CAMBIOS. CA-01…CA-05 verificados por inspección; CA-06/CA-07/CA-08 ya firmados por el Humano en físico. Cero código de producto modificado, cero commit.
 
-##
+## TASK-04 ejecutada (2026-10-29). Prompt histórico de la sesión:
 
-TASK-04 no ejecutada. Prompt para la nueva sesión:
 MODO: TRABAJADOR/REVISOR (Execution Agent) — AUDITORÍA DE SOLO LECTURA.
 Proyecto: Cimientos del Renacimiento — Gabinete Móvil (Expo SDK 57 + RN 0.86 + TS strict + NativeWind v5 + React Navigation 7 + Clean Architecture por features).
 Raíz: /Users/macbookair/Documents/Projects/React-Native/CIMIENTOS-DEL-RENACIMIENTO-APP-MOBILE
