@@ -125,3 +125,59 @@ AL TERMINAR (Fase Registro, obligatorio):
 4. PARADA CONTROLADA: reporta al Humano que la validación física CA-01…CA-05 (header back en Search/Detail, drawer inalcanzable ahí, Home intacto, títulos INICIO/BÚSQUEDA/DETALLE, cuerpo limpio) es suya. TASK-03 NO inicia sin su autorización.
 
 Contexto de cierre: TASK-01 (expo-dev-client + LSApplicationQueriesSchemes) está COMPLETED; el Humano ya validó prebuild + run:ios + run:android y CA-08. No reabras TASK-01.
+
+# Prompt para iniciar TASK-02b en nueva sesión:
+
+MODO: TRABAJADOR (Execution Agent). Ejecutas UNA sola task de forma quirúrgica. NO planificas fases ni tocas archivos fuera de allowed_files.
+
+Proyecto: Cimientos del Renacimiento — Gabinete Móvil (Expo SDK 57 + RN 0.86 + TS strict + NativeWind v5 + React Navigation 7 + Clean Architecture por features).
+Raíz: /Users/macbookair/Documents/Projects/React-Native/CIMIENTOS-DEL-RENACIMIENTO-APP-MOBILE
+
+LEE EN ESTE ORDEN (obligatorio, nada más al inicio):
+1. AGENTS.md (roles, leyes absolutas, arnés de control)
+2. progress/current-task.json (estado vivo — active_feature: nav-back-mapa-tools, TASK-02b DESBLOQUEADA)
+3. spec/features/nav-back-mapa-tools/spec.md — §2 decisión 9, §3 (evidencia del fuente de react-navigation), §4.1 ENMENDADO
+4. spec/features/nav-back-mapa-tools/task.md — SOLO la sección TASK-02b
+5. spec/features/nav-back-mapa-tools/plan.md — SOLO §4b (verbatim) y §4b.5 (gates)
+6. Los archivos a editar: src/features/app-shell/presentation/AppHeader.tsx, AppShell.tsx, src/features/home/presentation/HomeScreen.tsx, src/features/search/presentation/SearchScreen.tsx, src/features/detail/presentation/DetailScreen.tsx
+
+CONTEXTO DEL HOTFIX: TASK-02 implementó el header back con HeaderTitleProvider + setters por useFocusEffect. En Android produce un flash del estado previo (INICIO + hamburguesa) al entrar a Search/Detail porque los setters corren post-foco. TASK-02b cambia el mecanismo a DERIVACIÓN POR RUTA ACTIVA: AppHeader resuelve título/modo del estado de navegación raíz vía navigation.addListener("state") (evento emitido en el dispatch, inicio de la transición) + mapa HEADER_BY_ROUTE hoisted.
+
+TU ÚNICA MISIÓN: TASK-02b (task.md) siguiendo plan.md §4b VERBATIM.
+
+SECUENCIA (verbatim de task.md TASK-02b):
+1. AppHeader.tsx: reescribir con plan §4b.1 verbatim (HEADER_BY_ROUTE hoisted, resolveRouteName con fallback "Home", useState inicial + useEffect con addListener("state"), ternario back/hamburguesa intacto).
+   ⚠️ PROHIBIDO useNavigationState: crashea fuera del navigator ("Couldn't get the navigation state") — verificado en @react-navigation/core/src/useNavigationState.tsx. Solo addListener("state") + getState().
+2. AppShell.tsx: eliminar import y wrapper <HeaderTitleProvider> (plan §4b.2 verbatim; todo lo demás intacto).
+3. HomeScreen.tsx: eliminar el useFocusEffect de título/modo + imports huérfanos (useHeaderTitle, useFocusEffect, useCallback si queda sin uso).
+4. SearchScreen.tsx: idem. NO reaparecer la fila de back del cuerpo.
+5. DetailScreen.tsx: idem. route, queries y contenido intactos.
+6. Borrar src/features/app-shell/presentation/HeaderTitleProvider.tsx y useHeaderTitle.ts (rm; sin shims ni re-exports).
+7. Arnés: npx tsc --noEmit → exit 0; npx eslint . → exit 0 sin warnings.
+8. Gates (pégalos en tu reporte):
+   - greps = 0 en src/: useHeaderTitle, HeaderTitleProvider, setLeftMode
+   - git diff --stat -- src/ = SOLO los 5 editados + 2 eliminados
+   - git diff -- package.json app.json app.config.js = VACÍO
+   - git status --porcelain = sin archivos ajenos a la task
+
+allowed_files_to_edit (ESTRICTO):
+- src/features/app-shell/presentation/AppHeader.tsx
+- src/features/app-shell/presentation/AppShell.tsx
+- src/features/home/presentation/HomeScreen.tsx
+- src/features/search/presentation/SearchScreen.tsx
+- src/features/detail/presentation/DetailScreen.tsx
+- src/features/app-shell/presentation/HeaderTitleProvider.tsx (ELIMINAR)
+- src/features/app-shell/presentation/useHeaderTitle.ts (ELIMINAR)
+
+PROHIBICIONES ABSOLUTAS:
+- NO ejecutes npx expo start / prebuild / run:* (Humano exclusivo).
+- NO toques RootNavigator.tsx, navigation/types.ts, AppDrawer.tsx, AppBrandBar.tsx, menuItems.ts, ni nada de domain/application/infrastructure.
+- NO instales dependencias. NO hagas commit.
+- NO uses useNavigationState. NO recrees el provider bajo otro nombre.
+- NO inicies TASK-03.
+
+AL TERMINAR (Fase Registro, obligatorio):
+1. Marca las checkboxes `- [x]` de TASK-02b en task.md y cambia su Status a `READY_FOR_REVIEW (gate Humano)`.
+2. Actualiza progress/current-task.json: harness_status.fase_4_5_task_02b_run (fecha, diffs, salidas del arnés y gates); active_task status → READY_FOR_REVIEW.
+3. Añade entrada en progress/history.md bajo "## Fase 4.5".
+4. PARADA CONTROLADA: reporta al Humano que la validación física es suya — Android: al entrar a Search/Detail el header muestra ← + título correcto DESDE el inicio de la transición (sin flash de INICIO/hamburguesa) y el back responde al primer toque; iOS: sin regresión; drawer operativo en Home. TASK-03 NO inicia sin su autorización.

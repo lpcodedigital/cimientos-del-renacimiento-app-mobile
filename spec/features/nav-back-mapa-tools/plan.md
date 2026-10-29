@@ -8,13 +8,14 @@
 package.json                                            [EDIT TASK-01: +expo-dev-client]
 app.json                                                [EDIT TASK-01: +ios.infoPlist.LSApplicationQueriesSchemes]
 src/features/app-shell/presentation/
-├── HeaderTitleProvider.tsx                             [EDIT TASK-02: +leftMode]
-├── useHeaderTitle.ts                                   [EDIT TASK-02: docstring tipo; sin cambio real de firma]
-└── AppHeader.tsx                                       [EDIT TASK-02: ternario back/menu]
-src/features/home/presentation/HomeScreen.tsx           [EDIT TASK-02: +setLeftMode("menu")]
-src/features/search/presentation/SearchScreen.tsx       [EDIT TASK-02: +setLeftMode("back"), −fila back del cuerpo]
+├── HeaderTitleProvider.tsx                             [TASK-02 EDIT +leftMode → TASK-02b: ELIMINADO]
+├── useHeaderTitle.ts                                   [TASK-02 sin cambio real → TASK-02b: ELIMINADO]
+├── AppHeader.tsx                                       [TASK-02 EDIT ternario → TASK-02b EDIT: derivación por ruta, §4b.1]
+└── AppShell.tsx                                        [TASK-02b EDIT: −wrapper HeaderTitleProvider, §4b.2]
+src/features/home/presentation/HomeScreen.tsx           [TASK-02 EDIT +setLeftMode("menu") → TASK-02b EDIT: −setter, §4b.3]
+src/features/search/presentation/SearchScreen.tsx       [TASK-02 EDIT +setLeftMode("back"), −fila back cuerpo → TASK-02b EDIT: −setter, §4b.3]
 src/features/detail/presentation/
-├── DetailScreen.tsx                                    [EDIT TASK-02: +setLeftMode("back"), −fila back del cuerpo]
+├── DetailScreen.tsx                                    [TASK-02 EDIT +setLeftMode("back"), −fila back cuerpo → TASK-02b EDIT: −setter, §4b.3]
 ├── DetailMapCard.tsx                                   [EDIT TASK-03: +ref, +botón recentrar, +fila Abrir en Maps]
 └── openExternalMap.ts                                  [NUEVO TASK-03]
 ```
@@ -23,7 +24,7 @@ src/features/detail/presentation/
 
 ## 2. Orden anti-rompimiento
 
-TASK-01 (config + deps, rebuild Humano) → TASK-02 (header back; compila en cada paso porque el provider extiende el tipo y las pantallas se actualizan en la MISMA task) → TASK-03 (mapa) → TASK-04 (arnés). **Prohibido** entregar TASK-02 a medias: si el contexto expone `leftMode` pero `AppHeader` no lo consume, el gate visual falla.
+TASK-01 (config + deps, rebuild Humano) → TASK-02 (header back; compila en cada paso porque el provider extiende el tipo y las pantallas se actualizan en la MISMA task) → **TASK-02b (hotfix: derivación por ruta activa — ENMIENDA 2026-10-28, §4b; SUPERSEDE §4.1/§4.3/§4.4)** → TASK-03 (mapa) → TASK-04 (arnés). **Prohibido** entregar TASK-02/TASK-02b a medias: el header debe quedar consistente en provider(AppHeader)+pantallas en la MISMA task.
 
 ## 3. TASK-01 — Config iOS (fix cold start + queries schemes)
 
@@ -40,6 +41,8 @@ TASK-01 (config + deps, rebuild Humano) → TASK-02 (header back; compila en cad
 3. **PARADA:** el Trabajador NO ejecuta `prebuild`/`run:*`. El Humano corre `npx expo prebuild` (o deja que `run:ios` regenere) + `npx expo run:ios` + `npx expo run:android` y valida CA-08. `git diff -- app.config.js` debe quedar VACÍO.
 
 ## 4. TASK-02 — Header con modo back (verbatim)
+
+> **⚠️ SUPERSEDED (2026-10-28):** las secciones §4.1 (extensión del provider), §4.3 (AppHeader con `useHeaderTitle`) y §4.4 (setters por `useFocusEffect`) quedan **superseded por §4b (TASK-02b)** — TASK-02 se implementó tal cual y se validó, pero el mecanismo de setters por foco produce flash del estado previo en Android. §4b define el mecanismo vigente. Se conserva esta sección como registro histórico.
 
 ### 4.1 `app-shell/presentation/HeaderTitleProvider.tsx` (EDIT)
 
@@ -229,6 +232,176 @@ useFocusEffect(
 ```
 
 Y se **elimina** la fila de back arrow del cuerpo (`backRowStyle` y su `Pressable`/`Ionicons arrow-back`). Si `useNavigation` queda sin uso (era solo para `goBack`), se elimina; `route` y los dos `useQuery` quedan intactos.
+
+## 4b. TASK-02b — Hotfix: header derivado por ruta activa (ENMIENDA 2026-10-28 — verbatim)
+
+> Mecanismo VIGENTE del header (supersede §4.1/§4.3/§4.4). Base técnica verificada en `node_modules/@react-navigation` (spec §3): `useNavigationState` NO aplica fuera del navigator; el objeto de navegación raíz (al que `useNavigation` cae por `NavigationContainerRefContext`) soporta `addListener("state", …)`, emitido en el dispatch (inicio de la transición) → cero flash.
+
+### 4b.1 `app-shell/presentation/AppHeader.tsx` (EDIT — cuerpo completo verbatim)
+
+```tsx
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { StatusBar } from "expo-status-bar";
+import { useEffect, useState } from "react";
+import { Pressable, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+import type { AppStackParamList } from "@/app/navigation/types";
+import { appPalette, fontFamily, palette } from "@/shared/theme/tokens";
+
+type AppHeaderProps = {
+  onMenuPress: () => void;
+};
+
+type HeaderLeftMode = "menu" | "back";
+
+type HeaderConfig = {
+  title: string;
+  leftMode: HeaderLeftMode;
+};
+
+const HEADER_BY_ROUTE: Record<string, HeaderConfig> = {
+  Home: { title: "INICIO", leftMode: "menu" },
+  Search: { title: "BÚSQUEDA", leftMode: "back" },
+  Detail: { title: "DETALLE", leftMode: "back" },
+};
+
+const HEADER_DEFAULT: HeaderConfig = { title: "INICIO", leftMode: "menu" };
+
+function resolveRouteName(
+  navigation: NativeStackNavigationProp<AppStackParamList>,
+): string {
+  const state = navigation.getState();
+  const route = state?.routes[state.index];
+  return typeof route?.name === "string" ? route.name : "Home";
+}
+
+export function AppHeader({ onMenuPress }: AppHeaderProps) {
+  const insets = useSafeAreaInsets();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<AppStackParamList>>();
+  const [routeName, setRouteName] = useState<string>(() =>
+    resolveRouteName(navigation),
+  );
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("state", () => {
+      setRouteName(resolveRouteName(navigation));
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  const { title, leftMode } = HEADER_BY_ROUTE[routeName] ?? HEADER_DEFAULT;
+
+  return (
+    <View style={{ backgroundColor: appPalette.crema, paddingTop: insets.top }}>
+      <StatusBar style="dark" />
+      <View
+        style={{
+          height: 48,
+          justifyContent: "center",
+          paddingHorizontal: 16,
+        }}
+      >
+        {leftMode === "back" ? (
+          <Pressable
+            onPress={() => navigation.goBack()}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel="Volver"
+            style={({ pressed }) => ({
+              alignSelf: "flex-start",
+              width: 44,
+              height: 44,
+              alignItems: "center",
+              justifyContent: "center",
+              opacity: pressed ? 0.8 : 1,
+            })}
+          >
+            <Ionicons name="arrow-back" size={28} color={palette.texto} />
+          </Pressable>
+        ) : (
+          <Pressable
+            onPress={onMenuPress}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel="Abrir menú"
+            style={({ pressed }) => ({
+              alignSelf: "flex-start",
+              width: 44,
+              height: 44,
+              alignItems: "center",
+              justifyContent: "center",
+              opacity: pressed ? 0.8 : 1,
+            })}
+          >
+            <Ionicons name="menu" size={28} color={palette.texto} />
+          </Pressable>
+        )}
+        <Text
+          pointerEvents="none"
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            textAlign: "center",
+            fontFamily: fontFamily["lato-bold"],
+            color: palette.texto,
+          }}
+        >
+          {title}
+        </Text>
+      </View>
+    </View>
+  );
+}
+```
+
+**Notas técnicas (no negociables):**
+- NO usar `useNavigationState` (crashea fuera del navigator — spec §3).
+- El listener usa `navigation.addListener("state", …)` (evento core público; el payload no se lee, se re-resuelve con `getState()` para tener una sola vía).
+- `resolveRouteName` tolera `getState() === undefined` (fallback `"Home"`).
+- El mapa `HEADER_BY_ROUTE` vive hoisted a nivel de módulo; fallback `HEADER_DEFAULT` defensivo.
+
+### 4b.2 `app-shell/presentation/AppShell.tsx` (EDIT)
+
+- Eliminar el import `import { HeaderTitleProvider } from "./HeaderTitleProvider";` (línea 10) y el wrapper. El `return` queda (verbatim):
+
+```tsx
+  return (
+    <View style={{ flex: 1, backgroundColor: appPalette.crema }}>
+      <AppHeader onMenuPress={handleOpen} />
+      <AppBrandBar />
+      <View style={{ flex: 1 }}>{children}</View>
+      <AppDrawer
+        open={drawerOpen}
+        onClose={handleClose}
+        onSignOut={handleSignOut}
+      />
+    </View>
+  );
+```
+
+- Todo lo demás intacto: `AppShellProps`, estado `drawerOpen`, `handleOpen`/`handleClose`/`handleSignOut`, imports restantes.
+
+### 4b.3 Pantallas (3 EDITs — retiro de setters)
+
+- **`home/presentation/HomeScreen.tsx`:** eliminar el `useFocusEffect` de título/modo completo y los imports huérfanos (`useFocusEffect`, `useCallback` si queda sin uso, `useHeaderTitle`). Cero otro cambio.
+- **`search/presentation/SearchScreen.tsx`:** idem (su `useFocusEffect` de `BÚSQUEDA`/`back`). El resto intacto (la fila de back del cuerpo ya se eliminó en TASK-02; no reaparece).
+- **`detail/presentation/DetailScreen.tsx`:** idem (su `useFocusEffect` de `DETALLE`/`back`). `route`, queries y contenido intactos.
+
+### 4b.4 Eliminaciones
+
+- Borrar `src/features/app-shell/presentation/HeaderTitleProvider.tsx` y `src/features/app-shell/presentation/useHeaderTitle.ts` (`rm`, sin dejar shims ni re-exports).
+
+### 4b.5 Gates TASK-02b
+
+- `npx tsc --noEmit` exit 0; `npx eslint .` exit 0 sin warnings (cero imports huérfanos).
+- Greps = 0: `useHeaderTitle`, `HeaderTitleProvider`, `setLeftMode`, `setTitle(` en `src/`.
+- `git diff --stat -- src/` = SOLO los 5 archivos editados + 2 eliminados; `git diff -- package.json app.json app.config.js` VACÍO.
+- Handoff al Humano: validar en **Android** (entrar a Search/Detail: header muestra `←` + título correcto DESDE el inicio de la transición, sin flash de `INICIO`/hamburguesa; back responde al primer toque) y en **iOS** (sin regresión, todo fluido); drawer operativo en Home.
 
 ## 5. TASK-03 — Herramientas del mapa de Detail (verbatim)
 
@@ -441,7 +614,8 @@ export function DetailMapCard({ latitude, longitude }: DetailMapCardProps) {
 ## 7. Criterio de hecho técnico (por TASK)
 
 - **TASK-01:** `package.json` solo suma `expo-dev-client`; `app.json` solo suma `LSApplicationQueriesSchemes`; `npx tsc --noEmit` exit 0; rebuild nativo del Humano OK; CA-08 validado por el Humano.
-- **TASK-02:** `npx tsc --noEmit` exit 0; `npx eslint .` exit 0 sin warnings; greps: `AppStackParamList` importado en `AppHeader.tsx`; cero `arrow-back` en cuerpos de Search/Detail; `setLeftMode` presente en los 3 screens; diff acotado a los 6 archivos de la task.
+- **TASK-02:** COMPLETED (validada por el Humano en físico 2026-10-28, con hallazgo de flash en Android → originó TASK-02b). `npx tsc --noEmit` exit 0; `npx eslint .` exit 0 sin warnings; diff acotado a los 5 archivos de la task.
+- **TASK-02b (hotfix):** `npx tsc --noEmit` exit 0; `npx eslint .` exit 0 sin warnings; greps = 0 para `useHeaderTitle`/`HeaderTitleProvider`/`setLeftMode` en `src/`; diff = SOLO los 5 editados + 2 eliminados de §4b; `git diff -- package.json app.json app.config.js` VACÍO; validación física del Humano (Android sin flash + back al primer toque; iOS sin regresión).
 - **TASK-03:** `npx tsc --noEmit` exit 0; `npx eslint .` exit 0; greps: `react-native-maps` solo en `DetailMapCard.tsx` + `RadarMap.tsx` (preexistente); `Linking`/`Platform`/`Alert` solo en `openExternalMap.ts` dentro de detail; cero deps nuevas (`git diff -- package.json` sin cambios en esta task).
 - **TASK-04:** arnés completo + bans + gates de deps/config + features congeladas (spec §8); reporte de solo lectura.
 

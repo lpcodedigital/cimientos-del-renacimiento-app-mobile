@@ -1,11 +1,11 @@
 {
   "project_name": "Cimientos del Renacimiento - Gabinete Móvil",
-  "current_roadmap_phase": "Fase 4 (detail-obra-curso) CERRADA (2026-10-20). FASE 4.5 (nav-back-mapa-tools): spec.md APROBADA por el Humano (2026-10-28); TASK-01 COMPLETED (2026-10-28) — expo-dev-client ~57.0.20 + app.json ios.infoPlist.LSApplicationQueriesSchemes=[comgooglemaps,waze], tsc exit 0, gates de deps/config verificados y rebuild nativo (prebuild + run:ios/run:android) + CA-08 validados por el Humano (cold start iOS sin pantalla roja; Android sin regresión). TASK-02 COMPLETED (2026-10-28) — header back implementado (HeaderTitleProvider + AppHeader + setters Home/Search/Detail, filas de flecha del cuerpo eliminadas); tsc/eslint verdes; Humano validó CA-01…CA-05 en Android + iOS y ACEPTÓ como limitación conocida el timing del header en Android (frame obsoleto + flecha percibida lenta); iOS fluido. TASK-03 BLOQUEADA hasta autorización del Humano. FASE 5 (detalle-municipal): spec.md ESCRITO 2026-10-28 con contrato HTTP MARCADO PENDIENTE (bloqueante de infrastructure; el Humano definirá el endpoint con el backend); plan.md/task.md de Fase 5 NO se redactan hasta cerrar 4.5 (regla de bloqueo). Enmiendas constitucionales aplicadas 2026-10-28: roadmap.md (Fase 4.5 insertada + Fase 5 reescrita, supersede placeholder) y tech-stack.md (§2.7 header back + herramientas de mapa cero tokens; §6 expo-dev-client + procedimiento iOS).",
+  "current_roadmap_phase": "Fase 4 (detail-obra-curso) CERRADA (2026-10-20). FASE 4.5 (nav-back-mapa-tools): spec.md APROBADA por el Humano (2026-10-28); TASK-01 COMPLETED (2026-10-28) — expo-dev-client ~57.0.20 + LSApplicationQueriesSchemes, rebuild nativo y CA-08 validados por el Humano. TASK-02 COMPLETED (2026-10-28) — header back funcional en Android + iOS, PERO con hallazgo en Android: flash del header previo (INICIO + hamburguesa) al entrar a Search/Detail y back percibido lento (causa: setters por useFocusEffect post-foco). ENMIENDA APROBADA por el Humano (2026-10-28): TASK-02b (hotfix) — header derivado por ruta activa (evento \"state\" del container raíz + mapa HEADER_BY_ROUTE; HeaderTitleProvider/useHeaderTitle se ELIMINAN; useNavigationState PROHIBIDO — crashea fuera del navigator, verificado en node_modules/@react-navigation/core). TASK-02b DESBLOQUEADA, pendiente Worker en nueva sesión. Secuencia aprobada: TASK-02b → TASK-03 → TASK-04. FASE 5 (detalle-municipal): spec con contrato MARCADO PENDIENTE; nota forward-compat añadida (título municipal se derivará de route.params.municipio). Enmiendas constitucionales 2026-10-28: roadmap.md (Fase 4.5 con mecanismo de derivación + Fase 5 reescrita) y tech-stack.md (§2.7 + §6).",
   "active_feature": "nav-back-mapa-tools",
   "context_pointers": {
-    "spec_file": "spec/features/nav-back-mapa-tools/spec.md (ESCRITA 2026-10-28, pendiente aprobación Humano)",
-    "plan_file": "spec/features/nav-back-mapa-tools/plan.md (verbatim: HeaderTitleProvider +leftMode, AppHeader ternario back/menu, setters por pantalla, DetailMapCard ref+recentrar+Abrir en Maps, openExternalMap.ts)",
-    "task_file": "spec/features/nav-back-mapa-tools/task.md (TASK-01…04; TASK-01 TODO bloqueada hasta aprobación del spec)",
+    "spec_file": "spec/features/nav-back-mapa-tools/spec.md (APROBADA 2026-10-28; ENMIENDA 2026-10-28: §4.1 derivación por ruta activa, §6 superseded HeaderTitleProvider, CA-01/02/04 sin flash)",
+    "plan_file": "spec/features/nav-back-mapa-tools/plan.md (§4b verbatim TASK-02b: AppHeader con HEADER_BY_ROUTE + resolveRouteName + addListener(\"state\"); §4 SUPERSEDED; §5 TASK-03 mapa vigente)",
+    "task_file": "spec/features/nav-back-mapa-tools/task.md (TASK-01/02 COMPLETED; TASK-02b DESBLOQUEADA; TASK-03/04 BLOQUEADAS)",
     "fase_5_spec": "spec/features/detalle-municipal/spec.md (ESCRITA 2026-10-28; §4.2 contrato MARCADO PENDIENTE — bloqueante de infrastructure; sin mockup, fuente visual inicio.png)",
     "diagnostico_ios": "No script URL provided = debug build sin expo-dev-client, SKIP_BUNDLING=1, RCTBundleURLProvider nil sin Metro; RCTMetroPort=$(RCT_METRO_PORT) vacío. Fix aprobado: expo-dev-client + rebuild Humano (spec Fase 4.5 §4.4; tech-stack §6)",
     "feature_cerrada_referencia": "spec/features/detail-obra-curso/spec.md (Fase 4 CERRADA 2026-10-20; patrón a calcar)",
@@ -13,17 +13,19 @@
     "baseline_feature": "spec/features/core-arch-refactor/spec.md"
   },
   "active_task": {
-    "id": "TASK-02",
-    "description": "Fase 4.5 (nav-back-mapa-tools) TASK-02: header con modo back — HeaderTitleProvider +leftMode/setLeftMode, AppHeader ternario back/hamburguesa con useNavigation tipado, setters useFocusEffect en Home (menu) / Search (back) / Detail (back), eliminación de las filas de flecha del cuerpo de Search y Detail + imports huérfanos.",
-    "status": "COMPLETED",
-    "assigned_role": "Agente Trabajador (DeepSeek); validación física CA-01…CA-05 EXCLUSIVA del Humano",
-    "validation": "COMPLETED (2026-10-28) — worker: npx tsc --noEmit exit 0; npx eslint . exit 0 sin warnings; diff acotado a los 5 archivos de código; cero arrow-back en cuerpos de Search/Detail; configs/deps VACÍOS. HUMANO (2026-10-28): validado en Android + iOS; la flecha de volver aparece en Search y Detail con los títulos correctos (CA-01…CA-05 funcionales). Limitación conocida ACEPTADA por el Humano: en Android el header muestra durante unos ms el estado anterior (hamburguesa + «INICIO») al entrar a Search/Detail y la flecha de volver se percibe lenta / requiere varios toques; iOS fluido. Causa: setters por useFocusEffect (post-foco) + transición nativa Android. No se corrige en esta fase; documentada. TASK-03 NO inicia sin autorización.",
+    "id": "TASK-02b",
+    "description": "Fase 4.5 (nav-back-mapa-tools) TASK-02b (hotfix, ENMIENDA 2026-10-28): header derivado por ruta activa — AppHeader con HEADER_BY_ROUTE hoisted + resolveRouteName + useState inicial + navigation.addListener(\"state\") (plan §4b.1 verbatim); AppShell sin wrapper HeaderTitleProvider (§4b.2); Home/Search/Detail sin setters useFocusEffect de título/modo (§4b.3); borrar HeaderTitleProvider.tsx y useHeaderTitle.ts (§4b.4). PROHIBIDO useNavigationState (crashea fuera del navigator — verificado en @react-navigation/core).",
+    "status": "TODO",
+    "assigned_role": "Agente Trabajador (DeepSeek); validación física EXCLUSIVA del Humano (Android: sin flash + back al primer toque; iOS: sin regresión; drawer operativo en Home)",
+    "validation": "PENDIENTE — DESBLOQUEADA (enmienda aprobada por el Humano 2026-10-28). Gates de cierre: tsc/eslint exit 0 sin warnings; greps = 0 para useHeaderTitle/HeaderTitleProvider/setLeftMode en src/; diff = SOLO 5 editados + 2 eliminados; git diff package.json app.json app.config.js VACÍO.",
     "allowed_files_to_edit": [
-      "src/features/app-shell/presentation/HeaderTitleProvider.tsx",
       "src/features/app-shell/presentation/AppHeader.tsx",
+      "src/features/app-shell/presentation/AppShell.tsx",
       "src/features/home/presentation/HomeScreen.tsx",
       "src/features/search/presentation/SearchScreen.tsx",
-      "src/features/detail/presentation/DetailScreen.tsx"
+      "src/features/detail/presentation/DetailScreen.tsx",
+      "src/features/app-shell/presentation/HeaderTitleProvider.tsx (ELIMINAR)",
+      "src/features/app-shell/presentation/useHeaderTitle.ts (ELIMINAR)"
     ]
   },
   "harness_status": {
