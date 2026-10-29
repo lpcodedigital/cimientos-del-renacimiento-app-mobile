@@ -1,6 +1,6 @@
 # TASKS — nav-back-mapa-tools (Fase 4.5)
 
-> **Estado global:** spec.md **APROBADA por el Humano (2026-10-28)** → TASK-01 **COMPLETED (2026-10-28)** (rebuild nativo + CA-08 validados por el Humano) → TASK-02 **COMPLETED (2026-10-28)** (header back implementado; arnés verde; CA-01…CA-05 validados en Android + iOS; limitación de timing Android detectada → originó TASK-02b) → **TASK-02b (hotfix, ENMIENDA 2026-10-28 aprobada por el Humano): header derivado por ruta activa — DESBLOQUEADA, pendiente de ejecución por el Worker en nueva sesión** → TASK-03 **BLOQUEADA** hasta cerrar TASK-02b. El Trabajador SOLO puede tocar los `allowed_files` de la TASK activa. El Revisor ejecuta el arnés al cierre de cada TASK (tsc + eslint) y la auditoría completa en TASK-04. El rebuild nativo y la validación visual/funcional en físico son EXCLUSIVOS del Humano.
+> **Estado global:** spec.md **APROBADA por el Humano (2026-10-28)** → TASK-01 **COMPLETED (2026-10-28)** (rebuild nativo + CA-08 validados por el Humano) → TASK-02 **COMPLETED (2026-10-28)** (superseded por TASK-02b) → TASK-02b **COMPLETED (2026-10-28)** (header derivado por ruta activa; Humano validó Android sin flash + back al primer toque, iOS sin regresión, drawer operativo en Home; limitación residual Android aceptada y documentada en spec §6.1) → **TASK-03 DESBLOQUEADA, pendiente de ejecución por el Worker en nueva sesión** → TASK-04 BLOQUEADA hasta cerrar TASK-03. El Trabajador SOLO puede tocar los `allowed_files` de la TASK activa. El Revisor ejecuta el arnés al cierre de cada TASK (tsc + eslint) y la auditoría completa en TASK-04. El rebuild nativo y la validación visual/funcional en físico son EXCLUSIVOS del Humano.
 
 ## TASK-01 — Config iOS: expo-dev-client + LSApplicationQueriesSchemes
 
@@ -37,15 +37,15 @@
 
 - **Objetivo:** eliminar el flash del estado previo del header en Android cambiando el mecanismo de «setters por foco» a **derivación por ruta activa** (evento `"state"` del container raíz + mapa `HEADER_BY_ROUTE`), y eliminar `HeaderTitleProvider`/`useHeaderTitle`. Verbatim: plan §4b. Spec §4.1 enmendado. Cero dependencias nuevas.
 - **Secuencia:**
-  1. [ ] `AppHeader.tsx`: reescribir con derivación por ruta (plan §4.1b verbatim — mapa `HEADER_BY_ROUTE` hoisted, `resolveRouteName`, `useState` inicial + `addListener("state")`). **PROHIBIDO `useNavigationState`** (crashea fuera del navigator — spec §3).
-  2. [ ] `AppShell.tsx`: eliminar import y wrapper `<HeaderTitleProvider>` (plan §4b.2 verbatim).
-  3. [ ] `HomeScreen.tsx`: eliminar el `useFocusEffect` de título/modo + imports huérfanos (`useHeaderTitle`, `useFocusEffect`, `useCallback` si queda sin uso).
-  4. [ ] `SearchScreen.tsx`: idem. NO reaparecer la fila de back del cuerpo.
-  5. [ ] `DetailScreen.tsx`: idem. `route`, queries y contenido intactos.
-  6. [ ] Borrar `HeaderTitleProvider.tsx` y `useHeaderTitle.ts` (`rm`; sin shims ni re-exports).
-  7. [ ] Arnés: `npx tsc --noEmit` exit 0; `npx eslint .` exit 0 sin warnings.
-  8. [ ] Verificación: greps = 0 para `useHeaderTitle` / `HeaderTitleProvider` / `setLeftMode` en `src/`; `git diff --stat -- src/` = SOLO los 5 editados + 2 eliminados; `git diff -- package.json app.json app.config.js` VACÍO.
-  9. [ ] **HANDOFF AL HUMANO:** validación física — Android: al entrar a Search/Detail el header muestra `←` + título correcto DESDE el inicio de la transición (sin flash de `INICIO`/hamburguesa) y el back responde al primer toque; iOS: sin regresión; drawer operativo en Home.
+  1. [x] `AppHeader.tsx`: reescribir con derivación por ruta (plan §4.1b verbatim — mapa `HEADER_BY_ROUTE` hoisted, `resolveRouteName`, `useState` inicial + `addListener("state")`). **PROHIBIDO `useNavigationState`** (crashea fuera del navigator — spec §3).
+  2. [x] `AppShell.tsx`: eliminar import y wrapper `<HeaderTitleProvider>` (plan §4b.2 verbatim).
+  3. [x] `HomeScreen.tsx`: eliminar el `useFocusEffect` de título/modo + imports huérfanos (`useHeaderTitle`, `useFocusEffect`, `useCallback` si queda sin uso).
+  4. [x] `SearchScreen.tsx`: idem. NO reaparecer la fila de back del cuerpo.
+  5. [x] `DetailScreen.tsx`: idem. `route`, queries y contenido intactos.
+  6. [x] Borrar `HeaderTitleProvider.tsx` y `useHeaderTitle.ts` (`rm`; sin shims ni re-exports).
+  7. [x] Arnés: `npx tsc --noEmit` exit 0; `npx eslint .` exit 0 sin warnings.
+  8. [x] Verificación: greps = 0 para `useHeaderTitle` / `HeaderTitleProvider` / `setLeftMode` en `src/`; `git diff --stat -- src/` = SOLO los 5 editados + 2 eliminados; `git diff -- package.json app.json app.config.js` VACÍO.
+  9. [x] **HANDOFF AL HUMANO:** validación física — Android: al entrar a Search/Detail el header muestra `←` + título correcto DESDE el inicio de la transición (sin flash de `INICIO`/hamburguesa) y el back responde al primer toque; iOS: sin regresión; drawer operativo en Home.
 - **allowed_files_to_edit:**
   - `src/features/app-shell/presentation/AppHeader.tsx`
   - `src/features/app-shell/presentation/AppShell.tsx`
@@ -54,7 +54,7 @@
   - `src/features/detail/presentation/DetailScreen.tsx`
   - `src/features/app-shell/presentation/HeaderTitleProvider.tsx` (ELIMINAR)
   - `src/features/app-shell/presentation/useHeaderTitle.ts` (ELIMINAR)
-- **Status:** TODO — DESBLOQUEADA (enmienda aprobada por el Humano 2026-10-28; pendiente de ejecución por el Worker en nueva sesión).
+- **Status:** COMPLETED (2026-10-29) — Worker ejecutó los 9 pasos: `npx tsc --noEmit` exit 0; `npx eslint .` exit 0 sin warnings; greps = 0 (`useHeaderTitle`/`HeaderTitleProvider`/`setLeftMode`/`setTitle(` en `src/`); `git diff --stat -- src/` = SOLO los 5 editados + 2 eliminados (7 files, 46 insertions, 113 deletions); `git diff -- package.json app.json app.config.js` VACÍO. **Humano validó en físico (2026-10-29):** Android mejoró mucho — sin flash, transición y flecha correctas; iOS validado sin regresión; drawer operativo en Home. **Limitación residual aceptada y documentada (spec §6.1):** en Android, un toque al `←` durante la transición nativa o el pico de montaje puede ser descartado por la plataforma (re-tap inmediato funciona) — comportamiento inherente de react-native-screens, no defecto. TASK-03 DESBLOQUEADA.
 
 ## TASK-03 — Herramientas del mapa de Detail (recentrar + Abrir en Maps)
 
@@ -68,7 +68,7 @@
 - **allowed_files_to_edit:**
   - `src/features/detail/presentation/openExternalMap.ts` (nuevo)
   - `src/features/detail/presentation/DetailMapCard.tsx`
-- **Status:** TODO — BLOQUEADA (gate: TASK-02b COMPLETED + aprobación del Humano).
+- **Status:** TODO — DESBLOQUEADA (TASK-02b COMPLETED + validación del Humano 2026-10-28; pendiente de ejecución por el Worker en nueva sesión).
 
 ## TASK-04 — Arnés / auditoría (solo lectura)
 

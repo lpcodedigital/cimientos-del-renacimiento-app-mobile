@@ -7,7 +7,6 @@ import { appPalette } from "@/shared/theme/tokens";
 import { AppBrandBar } from "./AppBrandBar";
 import { AppDrawer } from "./AppDrawer";
 import { AppHeader } from "./AppHeader";
-import { HeaderTitleProvider } from "./HeaderTitleProvider";
 
 type AppShellProps = {
   children: ReactNode;
@@ -31,16 +30,14 @@ export function AppShell({ children }: AppShellProps) {
 
   return (
     <View style={{ flex: 1, backgroundColor: appPalette.crema }}>
-      <HeaderTitleProvider>
-        <AppHeader onMenuPress={handleOpen} />
-        <AppBrandBar />
-        <View style={{ flex: 1 }}>{children}</View>
-        <AppDrawer
-          open={drawerOpen}
-          onClose={handleClose}
-          onSignOut={handleSignOut}
-        />
-      </HeaderTitleProvider>
+      <AppHeader onMenuPress={handleOpen} />
+      <AppBrandBar />
+      <View style={{ flex: 1 }}>{children}</View>
+      <AppDrawer
+        open={drawerOpen}
+        onClose={handleClose}
+        onSignOut={handleSignOut}
+      />
     </View>
   );
 }

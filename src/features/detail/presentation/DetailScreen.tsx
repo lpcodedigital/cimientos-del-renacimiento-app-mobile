@@ -1,14 +1,9 @@
-import {
-  useFocusEffect,
-  useRoute,
-  type RouteProp,
-} from "@react-navigation/native";
+import { useRoute, type RouteProp } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 import type { AppStackParamList } from "@/app/navigation/types";
-import { useHeaderTitle } from "@/features/app-shell/presentation/useHeaderTitle";
 import {
   detailPalette,
   fontFamily as font,
@@ -46,15 +41,6 @@ const scrollContentStyle = {
 } as const;
 
 export function DetailScreen() {
-  const { setTitle, setLeftMode } = useHeaderTitle();
-
-  useFocusEffect(
-    useCallback(() => {
-      setTitle("DETALLE");
-      setLeftMode("back");
-    }, [setTitle, setLeftMode]),
-  );
-
   const { useCases } = useDetail();
   const route = useRoute<RouteProp<AppStackParamList, "Detail">>();
   const { tipo, id } = route.params;

@@ -95,6 +95,10 @@ Fase intermedia de **hardening** (precedente de gobernanza: Fase 1.5) sobre las 
 | app.json `ios.infoPlist` limitado a `NSFaceIDUsageDescription` (Fase 1/1.5a) | Se añade `LSApplicationQueriesSchemes` (§4.4). |
 | Spec detail §2.6 (Fase 4) y §4.1 original de este spec (TASK-02): título del header vía `HeaderTitleProvider` + setters `useFocusEffect` por pantalla | **TASK-02b (2026-10-28):** el header **deriva** título/modo de la ruta activa (evento `"state"` del container raíz); `HeaderTitleProvider`/`useHeaderTitle` se eliminan. Motivo: flash del estado previo en Android (setters post-foco). |
 
+## 6.1 Limitaciones aceptadas por el Humano
+
+- **Back residual en Android (2026-10-28, validado en físico tras TASK-02b):** un toque al `←` que cae **durante** la transición nativa (~300 ms) o durante el pico de montaje de la pantalla entrante puede ser descartado por la plataforma (react-native-screens); el re-tap inmediato funciona. Es comportamiento inherente de React Navigation en Android, **no un defecto de implementación**; iOS fluido. Decisión del Humano: aceptar y documentar (sin TASK adicional).
+
 ## 7. Arquitectura
 
 - **Fase de hardening: NO abre capas nuevas.** Cero cambios en `domain/`/`application/`/`infrastructure/` de cualquier feature. Todo el trabajo vive en `presentation/` (app-shell, search, detail, home) + config (`package.json`, `app.json`).

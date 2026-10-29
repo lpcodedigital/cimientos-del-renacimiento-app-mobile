@@ -181,3 +181,54 @@ AL TERMINAR (Fase Registro, obligatorio):
 2. Actualiza progress/current-task.json: harness_status.fase_4_5_task_02b_run (fecha, diffs, salidas del arnés y gates); active_task status → READY_FOR_REVIEW.
 3. Añade entrada en progress/history.md bajo "## Fase 4.5".
 4. PARADA CONTROLADA: reporta al Humano que la validación física es suya — Android: al entrar a Search/Detail el header muestra ← + título correcto DESDE el inicio de la transición (sin flash de INICIO/hamburguesa) y el back responde al primer toque; iOS: sin regresión; drawer operativo en Home. TASK-03 NO inicia sin su autorización.
+
+# Prompt para iniciar TASK-03 en nueva sesión:
+
+MODO: TRABAJADOR (Execution Agent). Ejecutas UNA sola task de forma quirúrgica. NO planificas fases ni tocas archivos fuera de allowed_files.
+
+Proyecto: Cimientos del Renacimiento — Gabinete Móvil (Expo SDK 57 + RN 0.86 + TS strict + NativeWind v5 + React Navigation 7 + Clean Architecture por features).
+Raíz: /Users/macbookair/Documents/Projects/React-Native/CIMIENTOS-DEL-RENACIMIENTO-APP-MOBILE
+
+LEE EN ESTE ORDEN (obligatorio, nada más al inicio):
+1. AGENTS.md (roles, leyes absolutas, arnés de control)
+2. progress/current-task.json (estado vivo — active_feature: nav-back-mapa-tools, TASK-03 DESBLOQUEADA)
+3. spec/features/nav-back-mapa-tools/spec.md — §4.2 y §4.3 (diseño de las herramientas del mapa)
+4. spec/features/nav-back-mapa-tools/task.md — SOLO la sección TASK-03
+5. spec/features/nav-back-mapa-tools/plan.md — SOLO §5 (verbatim: openExternalMap.ts y DetailMapCard.tsx) y §7 (criterio de hecho TASK-03)
+6. Los archivos actuales: src/features/detail/presentation/DetailMapCard.tsx y src/shared/theme/tokens.ts (confirma palette.superficie / palette.guinda / fontFamily["lato-bold"])
+
+TU ÚNICA MISIÓN: TASK-03 — Herramientas del mapa de Detail (recentrar + «Abrir en Maps»), siguiendo plan.md §5 VERBATIM.
+
+SECUENCIA (verbatim de task.md TASK-03):
+1. Crear src/features/detail/presentation/openExternalMap.ts — plan §5.1 verbatim:
+   - Android: Linking.openURL("geo:{lat},{lng}?q={lat},{lng}(Ubicación)") con label encodeURIComponent; catch → Alert.alert("Mapas", "No se encontró una aplicación de mapas disponible.").
+   - iOS: canOpenURL("comgooglemaps://") y canOpenURL("waze://") (cada una con try/catch → false); Alert.alert("Abrir en Maps", undefined, botones): Apple Maps (siempre), Google Maps (si canGoogle), Waze (si canWaze), Cancelar (style cancel).
+2. Reescribir src/features/detail/presentation/DetailMapCard.tsx — plan §5.2 verbatim:
+   - MapView con ref (useRef<MapView>(null)); provider/initialRegion/props intactos.
+   - Botón flotante de recentrado: círculo 40×40 absolute right 12 bottom 12 DENTRO del contenedor del mapa, fondo palette.superficie, sombra, Ionicons "locate" size 20 color palette.guinda, accessibilityLabel "Centrar ubicación" → handleRecenter: mapRef.current?.animateToRegion({latitude, longitude, latitudeDelta: 0.02, longitudeDelta: 0.02}, 600).
+   - Fila «Abrir en Maps» BAJO el contenedor del mapa: Pressable row gap 8 paddingVertical 10, Ionicons "navigate-outline" size 20 guinda + Text "Abrir en Maps" (fontFamily["lato-bold"], palette.guinda, 15), accessibilityLabel "Abrir en Maps" → handleOpenMaps: void openExternalMap(latitude, longitude).
+   - Estilos hoisted como const con `as const` (ya vienen en el plan).
+3. Arnés: npx tsc --noEmit → exit 0; npx eslint . → exit 0 sin warnings.
+4. Verificación (pégala en tu reporte):
+   - grep: react-native-maps solo en DetailMapCard.tsx (+ RadarMap.tsx preexistente)
+   - grep: Linking/Platform/Alert dentro de src/features/detail solo en openExternalMap.ts
+   - git diff -- package.json app.json app.config.js → VACÍO
+   - git status --porcelain → SOLO los 2 archivos de esta task
+5. PARADA Y HANDOFF AL HUMANO: validación física CA-06 (mover el mapa → tap en botón flotante → la cámara anima de regreso al pin) y CA-07 (tap en «Abrir en Maps» → iOS muestra selector con Apple Maps + apps instaladas; Android muestra el chooser nativo; Cancelar no crashea ni navega; la app elegida abre la coordenada).
+
+allowed_files_to_edit (ESTRICTO):
+- src/features/detail/presentation/openExternalMap.ts (NUEVO)
+- src/features/detail/presentation/DetailMapCard.tsx
+
+PROHIBICIONES ABSOLUTAS:
+- NO ejecutes npx expo start / prebuild / run:* (Humano exclusivo). NO rebuild nativo necesario en esta task (los LSApplicationQueriesSchemes ya quedaron en TASK-01).
+- NO instales dependencias (Linking/Alert/Platform son RN core; @expo/vector-icons ya autorizado).
+- NO toques ObraDetailContent.tsx, CursoDetailContent.tsx, DetailScreen.tsx ni nada fuera de los 2 allowed_files.
+- NO hagas commit. NO inicies TASK-04.
+- Cero any / TouchableOpacity / FlatList / className / expo-router.
+
+AL TERMINAR (Fase Registro, obligatorio):
+1. Marca las checkboxes `- [x]` de TASK-03 en task.md y cambia su Status a `READY_FOR_REVIEW (gate Humano)`.
+2. Actualiza progress/current-task.json: harness_status.fase_4_5_task_03_run (fecha, diffs, salidas del arnés y verificaciones); active_task status → READY_FOR_REVIEW.
+3. Añade entrada en progress/history.md bajo "## Fase 4.5".
+4. PARADA CONTROLADA: TASK-04 (arnés/auditoría) NO inicia sin autorización del Humano.

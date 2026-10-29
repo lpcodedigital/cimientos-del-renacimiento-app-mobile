@@ -2,23 +2,56 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
+import { useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import type { AppStackParamList } from "@/app/navigation/types";
 import { appPalette, fontFamily, palette } from "@/shared/theme/tokens";
 
-import { useHeaderTitle } from "./useHeaderTitle";
-
 type AppHeaderProps = {
   onMenuPress: () => void;
 };
 
+type HeaderLeftMode = "menu" | "back";
+
+type HeaderConfig = {
+  title: string;
+  leftMode: HeaderLeftMode;
+};
+
+const HEADER_BY_ROUTE: Record<string, HeaderConfig> = {
+  Home: { title: "INICIO", leftMode: "menu" },
+  Search: { title: "BÚSQUEDA", leftMode: "back" },
+  Detail: { title: "DETALLE", leftMode: "back" },
+};
+
+const HEADER_DEFAULT: HeaderConfig = { title: "INICIO", leftMode: "menu" };
+
+function resolveRouteName(
+  navigation: NativeStackNavigationProp<AppStackParamList>,
+): string {
+  const state = navigation.getState();
+  const route = state?.routes[state.index];
+  return typeof route?.name === "string" ? route.name : "Home";
+}
+
 export function AppHeader({ onMenuPress }: AppHeaderProps) {
   const insets = useSafeAreaInsets();
-  const { title, leftMode } = useHeaderTitle();
   const navigation =
     useNavigation<NativeStackNavigationProp<AppStackParamList>>();
+  const [routeName, setRouteName] = useState<string>(() =>
+    resolveRouteName(navigation),
+  );
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("state", () => {
+      setRouteName(resolveRouteName(navigation));
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  const { title, leftMode } = HEADER_BY_ROUTE[routeName] ?? HEADER_DEFAULT;
 
   return (
     <View style={{ backgroundColor: appPalette.crema, paddingTop: insets.top }}>

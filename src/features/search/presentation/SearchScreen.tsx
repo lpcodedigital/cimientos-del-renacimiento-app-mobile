@@ -1,4 +1,3 @@
-import { useFocusEffect } from "@react-navigation/native";
 import { FlashList, type ListRenderItem } from "@shopify/flash-list";
 import {
   keepPreviousData,
@@ -8,7 +7,6 @@ import {
 import { useCallback } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 
-import { useHeaderTitle } from "@/features/app-shell/presentation/useHeaderTitle";
 import { fontFamily as font, palette, searchPalette } from "@/shared/theme/tokens";
 import type { SearchCard } from "../domain/entities/SearchCard";
 import type { SearchPage } from "../domain/entities/SearchPage";
@@ -33,15 +31,6 @@ const renderCard: ListRenderItem<SearchCard> = ({ item }) => (
 const keyExtractor = (item: SearchCard): string => `${item.tipo}-${item.id}`;
 
 export function SearchScreen() {
-  const { setTitle, setLeftMode } = useHeaderTitle();
-
-  useFocusEffect(
-    useCallback(() => {
-      setTitle("BÚSQUEDA");
-      setLeftMode("back");
-    }, [setTitle, setLeftMode]),
-  );
-
   const { useCases, debouncedQuery, isActive } = useSearch();
 
   const result = useInfiniteQuery<
